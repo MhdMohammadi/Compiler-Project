@@ -66,46 +66,56 @@ import java_cup.runtime.*;
 %}
 
 /* main character classes */
+VoidKeyWord = "void"
+IntKeyWord = "int"
+DoubleKeyWord = "double"
+BoolKeyWord = "Bool"
+StringKeyWord = "string"
+ClassKeyWord = "class"
+InterfaceKeyWord = "interface"
+NullKeyWord = "null"
+ThisKeyWord = "this"
+ExtendsKeyWord = "extends"
+ImplementsKeyWord = "implements"
+ForKeyWord = "for"
+WhileKeyWord = "while"
+IfKeyWord = "if"
+ElseKeyWord = "else"
+ReturnKeyWord = "return"
+BreakKeyWord = "break"
+ContinueKeyWord = "continue"
+NewKeyWord = "new"
+NewArrayKeyWord = "NewArray"
+PrintKeyWord = "print"
+ReadIntegerKeyWord = "ReadInteger"
+ReadLineKeyWord = "ReadLine"
+DtoiKeyWord = "dtoi"
+ItodKeyWord = "itod"
+BtoiKeyWord = "btoi"
+ItobKeyWord = "itob"
+PrivateKeyWord = "private"
+ProtectedKeyWord = "protected"
+PublicKeyWord = "public"
+
+Identifier = [a-z|A-Z][a-z|A-Z|0-9|_]*
+
 LineTerminator = \r|\n|\r\n
+WhiteSpace     = {LineTerminator} | [ \t\f]
+
+TrueLiteral = "true"
+FalseLiteral = "false"
+
+DecIntegerLiteral = [0-9]+
+HexIntegerLiteral = 0[xX][0-9|a-f|A-F]+
+
+DoubleLiteral = [0-9]+\.[0-9]*
+DoubleScientificLiteral = [0-9]+\.[0-9]*[eE][-+]?[0-9]+
+
 InputCharacter = [^\r\n]
+TraditionalComment   = "/*" [^*] ~"*/" | "/*" "*"+ "/"
+EndOfLineComment     = "//" {InputCharacter}* {LineTerminator}?
+Comment = {TraditionalComment} | {EndOfLineComment}
 
-WhiteSpace = {LineTerminator} | [ \t\f]
-
-/* comments */
-Comment = {TraditionalComment} | {EndOfLineComment} | 
-          {DocumentationComment}
-
-TraditionalComment = "/*" [^*] ~"*/" | "/*" "*"+ "/"
-EndOfLineComment = "//" {InputCharacter}* {LineTerminator}?
-DocumentationComment = "/*" "*"+ [^/*] ~"*/"
-
-/* identifiers */
-Identifier = [:jletter:][:jletterdigit:]*
-
-/* integer literals */
-DecIntegerLiteral = 0 | [1-9][0-9]*
-DecLongLiteral    = {DecIntegerLiteral} [lL]
-
-HexIntegerLiteral = 0 [xX] 0* {HexDigit} {1,8}
-HexLongLiteral    = 0 [xX] 0* {HexDigit} {1,16} [lL]
-HexDigit          = [0-9a-fA-F]
-
-OctIntegerLiteral = 0+ [1-3]? {OctDigit} {1,15}
-OctLongLiteral    = 0+ 1? {OctDigit} {1,21} [lL]
-OctDigit          = [0-7]
-    
-/* floating point literals */        
-FloatLiteral  = ({FLit1}|{FLit2}|{FLit3}) {Exponent}? [fF]
-DoubleLiteral = ({FLit1}|{FLit2}|{FLit3}) {Exponent}?
-
-FLit1    = [0-9]+ \. [0-9]* 
-FLit2    = \. [0-9]+ 
-FLit3    = [0-9]+ 
-Exponent = [eE] [+-]? [0-9]+
-
-/* string and character literals */
-StringCharacter = [^\r\n\"\\]
-SingleCharacter = [^\r\n\'\\]
 
 %state STRING, CHARLITERAL
 
