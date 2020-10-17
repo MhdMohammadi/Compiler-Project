@@ -89,7 +89,29 @@ terminal ITOB;
 terminal PRIVATE;
 terminal PUBLIC;
 terminal PROTECTED;
-
+terminal INTLITERAL;
+terminal DOUBLELITERAL;
+terminal STRINGLITERAL;
+terminal BOOLEANLITERAL;
+terminal TRUE;
+terminal FALSE;
+terminal EQ;
+terminal GT;
+terminal LT;
+terminal NOT;
+terminal COMP;
+terminal QUESTION;
+terminal COLON;
+terminal EQEQ;
+terminal LTEQ;
+terminal GTEQ;
+terminal NOTEQ;
+terminal ANDAND;
+terminal OROR;
+terminal PLUSPLUS;
+terminal MINUSMINUS;
+terminal PLUS;
+terminal MINUS;
 
 
 // 19.2) The Syntactic Grammar
