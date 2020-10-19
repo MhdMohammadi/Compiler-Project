@@ -66,11 +66,41 @@ import java_cup.runtime.*;
 %}
 
 /* main character classes */
-
+VoidKeyWord = "void"
+IntKeyWord = "int"
+DoubleKeyWord = "double"
+BoolKeyWord = "Bool"
+StringKeyWord = "string"
+ClassKeyWord = "class"
+InterfaceKeyWord = "interface"
+NullKeyWord = "null"
+ThisKeyWord = "this"
+ExtendsKeyWord = "extends"
+ImplementsKeyWord = "implements"
+ForKeyWord = "for"
+WhileKeyWord = "while"
+IfKeyWord = "if"
+ElseKeyWord = "else"
+ReturnKeyWord = "return"
+BreakKeyWord = "break"
+ContinueKeyWord = "continue"
+NewKeyWord = "new"
+NewArrayKeyWord = "NewArray"
+PrintKeyWord = "print"
+ReadIntegerKeyWord = "ReadInteger"
+ReadLineKeyWord = "ReadLine"
+DtoiKeyWord = "dtoi"
+ItodKeyWord = "itod"
+BtoiKeyWord = "btoi"
+ItobKeyWord = "itob"
+PrivateKeyWord = "private"
+ProtectedKeyWord = "protected"
+PublicKeyWord = "public"
 
 Identifier = [a-z|A-Z][a-z|A-Z|0-9|_]*
 
 LineTerminator = \r|\n|\r\n
+//todo
 WhiteSpace     = {LineTerminator} | [ \t\f]
 
 TrueLiteral = "true"
@@ -94,45 +124,12 @@ Comment = {TraditionalComment} | {EndOfLineComment}
 
 <YYINITIAL> {
 
-  /* keywords */
-  "void" {return symbol(sym.VOID);
-  "int" {return symbol(sym.INT);
-  DoubleKeyWord = "double"
-  BoolKeyWord = "Bool"
-  StringKeyWord = "string"
-  ClassKeyWord = "class"
-  InterfaceKeyWord = "interface"
-  NullKeyWord = "null"
-  ThisKeyWord = "this"
-  ExtendsKeyWord = "extends"
-  ImplementsKeyWord = "implements"
-  ForKeyWord = "for"
-  WhileKeyWord = "while"
-  IfKeyWord = "if"
-  ElseKeyWord = "else"
-  ReturnKeyWord = "return"
-  BreakKeyWord = "break"
-  ContinueKeyWord = "continue"
-  NewKeyWord = "new"
-  NewArrayKeyWord = "NewArray"
-  PrintKeyWord = "print"
-  ReadIntegerKeyWord = "ReadInteger"
-  ReadLineKeyWord = "ReadLine"
-  DtoiKeyWord = "dtoi"
-  ItodKeyWord = "itod"
-  BtoiKeyWord = "btoi"
-  ItobKeyWord = "itob"
-  PrivateKeyWord = "private"
-  ProtectedKeyWord = "protected"
-  PublicKeyWord = "public"
-
   /* boolean literals */
   "true"                         { return symbol(BOOLEAN_LITERAL, true); }
   "false"                        { return symbol(BOOLEAN_LITERAL, false); }
   
   /* null literal */
   "null"                         { return symbol(NULL_LITERAL); }
-  
   
   /* separators */
   "("                            { return symbol(LPAREN); }
@@ -162,6 +159,9 @@ Comment = {TraditionalComment} | {EndOfLineComment}
   "|"                            { return symbol(OR); }
   "%"                            { return symbol(MOD); }
 
+  /* string literal */
+  \"                             { yybegin(STRING); string.setLength(0); }
+
   /* numeric literals */
 
   /* This is matched together with the minus, because the number is too big to 
@@ -172,7 +172,8 @@ Comment = {TraditionalComment} | {EndOfLineComment}
   {HexIntegerLiteral}            { return symbol(INTEGER_LITERAL, Integer.valueOf((int) parseLong(2, yylength(), 16))); }
 
   {DoubleLiteral}                { return symbol(FLOATING_POINT_LITERAL, new Double(yytext())); }
-  {DoubleScientificLiteral}      {}
+  //todo
+
   /* comments */
   {Comment}                      { /* ignore */ }
 
@@ -185,21 +186,25 @@ Comment = {TraditionalComment} | {EndOfLineComment}
 
 <STRING> {
   \"                             { yybegin(YYINITIAL); return symbol(STRING_LITERAL, string.toString()); }
-  
+
+  //todo in ham bayad dobare neveshte sheY
   {StringCharacter}+             { string.append( yytext() ); }
   
   /* escape sequences */
-  "\\b"                          { string.append( '\b' ); }
+  //todo in ja ye chize koofti i bood pak kardim(backspace)
   "\\t"                          { string.append( '\t' ); }
   "\\f"                          { string.append( '\f' ); }
+  "\\b"                          { string.append( '\b' ); }
   "\\r"                          { string.append( '\r' ); }
   "\\'"                          { string.append( '\'' ); }
   "\\\\"                         { string.append( '\\' ); }
 
   /* error cases */
-  {LineTerminator}               {  }
+  {LineTerminator}               { throw new RuntimeException("Unterminated string at end of line"); }
 }
 
 /* error fallback */
-[^]                              {  }
+//todo undifined token
+[^]                              { throw new RuntimeException("Illegal character \""+yytext()+
+                                                              "\" at line "+yyline+", column "+yycolumn); }
 <<EOF>>                          { return symbol(EOF); }
