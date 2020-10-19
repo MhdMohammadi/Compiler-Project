@@ -124,6 +124,7 @@ terminal LPAREN;
 terminal RPAREN;
 terminal LBRACE;
 terminal RBRACE;
+terminal UNDIFIEND_TOKEN;
 
 
 // 19.2) The Syntactic Grammar

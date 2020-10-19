@@ -67,6 +67,7 @@ public class sym {
   public static final int STRING = 6;
   public static final int STRINGLITERAL = 32;
   public static final int FALSE = 35;
+  public static final int UNDIFIENDTOKEN = 65;
   public static final int GT = 37;
   public static final int IMPLEMENTS = 12;
   public static final int PRINT = 22;
@@ -136,7 +137,8 @@ public class sym {
   "LPAREN",
   "RPAREN",
   "LBRACE",
-  "RBRACE"
+  "RBRACE",
+  "UNDIFIENDTOKEN"
   };
 }
 
