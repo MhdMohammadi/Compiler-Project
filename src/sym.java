@@ -27,6 +27,7 @@ public class sym {
   public static final int NOT = 49;
   public static final int LT = 35;
   public static final int READINTEGER = 23;
+  public static final int UNDIFIENED_TOKEN = 63;
   public static final int COMMA = 58;
   public static final int BOOL = 5;
   public static final int CLASS = 7;
@@ -53,7 +54,6 @@ public class sym {
   public static final int DTOI = 25;
   public static final int LBRACK = 52;
   public static final int COLON = 62;
-  public static final int UNDIFIEND_TOKEN = 63;
   public static final int LBRACE = 56;
   public static final int ELSE = 16;
   public static final int PROTECTED = 31;
@@ -139,7 +139,7 @@ public class sym {
   "MULT",
   "SEMICOLON",
   "COLON",
-  "UNDIFIEND_TOKEN",
+  "UNDIFIENED_TOKEN",
   "INTEGER_LITERAL",
   "DOUBLE_LITERAL",
   "STRING_LITERAL",

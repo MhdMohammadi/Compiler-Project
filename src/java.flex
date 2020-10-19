@@ -150,9 +150,8 @@ StringCharacter = [^\r\n\"\\]
 
   {HexIntegerLiteral}            { return symbol(INTEGER_LITERAL, Integer.valueOf((int) parseLong(2, yylength(), 16))); }
 
-  {DoubleLiteral}                { return symbol(FLOATING_POINT_LITERAL, new Double(yytext())); }
-  //todo DoubleScientific
-
+  {DoubleLiteral}                { return symbol(DOUBLE_LITERAL, new Double(yytext())); }
+  {DoubleScientificLiteral}
   /* comments */
   {Comment}                      { /* ignore */ }
 
@@ -177,9 +176,9 @@ StringCharacter = [^\r\n\"\\]
   "\\\\"                         { string.append( '\\' ); }
 
   /* error cases */
-  {LineTerminator}               { return symbol(UNDIFI); }
+  {LineTerminator}               { return symbol(UNDIFIENED_TOKEN); }
 }
 
 /* error fallback */
-[^]                              { return symbol(UNDIFIENDTOKEN); }
+[^]                              { return symbol(UNDIFIENED_TOKEN); }
 <<EOF>>                          { return symbol(EOF); }
