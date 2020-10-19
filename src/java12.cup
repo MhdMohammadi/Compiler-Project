@@ -232,12 +232,13 @@ non terminal expression_opt, expression;
 non terminal constant_expression;
 
 
-/*
 start with goal;
 
 // 19.2) The Syntactic Grammar
 goal ::=	compilation_unit
 	;
+
+/*
 
 // 19.3) Lexical Structure.
 literal ::=	INTEGER_LITERAL
