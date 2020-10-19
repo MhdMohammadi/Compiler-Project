@@ -88,28 +88,33 @@ StringCharacter = [^\r\n\"\\]
   "while"       { return symbol(WHILE); }
   "if"          { return symbol(IF); }
   "else"        { return symbol(ELSE); }
-  "return"
-  "break"
-  "continue"
-  "new"
-  "NewArray"
-  "print"
-  "ReadInteger"
-  "ReadLine"
-  "dtoi"
-  "itod"
-  "btoi"
-  "itob"
-  "private"
-  "protected"
-  "public"
+  "return"      { return symbol(RETURN); }
+  "break"       { return symbol(BREAK); }
+  "continue"    { return symbol(CONTINUE); }
+  "new"         { return symbol(NEW); }
+  "NewArray"    { return symbol(NEWARRAY); }
+  "print"       { return symbol(PRINT); }
+  "ReadInteger" { return symbol(READINTEGER); }
+  "ReadLine"    { return symbol(READLINE); }
+  "dtoi"        { return symbol(DTOI); }
+
+  //todo
+  "itod"        { return symbol(); }
+  //todo
+  "btoi"        { return symbol(); }
+
+  "itob"        { return symbol(ITOB); }
+  "private"     { return symbol(PRIVATE); }
+  "protected"   { return symbol(PROTECTED); }
+  "public"      { return symbol(PUBLIC); }
 
   /* boolean literals */
-  "true"                         { return symbol(BOOLEAN_LITERAL, true); }
-  "false"                        { return symbol(BOOLEAN_LITERAL, false); }
+  "true"                         { return symbol(BOOLEANLITERAL, true); }
+  "false"                        { return symbol(BOOLEANLITERAL, false); }
   
   /* null literal */
-  "null"                         { return symbol(NULL_LITERAL); }
+  //todo null ro bayad literal begirim ya keyword
+  //"null"                         { return symbol(NULL_LITERAL); }
   
   /* separators */
   "("                            { return symbol(LPAREN); }
@@ -135,9 +140,8 @@ StringCharacter = [^\r\n\"\\]
   "-"                            { return symbol(MINUS); }
   "*"                            { return symbol(MULT); }
   "/"                            { return symbol(DIV); }
-  "&"                            { return symbol(AND); }
-  "|"                            { return symbol(OR); }
-  "%"                            { return symbol(MOD); }
+  //todo
+  "%"                            { return symbol(); }
 
   /* string literal */
   \"                             { yybegin(STRING); string.setLength(0); }
@@ -152,7 +156,7 @@ StringCharacter = [^\r\n\"\\]
   {HexIntegerLiteral}            { return symbol(INTEGER_LITERAL, Integer.valueOf((int) parseLong(2, yylength(), 16))); }
 
   {DoubleLiteral}                { return symbol(FLOATING_POINT_LITERAL, new Double(yytext())); }
-  //todo
+  //todo DoubleScientific
 
   /* comments */
   {Comment}                      { /* ignore */ }
@@ -161,7 +165,8 @@ StringCharacter = [^\r\n\"\\]
   {WhiteSpace}                   { /* ignore */ }
 
   /* identifiers */ 
-  {Identifier}                   { return symbol(IDENTIFIER, yytext()); }  
+  //todo
+  {Identifier}                   { return symbol(, yytext()); }
 }
 
 <STRING> {
