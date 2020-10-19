@@ -85,6 +85,8 @@ terminal READINTEGER;
 terminal READLINE;
 terminal DTOI;
 terminal ITOB;
+terminal ITOD;
+terminal BTOI;
 terminal PRIVATE, PUBLIC, PROTECTED;
 terminal TRUE, FALSE;
 terminal GT, LT, GTEQ, LTEQ;
