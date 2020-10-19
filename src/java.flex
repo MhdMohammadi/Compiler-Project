@@ -39,11 +39,11 @@ import java_cup.runtime.*;
   StringBuilder string = new StringBuilder();
   
   private Symbol symbol(int type) {
-    return new JavaSymbol(type, yyline+1, yycolumn+1);
+    return new Symbol(type, yyline+1, yycolumn+1);
   }
 
   private Symbol symbol(int type, Object value) {
-    return new JavaSymbol(type, yyline+1, yycolumn+1, value);
+    return new Symbol(type, yyline+1, yycolumn+1, value);
   }
 
   /** 
@@ -100,6 +100,7 @@ PublicKeyWord = "public"
 Identifier = [a-z|A-Z][a-z|A-Z|0-9|_]*
 
 LineTerminator = \r|\n|\r\n
+//todo
 WhiteSpace     = {LineTerminator} | [ \t\f]
 
 TrueLiteral = "true"
@@ -123,56 +124,6 @@ Comment = {TraditionalComment} | {EndOfLineComment}
 
 <YYINITIAL> {
 
-  /* keywords */
-  "abstract"                     { return symbol(ABSTRACT); }
-  "boolean"                      { return symbol(BOOLEAN); }
-  "break"                        { return symbol(BREAK); }
-  "byte"                         { return symbol(BYTE); }
-  "case"                         { return symbol(CASE); }
-  "catch"                        { return symbol(CATCH); }
-  "char"                         { return symbol(CHAR); }
-  "class"                        { return symbol(CLASS); }
-  "const"                        { return symbol(CONST); }
-  "continue"                     { return symbol(CONTINUE); }
-  "do"                           { return symbol(DO); }
-  "double"                       { return symbol(DOUBLE); }
-  "else"                         { return symbol(ELSE); }
-  "extends"                      { return symbol(EXTENDS); }
-  "final"                        { return symbol(FINAL); }
-  "finally"                      { return symbol(FINALLY); }
-  "float"                        { return symbol(FLOAT); }
-  "for"                          { return symbol(FOR); }
-  "default"                      { return symbol(DEFAULT); }
-  "implements"                   { return symbol(IMPLEMENTS); }
-  "import"                       { return symbol(IMPORT); }
-  "instanceof"                   { return symbol(INSTANCEOF); }
-  "int"                          { return symbol(INT); }
-  "interface"                    { return symbol(INTERFACE); }
-  "long"                         { return symbol(LONG); }
-  "native"                       { return symbol(NATIVE); }
-  "new"                          { return symbol(NEW); }
-  "goto"                         { return symbol(GOTO); }
-  "if"                           { return symbol(IF); }
-  "public"                       { return symbol(PUBLIC); }
-  "short"                        { return symbol(SHORT); }
-  "super"                        { return symbol(SUPER); }
-  "switch"                       { return symbol(SWITCH); }
-  "synchronized"                 { return symbol(SYNCHRONIZED); }
-  "package"                      { return symbol(PACKAGE); }
-  "private"                      { return symbol(PRIVATE); }
-  "protected"                    { return symbol(PROTECTED); }
-  "transient"                    { return symbol(TRANSIENT); }
-  "return"                       { return symbol(RETURN); }
-  "void"                         { return symbol(VOID); }
-  "static"                       { return symbol(STATIC); }
-  "while"                        { return symbol(WHILE); }
-  "this"                         { return symbol(THIS); }
-  "throw"                        { return symbol(THROW); }
-  "throws"                       { return symbol(THROWS); }
-  "try"                          { return symbol(TRY); }
-  "volatile"                     { return symbol(VOLATILE); }
-  "strictfp"                     { return symbol(STRICTFP); }
-  
   /* boolean literals */
   "true"                         { return symbol(BOOLEAN_LITERAL, true); }
   "false"                        { return symbol(BOOLEAN_LITERAL, false); }
@@ -180,12 +131,9 @@ Comment = {TraditionalComment} | {EndOfLineComment}
   /* null literal */
   "null"                         { return symbol(NULL_LITERAL); }
   
-  
   /* separators */
   "("                            { return symbol(LPAREN); }
   ")"                            { return symbol(RPAREN); }
-  "{"                            { return symbol(LBRACE); }
-  "}"                            { return symbol(RBRACE); }
   "["                            { return symbol(LBRACK); }
   "]"                            { return symbol(RBRACK); }
   ";"                            { return symbol(SEMICOLON); }
@@ -197,65 +145,35 @@ Comment = {TraditionalComment} | {EndOfLineComment}
   ">"                            { return symbol(GT); }
   "<"                            { return symbol(LT); }
   "!"                            { return symbol(NOT); }
-  "~"                            { return symbol(COMP); }
-  "?"                            { return symbol(QUESTION); }
-  ":"                            { return symbol(COLON); }
   "=="                           { return symbol(EQEQ); }
   "<="                           { return symbol(LTEQ); }
   ">="                           { return symbol(GTEQ); }
   "!="                           { return symbol(NOTEQ); }
   "&&"                           { return symbol(ANDAND); }
   "||"                           { return symbol(OROR); }
-  "++"                           { return symbol(PLUSPLUS); }
-  "--"                           { return symbol(MINUSMINUS); }
   "+"                            { return symbol(PLUS); }
   "-"                            { return symbol(MINUS); }
   "*"                            { return symbol(MULT); }
   "/"                            { return symbol(DIV); }
   "&"                            { return symbol(AND); }
   "|"                            { return symbol(OR); }
-  "^"                            { return symbol(XOR); }
   "%"                            { return symbol(MOD); }
-  "<<"                           { return symbol(LSHIFT); }
-  ">>"                           { return symbol(RSHIFT); }
-  ">>>"                          { return symbol(URSHIFT); }
-  "+="                           { return symbol(PLUSEQ); }
-  "-="                           { return symbol(MINUSEQ); }
-  "*="                           { return symbol(MULTEQ); }
-  "/="                           { return symbol(DIVEQ); }
-  "&="                           { return symbol(ANDEQ); }
-  "|="                           { return symbol(OREQ); }
-  "^="                           { return symbol(XOREQ); }
-  "%="                           { return symbol(MODEQ); }
-  "<<="                          { return symbol(LSHIFTEQ); }
-  ">>="                          { return symbol(RSHIFTEQ); }
-  ">>>="                         { return symbol(URSHIFTEQ); }
-  
+
   /* string literal */
   \"                             { yybegin(STRING); string.setLength(0); }
-
-  /* character literal */
-  \'                             { yybegin(CHARLITERAL); }
 
   /* numeric literals */
 
   /* This is matched together with the minus, because the number is too big to 
      be represented by a positive integer. */
-  "-2147483648"                  { return symbol(INTEGER_LITERAL, Integer.valueOf(Integer.MIN_VALUE)); }
-  
+
   {DecIntegerLiteral}            { return symbol(INTEGER_LITERAL, Integer.valueOf(yytext())); }
-  {DecLongLiteral}               { return symbol(INTEGER_LITERAL, new Long(yytext().substring(0,yylength()-1))); }
-  
+
   {HexIntegerLiteral}            { return symbol(INTEGER_LITERAL, Integer.valueOf((int) parseLong(2, yylength(), 16))); }
-  {HexLongLiteral}               { return symbol(INTEGER_LITERAL, new Long(parseLong(2, yylength()-1, 16))); }
- 
-  {OctIntegerLiteral}            { return symbol(INTEGER_LITERAL, Integer.valueOf((int) parseLong(0, yylength(), 8))); }
-  {OctLongLiteral}               { return symbol(INTEGER_LITERAL, new Long(parseLong(0, yylength()-1, 8))); }
-  
-  {FloatLiteral}                 { return symbol(FLOATING_POINT_LITERAL, new Float(yytext().substring(0,yylength()-1))); }
+
   {DoubleLiteral}                { return symbol(FLOATING_POINT_LITERAL, new Double(yytext())); }
-  {DoubleLiteral}[dD]            { return symbol(FLOATING_POINT_LITERAL, new Double(yytext().substring(0,yylength()-1))); }
-  
+  //todo
+
   /* comments */
   {Comment}                      { /* ignore */ }
 
@@ -268,48 +186,25 @@ Comment = {TraditionalComment} | {EndOfLineComment}
 
 <STRING> {
   \"                             { yybegin(YYINITIAL); return symbol(STRING_LITERAL, string.toString()); }
-  
+
+  //todo in ham bayad dobare neveshte sheY
   {StringCharacter}+             { string.append( yytext() ); }
   
   /* escape sequences */
-  "\\b"                          { string.append( '\b' ); }
+  //todo in ja ye chize koofti i bood pak kardim(backspace)
   "\\t"                          { string.append( '\t' ); }
-  "\\n"                          { string.append( '\n' ); }
   "\\f"                          { string.append( '\f' ); }
+  "\\b"                          { string.append( '\b' ); }
   "\\r"                          { string.append( '\r' ); }
-  "\\\""                         { string.append( '\"' ); }
   "\\'"                          { string.append( '\'' ); }
   "\\\\"                         { string.append( '\\' ); }
-  \\[0-3]?{OctDigit}?{OctDigit}  { char val = (char) Integer.parseInt(yytext().substring(1),8);
-                        				   string.append( val ); }
-  
+
   /* error cases */
-  \\.                            { throw new RuntimeException("Illegal escape sequence \""+yytext()+"\""); }
   {LineTerminator}               { throw new RuntimeException("Unterminated string at end of line"); }
 }
 
-<CHARLITERAL> {
-  {SingleCharacter}\'            { yybegin(YYINITIAL); return symbol(CHARACTER_LITERAL, yytext().charAt(0)); }
-  
-  /* escape sequences */
-  "\\b"\'                        { yybegin(YYINITIAL); return symbol(CHARACTER_LITERAL, '\b');}
-  "\\t"\'                        { yybegin(YYINITIAL); return symbol(CHARACTER_LITERAL, '\t');}
-  "\\n"\'                        { yybegin(YYINITIAL); return symbol(CHARACTER_LITERAL, '\n');}
-  "\\f"\'                        { yybegin(YYINITIAL); return symbol(CHARACTER_LITERAL, '\f');}
-  "\\r"\'                        { yybegin(YYINITIAL); return symbol(CHARACTER_LITERAL, '\r');}
-  "\\\""\'                       { yybegin(YYINITIAL); return symbol(CHARACTER_LITERAL, '\"');}
-  "\\'"\'                        { yybegin(YYINITIAL); return symbol(CHARACTER_LITERAL, '\'');}
-  "\\\\"\'                       { yybegin(YYINITIAL); return symbol(CHARACTER_LITERAL, '\\'); }
-  \\[0-3]?{OctDigit}?{OctDigit}\' { yybegin(YYINITIAL); 
-			                              int val = Integer.parseInt(yytext().substring(1,yylength()-1),8);
-			                            return symbol(CHARACTER_LITERAL, (char)val); }
-  
-  /* error cases */
-  \\.                            { throw new RuntimeException("Illegal escape sequence \""+yytext()+"\""); }
-  {LineTerminator}               { throw new RuntimeException("Unterminated character literal at end of line"); }
-}
-
 /* error fallback */
+//todo undifined token
 [^]                              { throw new RuntimeException("Illegal character \""+yytext()+
                                                               "\" at line "+yyline+", column "+yycolumn); }
 <<EOF>>                          { return symbol(EOF); }
