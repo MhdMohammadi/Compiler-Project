@@ -105,11 +105,10 @@ StringCharacter = [^\r\n\"\\]
   "public"      { return symbol(PUBLIC); }
 
   /* boolean literals */
-  "true"                         { return symbol(BOOLEANLITERAL, true); }
-  "false"                        { return symbol(BOOLEANLITERAL, false); }
+  "true"                         { return symbol(BOOLEAN_LITERAL, true); }
+  "false"                        { return symbol(BOOLEAN_LITERAL, false); }
   
   /* null literal */
-  //todo null ro bayad literal begirim ya keyword
   //"null"                         { return symbol(NULL_LITERAL); }
   
   /* separators */
