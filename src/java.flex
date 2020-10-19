@@ -183,7 +183,7 @@ StringCharacter = [^\r\n\"\\]
   "\\\\"                         { string.append( '\\' ); }
 
   /* error cases */
-  {LineTerminator}               { return symbol(UNDIFIENDTOKEN); }
+  {LineTerminator}               { return symbol(UNDIFI); }
 }
 
 /* error fallback */

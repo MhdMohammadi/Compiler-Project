@@ -61,11 +61,7 @@ parser code  {:
   }
 :};
 
-terminal VOID;
-terminal INT;
-terminal DOUBLE;
-terminal BOOL;
-terminal STRING;
+terminal VOID,  INT,  DOUBLE, BOOL, STRING;
 terminal CLASS;
 terminal INTERFACE;
 terminal NULL;
