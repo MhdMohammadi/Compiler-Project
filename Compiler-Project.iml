@@ -7,19 +7,11 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library" exported="">
+    <orderEntry type="library" name="JFlex" level="project" />
+    <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://C:/Java/CUP/lib/java-cup-11b.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://C:/Java/CUP/lib/java-cup-11b-runtime.jar!/" />
+          <root url="jar://C:/cup/lib/java-cup-11b.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -28,12 +20,20 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://C:/Java/Jflex/lib/jflex-full-1.8.2.jar!/" />
+          <root url="jar://C:/cup/lib/java-cup-11b-runtime.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="JFlex" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://C:/Jflex/jflex-1.8.2/lib/jflex-full-1.8.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>
