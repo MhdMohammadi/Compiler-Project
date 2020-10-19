@@ -1,24 +1,3 @@
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Copyright (C) 1998-2018  Gerwin Klein <lsf@jflex.de>                    *
- * All rights reserved.                                                    *
- *                                                                         *
- * License: BSD                                                            *
- *                                                                         *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
-/* Java 1.2 language lexer specification */
-
-/* Use together with unicode.flex for Unicode preprocesssing */
-/* and java12.cup for a Java 1.2 parser                      */
-
-/* Note that this lexer specification is not tuned for speed.
-   It is in fact quite slow on integer and floating point literals, 
-   because the input is read twice and the methods used to parse
-   the numbers are not very fast. 
-   For a production quality application (e.g. a Java compiler) 
-   this could be optimized */
-
-
 import java_cup.runtime.*;
 
 %%
@@ -70,7 +49,6 @@ import java_cup.runtime.*;
 Identifier = [a-z|A-Z][a-z|A-Z|0-9|_]*
 
 LineTerminator = \r|\n|\r\n
-//todo
 WhiteSpace     = {LineTerminator} | [ \t\f]
 
 TrueLiteral = "true"
@@ -87,8 +65,9 @@ TraditionalComment   = "/*" [^*] ~"*/" | "/*" "*"+ "/"
 EndOfLineComment     = "//" {InputCharacter}* {LineTerminator}?
 Comment = {TraditionalComment} | {EndOfLineComment}
 
+StringCharacter = [^\r\n\"\\]
 
-%state STRING, CHARLITERAL
+%state STRING
 
 %%
 
@@ -193,11 +172,9 @@ Comment = {TraditionalComment} | {EndOfLineComment}
 <STRING> {
   \"                             { yybegin(YYINITIAL); return symbol(STRING_LITERAL, string.toString()); }
 
-  //todo in ham bayad dobare neveshte sheY
   {StringCharacter}+             { string.append( yytext() ); }
   
   /* escape sequences */
-  //todo in ja ye chize koofti i bood pak kardim(backspace)
   "\\t"                          { string.append( '\t' ); }
   "\\f"                          { string.append( '\f' ); }
   "\\b"                          { string.append( '\b' ); }
@@ -206,11 +183,9 @@ Comment = {TraditionalComment} | {EndOfLineComment}
   "\\\\"                         { string.append( '\\' ); }
 
   /* error cases */
-  {LineTerminator}               { throw new RuntimeException("Unterminated string at end of line"); }
+  {LineTerminator}               { return symbol(UNDIFIENDTOKEN); }
 }
 
 /* error fallback */
-//todo undifined token
-[^]                              { throw new RuntimeException("Illegal character \""+yytext()+
-                                                              "\" at line "+yyline+", column "+yycolumn); }
+[^]                              { return symbol(UNDIFIENDTOKEN); }
 <<EOF>>                          { return symbol(EOF); }
