@@ -86,10 +86,6 @@ terminal READLINE;
 terminal DTOI;
 terminal ITOB;
 terminal PRIVATE, PUBLIC, PROTECTED;
-terminal INTEGER_LITERAL;
-terminal DOUBLE_LITERAL;
-terminal STRING_LITERAL;
-terminal BOOLEAN_LITERAL;
 terminal TRUE, FALSE;
 terminal GT, LT, GTEQ, LTEQ;
 terminal QUESTION;
@@ -98,19 +94,18 @@ terminal ANDAND;
 terminal OROR;
 terminal PLUSPLUS;
 terminal MINUSMINUS;
-terminal PLUS, MINUS, DIV, COMP, NOT;
-terminal MODEQ;
+terminal PLUS, MINUS, DIV, COMP, NOT, MOD;
 terminal DOT;
 terminal LBRACK, RBRACK;
 terminal LPAREN, RPAREN, LBRACE, RBRACE, COMMA, EQ, MULT, SEMICOLON, COLON;
 terminal UNDIFIEND_TOKEN;
 
 
-terminal java.lang.number INTEGER_LITERAL;
-terminal java.lang.number DOUBLE_LITERAL;
+terminal java.lang.Number INTEGER_LITERAL;
+terminal java.lang.Number DOUBLE_LITERAL;
 terminal java.lang.string STRING_LITERAL;
 terminal java.lang.string IDENTIFIER;
-terminal java.lang.boolean BOOLEAN_LITERAL;
+terminal java.lang.Boolean BOOLEAN_LITERAL;
 
 
 // 19.2) The Syntactic Grammar
