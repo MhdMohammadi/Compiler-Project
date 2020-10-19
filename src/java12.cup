@@ -382,7 +382,7 @@ class_body_declaration ::=
 class_member_declaration ::=
 		field_declaration
 	|	method_declaration
-	/* repeat the prod for 'class_declaration' here: */
+	// repeat the prod for 'class_declaration' here:
 	|	modifiers_opt CLASS IDENTIFIER super_opt interfaces_opt class_body
 	|	interface_declaration
   | SEMICOLON
