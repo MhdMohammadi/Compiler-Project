@@ -6,7 +6,7 @@ import java_cup.runtime.*;
 %class Scanner
 %implements sym
 
-%unicode
+    %unicode
 
 %line
 %column
@@ -150,7 +150,7 @@ StringCharacter = [^\r\n\"\\]
   {HexIntegerLiteral}            { return symbol(INTEGER_LITERAL, Integer.valueOf((int) parseLong(2, yylength(), 16))); }
 
   {DoubleLiteral}                { return symbol(DOUBLE_LITERAL, new Double(yytext())); }
-  {DoubleScientificLiteral}
+  {DoubleScientificLiteral}      { return symbol(DOUBLE_LITERAL, new Double(yytext())); }
   /* comments */
   {Comment}                      { /* ignore */ }
 
