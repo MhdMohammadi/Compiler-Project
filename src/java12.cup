@@ -85,6 +85,8 @@ terminal READINTEGER;
 terminal READLINE;
 terminal DTOI;
 terminal ITOB;
+terminal ITOD;
+terminal BTOI;
 terminal PRIVATE, PUBLIC, PROTECTED;
 terminal TRUE, FALSE;
 terminal GT, LT, GTEQ, LTEQ;
@@ -103,8 +105,8 @@ terminal UNDIFIEND_TOKEN;
 
 terminal java.lang.Number INTEGER_LITERAL;
 terminal java.lang.Number DOUBLE_LITERAL;
-terminal java.lang.string STRING_LITERAL;
-terminal java.lang.string IDENTIFIER;
+terminal java.lang.String STRING_LITERAL;
+terminal java.lang.String IDENTIFIER;
 terminal java.lang.Boolean BOOLEAN_LITERAL;
 
 
