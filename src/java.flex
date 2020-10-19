@@ -66,36 +66,6 @@ import java_cup.runtime.*;
 %}
 
 /* main character classes */
-VoidKeyWord = "void"
-IntKeyWord = "int"
-DoubleKeyWord = "double"
-BoolKeyWord = "Bool"
-StringKeyWord = "string"
-ClassKeyWord = "class"
-InterfaceKeyWord = "interface"
-NullKeyWord = "null"
-ThisKeyWord = "this"
-ExtendsKeyWord = "extends"
-ImplementsKeyWord = "implements"
-ForKeyWord = "for"
-WhileKeyWord = "while"
-IfKeyWord = "if"
-ElseKeyWord = "else"
-ReturnKeyWord = "return"
-BreakKeyWord = "break"
-ContinueKeyWord = "continue"
-NewKeyWord = "new"
-NewArrayKeyWord = "NewArray"
-PrintKeyWord = "print"
-ReadIntegerKeyWord = "ReadInteger"
-ReadLineKeyWord = "ReadLine"
-DtoiKeyWord = "dtoi"
-ItodKeyWord = "itod"
-BtoiKeyWord = "btoi"
-ItobKeyWord = "itob"
-PrivateKeyWord = "private"
-ProtectedKeyWord = "protected"
-PublicKeyWord = "public"
 
 Identifier = [a-z|A-Z][a-z|A-Z|0-9|_]*
 
@@ -123,6 +93,37 @@ Comment = {TraditionalComment} | {EndOfLineComment}
 %%
 
 <YYINITIAL> {
+
+  "void"        { return symbol(VOID); }
+  "int"         { return symbol(INT); }
+  "double"      { return symbol(DOUBLE); }
+  "bool"        { return symbol(BOOL); }
+  "string"      { return symbol(STRING); }
+  "class"       { return symbol(CLASS); }
+  "interface"   { return symbol(INTERFACE); }
+  "null"        { return symbol(NULL); }
+  "this"        { return symbol(THIS); }
+  "extends"     { return symbol(EXTENDS); }
+  "implements"  { return symbol(IMPLEMENTS); }
+  "for"         { return symbol(FOR); }
+  "while"       { return symbol(WHILE); }
+  "if"          { return symbol(IF); }
+  "else"        { return symbol(ELSE); }
+  "return"
+  "break"
+  "continue"
+  "new"
+  "NewArray"
+  "print"
+  "ReadInteger"
+  "ReadLine"
+  "dtoi"
+  "itod"
+  "btoi"
+  "itob"
+  "private"
+  "protected"
+  "public"
 
   /* boolean literals */
   "true"                         { return symbol(BOOLEAN_LITERAL, true); }
