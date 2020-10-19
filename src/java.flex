@@ -140,8 +140,7 @@ StringCharacter = [^\r\n\"\\]
   "-"                            { return symbol(MINUS); }
   "*"                            { return symbol(MULT); }
   "/"                            { return symbol(DIV); }
-  //todo
-  "%"                            { return symbol(); }
+  "%"                            { return symbol(MOD); }
 
   /* string literal */
   \"                             { yybegin(STRING); string.setLength(0); }
@@ -164,9 +163,8 @@ StringCharacter = [^\r\n\"\\]
   /* whitespace */
   {WhiteSpace}                   { /* ignore */ }
 
-  /* identifiers */ 
-  //todo
-  {Identifier}                   { return symbol(, yytext()); }
+  /* identifiers */
+  {Identifier}                   { return symbol(IDENTIFIER, yytext()); }
 }
 
 <STRING> {
