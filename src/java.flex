@@ -97,12 +97,8 @@ StringCharacter = [^\r\n\"\\]
   "ReadInteger" { return symbol(READINTEGER); }
   "ReadLine"    { return symbol(READLINE); }
   "dtoi"        { return symbol(DTOI); }
-
-  //todo
-  "itod"        { return symbol(); }
-  //todo
-  "btoi"        { return symbol(); }
-
+  "itod"        { return symbol(ITOD); }
+  "btoi"        { return symbol(BTOI); }
   "itob"        { return symbol(ITOB); }
   "private"     { return symbol(PRIVATE); }
   "protected"   { return symbol(PROTECTED); }
