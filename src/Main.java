@@ -1,3 +1,4 @@
+import java.io.*;
 import java.util.Scanner;
 
 public class Main {
@@ -19,12 +20,13 @@ public class Main {
             if (inputFileName != null) {
                 read = new FileReader("../tests/" + inputFileName);
             }
+            Writer writer = null;
             if (outputFileName != null) {
                 writer = new FileWriter("../out/" + outputFileName);
             } else {
                 writer = new OutputStreamWriter(System.out);
             }
-            main scanner = new main(read);
+            Scanner scanner = new Scanner(read);
             /*while ( !scanner.zzAtEOF ) */
             scanner.yylex();
             writer.flush();
