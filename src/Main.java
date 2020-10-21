@@ -1,3 +1,4 @@
+import java.io.*;
 import java.util.Scanner;
 
 public class Main {
@@ -16,6 +17,7 @@ public class Main {
                 }
             }
             Reader read = null;
+            Writer writer;
             if (inputFileName != null) {
                 read = new FileReader("../tests/" + inputFileName);
             }
@@ -24,7 +26,7 @@ public class Main {
             } else {
                 writer = new OutputStreamWriter(System.out);
             }
-            main scanner = new main(read);
+            Scanner scanner = new Scanner(read);
             /*while ( !scanner.zzAtEOF ) */
             scanner.yylex();
             writer.flush();
@@ -50,5 +52,4 @@ public class Main {
             writer.close();
         }
     }
-
 }
