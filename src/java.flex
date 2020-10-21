@@ -44,7 +44,7 @@ import java_cup.runtime.*;
     return result;
   }
 
-  public String yylex() throws IOException {
+  public String yylex() throws Exception {
     java_cup.runtime.Symbol currentSymbol = next_token();
     switch (currentSymbol.sym){
       case BOOLEAN_LITERAL:
