@@ -20,6 +20,7 @@ public class Main {
             if (inputFileName != null) {
                 read = new FileReader("../tests/" + inputFileName);
             }
+            Writer writer = null;
             if (outputFileName != null) {
                 writer = new FileWriter("../out/" + outputFileName);
             } else {
