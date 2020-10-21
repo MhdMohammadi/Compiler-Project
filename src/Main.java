@@ -16,6 +16,7 @@ public class Main {
                 }
             }
             Reader read = null;
+            Writer writer;
             if (inputFileName != null) {
                 read = new FileReader("../tests/" + inputFileName);
             }
@@ -26,10 +27,10 @@ public class Main {
                 writer = new OutputStreamWriter(System.out);
             }
             Scanner scanner = new Scanner(read);
-            while (!scanner.zzAtEOF) {
+            while ( !scanner.zzAtEOF )
                 scanner.yylex();
-            }
             writer.flush();
+
             writer.close();
         } catch (Exception e) {
             Writer writer;
