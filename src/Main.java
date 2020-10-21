@@ -25,6 +25,7 @@ public class Main {
             } else {
                 writer = new OutputStreamWriter(System.out);
             }
+
             Scanner scanner = new Scanner(read);
             while (true) {
                 try {
