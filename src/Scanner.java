@@ -472,25 +472,46 @@ public class Scanner extends sym implements java_cup.runtime.Scanner {
     return new Symbol(type, yyline+1, yycolumn+1, value);
   }
 
-  public String yylex() throws Exception {
-      java_cup.runtime.Symbol currentSymbol = next_token();
-      switch (currentSymbol.sym){
-        case BOOLEAN_LITERAL:
-          return "T_BOOLEANLITERAL " + yytext();
-        case INTEGER_LITERAL:
-          return "T_INTLITERAL " + yytext();
-        case STRING_LITERAL:
-          return "T_STRINGLITERAL " + yytext();
-        case DOUBLE_LITERAL:
-          return "T_DOUBLELITERAL " + yytext();
-        case IDENTIFIER:
-          return "T_ID " + currentSymbol.value.toString();
-        case EOF:
-            throw new Exception("This is the end");
-        default:
-          return yytext();
-      }
+  /**
+   * assumes correct representation of a long value for
+   * specified radix in scanner buffer from <code>start</code>
+   * to <code>end</code>
+   */
+
+  private long parseLong(int start, int end, int radix) {
+    long result = 0;
+    long digit;
+
+    for (int i = start; i < end; i++) {
+      digit  = Character.digit(yycharat(i),radix);
+      result*= radix;
+      result+= digit;
     }
+
+    return result;
+  }
+
+  public String yylex() throws Exception {
+    java_cup.runtime.Symbol currentSymbol = next_token();
+    switch (currentSymbol.sym){
+      case BOOLEAN_LITERAL:
+        return "T_BOOLEANLITERAL " + yytext();
+      case INTEGER_LITERAL:
+        return "T_INTLITERAL " + yytext();
+      case STRING_LITERAL:
+        return "T_STRINGLITERAL " + yytext();
+      case DOUBLE_LITERAL:
+        return "T_DOUBLELITERAL " + yytext();
+      case IDENTIFIER:
+        return "T_ID " + currentSymbol.value.toString();
+      case EOF:
+          throw new Exception("EOF");
+      case UNDIFINED_TOKEN:
+          throw new Exception("UNDIFINED_TOKEN");
+      default:
+            return yytext();
+    }
+  }
 
 
   /**
@@ -901,7 +922,7 @@ public class Scanner extends sym implements java_cup.runtime.Scanner {
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1:
-            { return symbol(UNDIFIENED_TOKEN);
+            { return symbol(UNDIFINED_TOKEN);
             }
             // fall through
           case 70: break;

@@ -60,7 +60,7 @@ import java_cup.runtime.*;
       case EOF:
           throw new Exception("EOF");
       case UNDIFINED_TOKEN:
-          throw new Exception("UNDIFINED_TOKEN")
+          throw new Exception("UNDIFINED_TOKEN");
       default:
             return yytext();
     }
