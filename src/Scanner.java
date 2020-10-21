@@ -11,8 +11,6 @@ import java.io.IOException;
 @SuppressWarnings("FallThrough")
 public class Scanner extends sym implements java_cup.runtime.Scanner {
 
-
-
   /** This character denotes the end of file. */
   public static final int YYEOF = -1;
 
@@ -474,23 +472,25 @@ public class Scanner extends sym implements java_cup.runtime.Scanner {
     return new Symbol(type, yyline+1, yycolumn+1, value);
   }
 
-  /** 
-   * assumes correct representation of a long value for 
-   * specified radix in scanner buffer from <code>start</code> 
-   * to <code>end</code> 
-   */
-  private long parseLong(int start, int end, int radix) {
-    long result = 0;
-    long digit;
-
-    for (int i = start; i < end; i++) {
-      digit  = Character.digit(yycharat(i),radix);
-      result*= radix;
-      result+= digit;
+  public String yylex() throws Exception {
+      java_cup.runtime.Symbol currentSymbol = next_token();
+      switch (currentSymbol.sym){
+        case BOOLEAN_LITERAL:
+          return "T_BOOLEANLITERAL " + yytext();
+        case INTEGER_LITERAL:
+          return "T_INTLITERAL " + yytext();
+        case STRING_LITERAL:
+          return "T_STRINGLITERAL " + yytext();
+        case DOUBLE_LITERAL:
+          return "T_DOUBLELITERAL " + yytext();
+        case IDENTIFIER:
+          return "T_ID " + currentSymbol.value.toString();
+        case EOF:
+            throw new Exception("This is the end");
+        default:
+          return yytext();
+      }
     }
-
-    return result;
-  }
 
 
   /**
@@ -1331,5 +1331,6 @@ public class Scanner extends sym implements java_cup.runtime.Scanner {
       }
     }
   }
+
 
 }

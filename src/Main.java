@@ -20,15 +20,22 @@ public class Main {
             if (inputFileName != null) {
                 read = new FileReader("../tests/" + inputFileName);
             }
-            Writer writer = null;
             if (outputFileName != null) {
                 writer = new FileWriter("../out/" + outputFileName);
             } else {
                 writer = new OutputStreamWriter(System.out);
             }
             Scanner scanner = new Scanner(read);
-            while ( !scanner.zzAtEOF )
-                scanner.yylex();
+            while (true) {
+                try {
+                    System.out.println(scanner.yylex());
+                } catch (Exception e) {
+                    if(e.getMessage().equals("UNDIFINED_TOKEN"))
+                        System.out.println(e.getMessage());
+                    break;
+                }
+
+            }
             writer.flush();
 
             writer.close();
