@@ -18,14 +18,13 @@ public class Main {
             Reader read = null;
             Writer writer;
             if (inputFileName != null) {
-                read = new FileReader("../tests/" + inputFileName);
+                read = new FileReader("tests/" + inputFileName);
             }
             if (outputFileName != null) {
-                writer = new FileWriter("../out/" + outputFileName);
+                writer = new FileWriter("out/" + outputFileName);
             } else {
                 writer = new OutputStreamWriter(System.out);
             }
-
             Scanner scanner = new Scanner(read);
             while (true) {
                 try {
@@ -35,10 +34,8 @@ public class Main {
                         writer.write(e.getMessage() + '\n');
                     break;
                 }
-
             }
             writer.flush();
-
             writer.close();
         } catch (Exception e) {
             Writer writer;
