@@ -28,10 +28,10 @@ public class Main {
             Scanner scanner = new Scanner(read);
             while (true) {
                 try {
-                    System.out.println(scanner.yylex());
+                    writer.write(scanner.yylex());
                 } catch (Exception e) {
                     if(e.getMessage().equals("UNDEFINED_TOKEN"))
-                        System.out.println(e.getMessage());
+                        writer.write(e.getMessage());
                     break;
                 }
 
