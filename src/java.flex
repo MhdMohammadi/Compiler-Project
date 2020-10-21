@@ -58,7 +58,9 @@ import java_cup.runtime.*;
       case IDENTIFIER:
         return "T_ID " + currentSymbol.value.toString();
       case EOF:
-          throw new Exception("This is the end");
+          throw new Exception("EOF");
+      case UNDIFIENED_TOKEN:
+          throw new Exception("UNDIFINED_TOKEN")
       default:
             return yytext();
     }
