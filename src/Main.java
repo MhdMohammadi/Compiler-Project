@@ -17,6 +17,7 @@ public class Main {
                 }
             }
             Reader read = null;
+            Writer writer;
             if (inputFileName != null) {
                 read = new FileReader("../tests/" + inputFileName);
             }
@@ -52,5 +53,4 @@ public class Main {
             writer.close();
         }
     }
-
 }
