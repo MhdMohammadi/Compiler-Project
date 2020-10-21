@@ -30,6 +30,7 @@ public class Main {
             while ( !scanner.zzAtEOF )
                 scanner.yylex();
             writer.flush();
+
             writer.close();
         } catch (Exception e) {
             Writer writer;
