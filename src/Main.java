@@ -30,7 +30,7 @@ public class Main {
                 try {
                     System.out.println(scanner.yylex());
                 } catch (Exception e) {
-                    if(e.getMessage().equals("UNDIFINED_TOKEN"))
+                    if(e.getMessage().equals("UNDEFINED_TOKEN"))
                         System.out.println(e.getMessage());
                     break;
                 }

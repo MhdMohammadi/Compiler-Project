@@ -504,8 +504,8 @@ public class Scanner extends sym implements java_cup.runtime.Scanner {
         return "T_ID " + currentSymbol.value.toString();
       case EOF:
           throw new Exception("EOF");
-      case UNDIFINED_TOKEN:
-          throw new Exception("UNDIFINED_TOKEN");
+      case UNDEFINED_TOKEN:
+          throw new Exception("UNDEFINED_TOKEN");
       default:
             return yytext();
     }
@@ -920,7 +920,7 @@ public class Scanner extends sym implements java_cup.runtime.Scanner {
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1:
-            { return symbol(UNDIFINED_TOKEN);
+            { return symbol(UNDEFINED_TOKEN);
             }
             // fall through
           case 70: break;

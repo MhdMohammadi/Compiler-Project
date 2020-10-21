@@ -59,8 +59,8 @@ import java_cup.runtime.*;
         return "T_ID " + currentSymbol.value.toString();
       case EOF:
           throw new Exception("EOF");
-      case UNDIFINED_TOKEN:
-          throw new Exception("UNDIFINED_TOKEN");
+      case UNDEFINED_TOKEN:
+          throw new Exception("UNDEFINED_TOKEN");
       default:
             return yytext();
     }
@@ -198,9 +198,9 @@ StringCharacter = [^\r\n\"\\]
   "\\\\"                         { string.append( '\\' ); }
 
   /* error cases */
-  {LineTerminator}               { return symbol(UNDIFINED_TOKEN); }
+  {LineTerminator}               { return symbol(UNDEFINED_TOKEN); }
 }
 
 /* error fallback */
-[^]                              { return symbol(UNDIFINED_TOKEN); }
+[^]                              { return symbol(UNDEFINED_TOKEN); }
 <<EOF>>                          { return symbol(EOF); }

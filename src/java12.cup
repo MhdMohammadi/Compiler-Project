@@ -96,7 +96,7 @@ terminal PLUS, MINUS, DIV, COMP, NOT, MOD;
 terminal DOT;
 terminal LBRACK, RBRACK;
 terminal LPAREN, RPAREN, LBRACE, RBRACE, COMMA, EQ, MULT, SEMICOLON, COLON;
-terminal UNDIFINED_TOKEN;
+terminal UNDEFINED_TOKEN;
 
 
 terminal java.lang.Number INTEGER_LITERAL;

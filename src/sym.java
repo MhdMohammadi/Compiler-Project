@@ -52,6 +52,7 @@ public class sym {
   public static final int EQ = 59;
   public static final int DTOI = 25;
   public static final int LBRACK = 52;
+  public static final int UNDEFINED_TOKEN = 63;
   public static final int COLON = 62;
   public static final int LBRACE = 56;
   public static final int ELSE = 16;
@@ -64,7 +65,6 @@ public class sym {
   public static final int RBRACE = 57;
   public static final int EXTENDS = 11;
   public static final int BTOI = 28;
-  public static final int UNDIFINED_TOKEN = 63;
   public static final int QUESTION = 38;
   public static final int STRING = 6;
   public static final int DOUBLE_LITERAL = 65;
@@ -139,7 +139,7 @@ public class sym {
   "MULT",
   "SEMICOLON",
   "COLON",
-  "UNDIFINED_TOKEN",
+  "UNDEFINED_TOKEN",
   "INTEGER_LITERAL",
   "DOUBLE_LITERAL",
   "STRING_LITERAL",
