@@ -1,5 +1,4 @@
 import java.io.*;
-import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -27,8 +26,8 @@ public class Main {
                 writer = new OutputStreamWriter(System.out);
             }
             Scanner scanner = new Scanner(read);
-            /*while ( !scanner.zzAtEOF ) */
-            scanner.yylex();
+            while ( !scanner.zzAtEOF )
+                scanner.yylex();
             writer.flush();
             writer.close();
         } catch (Exception e) {
