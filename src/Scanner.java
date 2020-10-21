@@ -4,8 +4,6 @@
 
 import java_cup.runtime.*;
 
-import java.io.IOException;
-
 
 // See https://github.com/jflex-de/jflex/issues/222
 @SuppressWarnings("FallThrough")
