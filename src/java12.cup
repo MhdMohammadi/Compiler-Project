@@ -107,6 +107,16 @@ terminal java.lang.Boolean BOOLEAN_LITERAL;
 
 //in ja benevisiiiiid
 
+nonterminal AccessMode;
+nonterminal InterfaceDecl;
+nonterminal Prototype;
+nonterminal StmtBlock;
+nonterminal Stmt;
+nonterminal IfStmt;
+nonterminal WhileStmt;
+nonterminal ForStms;
+
+
 Program ::= Decl+;
 Decl ::= V ariableDecl | FunctionDecl | ClassDecl | InterfaceDecl
 V ariableDecl ::= V ariable;
