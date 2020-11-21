@@ -106,7 +106,6 @@ terminal java.lang.String IDENTIFIER;
 terminal java.lang.Boolean BOOLEAN_LITERAL;
 
 
-
 //in ja benevisiiiiid
 nonterminal Program;
 nonterminal Decl;
