@@ -138,14 +138,14 @@ nonterminal ForStms;
 
 start with Program;
 
-Program ::= Decl+;
+Program ::= Decl+
 Decl ::= V ariableDecl | FunctionDecl | ClassDecl | InterfaceDecl
 VariableDecl ::= V ariable;
 Variable ::= Type ident
 Type ::= int | double | bool | string | ident | Type [ ]
 FunctionDecl ::= Type ident (Formals) StmtBlock |
 void ident (Formals) StmtBlock
-Formals ::= V ariable+, | ϵ
+Formals ::= V ariable+, |
 ClassDecl ::= class ident < extends ident > < implements ident+,> {Field
 ∗}
 Field ::= AccessMode V ariableDecl | AccessMode FunctionDecl
@@ -157,30 +157,28 @@ StmtBlock ::= {V ariableDecl
 ∗
 Stmt
 ∗}
-Stmt ::= < Expr >; | IfStmt | WhileStmt | ForStmt |
+Stmt ::=  Expr SEMICOLON | IfStmt | WhileStmt | ForStmt |
 BreakStmt | ContinueStmt | ReturnStmt | PrintStmt | StmtBlock
-IfStmt ::= if (Expr) Stmt < else Stmt >
-WhileStmt ::= while (Expr) Stmt
-ForStmt ::= for (< Expr >;Expr;< Expr >) Stmt
-ReturnStmt ::= return < Expr >;
+IfStmt ::= if LPAREN Expr RPAREN Stmt  else Stmt
+WhileStmt ::= while LPAREN Expr RPAREN Stmt
+ForStmt ::= for LPAREN  Expr SEMICOLON Expr SEMICOLON  Expr  RPAREN Stmt
+ReturnStmt ::= return  Expr ;
 BreakStmt ::= break;
 ContinueStmt ::= continue;
-PrintStmt ::= print (Expr+, );
-Expr ::= LV alue = Expr | Constant | LV alue | this | Call | (Expr) |
-Expr + Expr | Expr − Expr | Expr ∗ Expr | Expr / Expr |
-Expr % Expr | − Expr | Expr < Expr | Expr <= Expr |
-Expr > Expr | Expr >= Expr | Expr == Expr | Expr! = Expr |
-Expr && Expr | Expr || Expr | !Expr | ReadInteger() |
-readLine() | new ident | NewArray(Expr, Type) |
-itod(Expr) | dtoi(Expr) | itob(Expr) | btoi(Expr)
-LV alue ::= ident | Expr . ident | Expr[Expr]
-Call ::= ident (Actuals) | Expr . ident (Actuals)
-Actuals ::= Expr+, | ϵ
+PrintStmt ::= print LPAREN Expr+ COMMA RPAREN SEMICOLON
+Expr ::= LV alue EQ Expr | Constant | LV alue | this | Call | LPAREN Expr RPAREN |
+Expr PLUS Expr | Expr MINUS Expr | Expr MULT Expr | Expr DIV Expr |
+Expr MOD Expr | MINUS Expr | Expr LT Expr | Expr LTEQ Expr |
+Expr GT Expr | Expr GTEQ Expr | Expr EQEQ Expr | Expr NOTEQ Expr |
+Expr ANDAND Expr | Expr OROR Expr | NOT Expr | ReadInteger LPAREN RPAREN  |
+readLine LPAREN RPAREN | new ident | NewArray LPAREN Expr COMMA Type RPAREN |
+itod LPAREN Expr RPAREN | dtoi LPAREN Expr RPAREN | itob LPAREN Expr RPAREN | btoi LPAREN Expr RPAREN
+LValue ::= ident | Expr DOT ident | Expr LBRACK Expr RBRACK
+Call ::= ident LPAREN Actuals RPAREN | Expr DOT ident LPAREN Actuals RPAREN
+Actuals ::= Expr+ COMMA | ;
 Constant ::= intConstant | doubleConstant | boolConstant |
-stringConstant | null
+stringConstant | ;
 
-
-start with goal;
 
 // 19.2) The Syntactic Grammar
 goal ::=	compilation_unit
