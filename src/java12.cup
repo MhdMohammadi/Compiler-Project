@@ -116,6 +116,16 @@ nonterminal Formals;
 nonterminal ClassDecl;
 nonterminal Field;
 
+nonterminal AccessMode;
+nonterminal InterfaceDecl;
+nonterminal Prototype;
+nonterminal StmtBlock;
+nonterminal Stmt;
+nonterminal IfStmt;
+nonterminal WhileStmt;
+nonterminal ForStms;
+
+
 Program ::= Decl+;
 Decl ::= V ariableDecl | FunctionDecl | ClassDecl | InterfaceDecl
 VariableDecl ::= V ariable;
