@@ -134,7 +134,9 @@ nonterminal Stmt;
 nonterminal IfStmt;
 nonterminal WhileStmt;
 nonterminal ForStms;
-
+nonterminal Prototype_star;
+nonterminal VariableDecl_star;
+nonterminal Stmt_star;
 
 start with Program;
 
@@ -147,14 +149,20 @@ FunctionDecl ::= Type ident (Formals) StmtBlock | void ident (Formals) StmtBlock
 Formals ::= Variable+, | ϵ;
 ClassDecl ::= class ident < extends ident > < implements ident+,> {Field∗};
 Field ::= AccessMode V ariableDecl | AccessMode FunctionDecl;
-AccessMode ::= private | protected | public |  ;
-InterfaceDecl ::= interface ident LBRACE Prototype∗ RBRACE;
-Prototype ::= Type ident LPAREN Formals RPAREN SEMICOLON | void ident LPAREN Formals RPAREN;
-StmtBlock ::= LBRACE VariableDecl∗ Stmt∗ RBRACE;
-Stmt ::= LT Expr GT SEMICOLON | IfStmt | WhileStmt | ForStmt | BreakStmt | ContinueStmt | ReturnStmt | PrintStmt | StmtBlock;
-IfStmt ::= if LPAREN Expr RPAREN Stmt LT else Stmt GT ;
-WhileStmt ::= while LPAREN Expr RPAREN Stmt;
-ForStmt ::= for LPAREN LT Expr GT SEMICOLON Expr SEMICOLON LT Expr GT RPAREN Stmt;
+
+AccessMode ::= PRIVATE | PROTECTED | PUBLIC |  ;
+InterfaceDecl ::= INTERFACE IDENTIFIER LBRACE Prototype_star RBRACE;
+Prototype_star ::=  Prototype Prototype_star | ;
+Prototype ::= Type IDENTIFIER LPAREN Formals RPAREN SEMICOLON | VOID IDENTIFIER LPAREN Formals RPAREN SEMICOLON;
+StmtBlock ::= LBRACE VariableDecl_star Stmt_star RBRACE;
+Stmt_star ::= Stmt Stmt_star | ;
+Stmt ::=  Expr_Stmt  SEMICOLON | IfStmt | WhileStmt | ForStmt | BreakStmt | ContinueStmt | ReturnStmt | PrintStmt | StmtBlock;
+Expr_Stmt ::= Expr | ;
+IfStmt ::= IF LPAREN Expr RPAREN Stmt  else_Stmt  ;
+else_Stmt ::= ELSE Stmt | ;
+WhileStmt ::=  LPAREN Expr RPAREN Stmt;
+ForStmt ::= FOR LPAREN  Expr_Stmt  SEMICOLON Expr SEMICOLON  Expr_Stmt  RPAREN Stmt;
+
 ReturnStmt ::= return < Expr >;
 BreakStmt ::= break;
 ContinueStmt ::= continue;
