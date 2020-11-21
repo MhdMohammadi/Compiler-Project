@@ -127,29 +127,22 @@ nonterminal ForStms;
 
 
 Program ::= Decl+;
-Decl ::= V ariableDecl | FunctionDecl | ClassDecl | InterfaceDecl
-VariableDecl ::= V ariable;
-Variable ::= Type ident
-Type ::= int | double | bool | string | ident | Type [ ]
-FunctionDecl ::= Type ident (Formals) StmtBlock |
-void ident (Formals) StmtBlock
-Formals ::= V ariable+, | ϵ
-ClassDecl ::= class ident < extends ident > < implements ident+,> {Field
-∗}
-Field ::= AccessMode V ariableDecl | AccessMode FunctionDecl
-AccessMode ::= private | protected | public | ϵ
-InterfaceDecl ::= interface ident {Prototype
-∗}
-Prototype ::= Type ident(Formals); | void ident(Formals);
-StmtBlock ::= {V ariableDecl
-∗
-Stmt
-∗}
-Stmt ::= < Expr >; | IfStmt | WhileStmt | ForStmt |
-BreakStmt | ContinueStmt | ReturnStmt | PrintStmt | StmtBlock
-IfStmt ::= if (Expr) Stmt < else Stmt >
-WhileStmt ::= while (Expr) Stmt
-ForStmt ::= for (< Expr >;Expr;< Expr >) Stmt
+Decl ::= VariableDecl | FunctionDecl | ClassDecl | InterfaceDecl;
+VariableDecl ::= Variable;
+Variable ::= Type ident;
+Type ::= int | double | bool | string | ident | Type [ ];
+FunctionDecl ::= Type ident (Formals) StmtBlock | void ident (Formals) StmtBlock ;
+Formals ::= Variable+, | ϵ;
+ClassDecl ::= class ident < extends ident > < implements ident+,> {Field∗};
+Field ::= AccessMode V ariableDecl | AccessMode FunctionDecl;
+AccessMode ::= private | protected | public |  ;
+InterfaceDecl ::= interface ident LBRACE Prototype∗ RBRACE;
+Prototype ::= Type ident LPAREN Formals RPAREN; | void ident LPAREN Formals RPAREN;
+StmtBlock ::= LBRACE VariableDecl∗ Stmt∗ RBRACE;
+Stmt ::= < Expr > SEMICOLON | IfStmt | WhileStmt | ForStmt | BreakStmt | ContinueStmt | ReturnStmt | PrintStmt | StmtBlock;
+IfStmt ::= if LPAREN Expr RPAREN Stmt < else Stmt > ;
+WhileStmt ::= while LPAREN Expr RPAREN Stmt;
+ForStmt ::= for LPAREN < Expr > SEMICOLON Expr SEMICOLON < Expr > RPAREN Stmt;
 ReturnStmt ::= return < Expr >;
 BreakStmt ::= break;
 ContinueStmt ::= continue;
@@ -160,12 +153,11 @@ Expr % Expr | − Expr | Expr < Expr | Expr <= Expr |
 Expr > Expr | Expr >= Expr | Expr == Expr | Expr! = Expr |
 Expr && Expr | Expr || Expr | !Expr | ReadInteger() |
 readLine() | new ident | NewArray(Expr, Type) |
-itod(Expr) | dtoi(Expr) | itob(Expr) | btoi(Expr)
-LV alue ::= ident | Expr . ident | Expr[Expr]
-Call ::= ident (Actuals) | Expr . ident (Actuals)
-Actuals ::= Expr+, | ϵ
-Constant ::= intConstant | doubleConstant | boolConstant |
-stringConstant | null
+itod(Expr) | dtoi(Expr) | itob(Expr) | btoi(Expr);
+LV alue ::= ident | Expr . ident | Expr[Expr];
+Call ::= ident (Actuals) | Expr . ident (Actuals);
+Actuals ::= Expr+, | ϵ;
+Constant ::= intConstant | doubleConstant | boolConstant | stringConstant | null;
 
 
 start with goal;
