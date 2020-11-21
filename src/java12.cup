@@ -105,6 +105,16 @@ terminal java.lang.String STRING_LITERAL;
 terminal java.lang.String IDENTIFIER;
 terminal java.lang.Boolean BOOLEAN_LITERAL;
 
+nonterminal ReturnStmt;
+nonterminal BreakStmt;
+nonterminal ContinueStmt;
+nonterminal PrintStmt;
+nonterminal Expr;
+nonterminal LValue;
+nonterminal Call;
+nonterminal Actuals;
+nonterminal Constant;
+
 //in ja benevisiiiiid
 nonterminal Program;
 nonterminal Decl;
@@ -125,6 +135,8 @@ nonterminal IfStmt;
 nonterminal WhileStmt;
 nonterminal ForStms;
 
+
+start with Program;
 
 Program ::= Decl+;
 Decl ::= VariableDecl | FunctionDecl | ClassDecl | InterfaceDecl;
