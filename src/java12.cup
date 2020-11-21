@@ -137,6 +137,8 @@ nonterminal ForStms;
 nonterminal Prototype_star;
 nonterminal VariableDecl_star;
 nonterminal Stmt_star;
+nonterminal Expr_Stmt;
+nonterminal else_Stmt;
 
 start with Program;
 
@@ -155,6 +157,7 @@ InterfaceDecl ::= INTERFACE IDENTIFIER LBRACE Prototype_star RBRACE;
 Prototype_star ::=  Prototype Prototype_star | ;
 Prototype ::= Type IDENTIFIER LPAREN Formals RPAREN SEMICOLON | VOID IDENTIFIER LPAREN Formals RPAREN SEMICOLON;
 StmtBlock ::= LBRACE VariableDecl_star Stmt_star RBRACE;
+VariableDecl_star ::= VariableDecl VariableDecl_star | ;
 Stmt_star ::= Stmt Stmt_star | ;
 Stmt ::=  Expr_Stmt  SEMICOLON | IfStmt | WhileStmt | ForStmt | BreakStmt | ContinueStmt | ReturnStmt | PrintStmt | StmtBlock;
 Expr_Stmt ::= Expr | ;
