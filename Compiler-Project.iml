@@ -11,7 +11,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://C:/cup/lib/java-cup-11b-runtime.jar!/" />
+          <root url="jar://C:/Java/CUP-master/lib/java-cup-11b.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -20,7 +20,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://C:/cup/lib/java-cup-11b.jar!/" />
+          <root url="jar://C:/Java/CUP-master/lib/java-cup-11b-runtime.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -29,7 +29,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://C:/Jflex/jflex-1.8.2/lib/jflex-full-1.8.2.jar!/" />
+          <root url="jar://C:/Java/jflex-1.8.2/lib/jflex-full-1.8.2.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

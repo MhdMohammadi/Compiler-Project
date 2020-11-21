@@ -52,7 +52,7 @@ import java_cup.runtime.*;
       case INTEGER_LITERAL:
         return "T_INTLITERAL " + yytext();
       case STRING_LITERAL:
-        return "T_STRINGLITERAL " + yytext();
+        return "T_STRINGLITERAL \"" + currentSymbol.value.toString() + "\"";
       case DOUBLE_LITERAL:
         return "T_DOUBLELITERAL " + yytext();
       case IDENTIFIER:
@@ -116,7 +116,7 @@ StringCharacter = [^\r\n\"\\]
   "continue"    { return symbol(CONTINUE); }
   "new"         { return symbol(NEW); }
   "NewArray"    { return symbol(NEWARRAY); }
-  "print"       { return symbol(PRINT); }
+  "Print"       { return symbol(PRINT); }
   "ReadInteger" { return symbol(READINTEGER); }
   "ReadLine"    { return symbol(READLINE); }
   "dtoi"        { return symbol(DTOI); }
@@ -142,6 +142,8 @@ StringCharacter = [^\r\n\"\\]
   ";"                            { return symbol(SEMICOLON); }
   ","                            { return symbol(COMMA); }
   "."                            { return symbol(DOT); }
+  "{"                            { return symbol(LBRACE); }
+  "}"                            { return symbol(RBRACE); }
   
   /* operators */
   "="                            { return symbol(EQ); }
