@@ -116,6 +116,15 @@ nonterminal Actuals;
 nonterminal Constant;
 
 //in ja benevisiiiiid
+nonterminal Program;
+nonterminal Decl;
+nonterminal VariableDecl;
+nonterminal Variable;
+nonterminal Type;
+nonterminal FunctionDecl;
+nonterminal Formals;
+nonterminal ClassDecl;
+nonterminal Field;
 
 nonterminal AccessMode;
 nonterminal InterfaceDecl;
@@ -131,8 +140,8 @@ start with Program;
 
 Program ::= Decl+;
 Decl ::= V ariableDecl | FunctionDecl | ClassDecl | InterfaceDecl
-V ariableDecl ::= V ariable;
-V ariable ::= Type ident
+VariableDecl ::= V ariable;
+Variable ::= Type ident
 Type ::= int | double | bool | string | ident | Type [ ]
 FunctionDecl ::= Type ident (Formals) StmtBlock |
 void ident (Formals) StmtBlock
