@@ -117,6 +117,16 @@ nonterminal Constant;
 
 //in ja benevisiiiiid
 
+nonterminal AccessMode;
+nonterminal InterfaceDecl;
+nonterminal Prototype;
+nonterminal StmtBlock;
+nonterminal Stmt;
+nonterminal IfStmt;
+nonterminal WhileStmt;
+nonterminal ForStms;
+
+
 start with Program;
 
 Program ::= Decl+;
@@ -161,7 +171,7 @@ Constant ::= intConstant | doubleConstant | boolConstant |
 stringConstant | null
 
 
-
+start with goal;
 
 // 19.2) The Syntactic Grammar
 goal ::=	compilation_unit
