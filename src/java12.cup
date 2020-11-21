@@ -105,7 +105,19 @@ terminal java.lang.String STRING_LITERAL;
 terminal java.lang.String IDENTIFIER;
 terminal java.lang.Boolean BOOLEAN_LITERAL;
 
+nonterminal ReturnStmt;
+nonterminal BreakStmt;
+nonterminal ContinueStmt;
+nonterminal PrintStmt;
+nonterminal Expr;
+nonterminal LValue;
+nonterminal Call;
+nonterminal Actuals;
+nonterminal Constant;
+
 //in ja benevisiiiiid
+
+start with Program;
 
 Program ::= Decl+;
 Decl ::= V ariableDecl | FunctionDecl | ClassDecl | InterfaceDecl
@@ -149,7 +161,7 @@ Constant ::= intConstant | doubleConstant | boolConstant |
 stringConstant | null
 
 
-start with goal;
+
 
 // 19.2) The Syntactic Grammar
 goal ::=	compilation_unit
