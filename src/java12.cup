@@ -149,7 +149,6 @@ nonterminal else_Stmt;
 
 start with Program;
 
-
 Program ::= Decl_plus | ;
 Decl_plus ::= Decl | Decl Decl_plus;
 Decl ::= VariableDecl | FunctionDecl | ClassDecl | InterfaceDecl;
