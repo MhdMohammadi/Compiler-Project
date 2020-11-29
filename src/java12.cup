@@ -150,13 +150,15 @@ nonterminal Expr_Stmt;
 nonterminal else_Stmt;
 nonterminal Expr_plus;
 
+precedence left IDENTIFIER;
+precedence left ELSE;
 precedence right EQ;
 precedence left OROR;
 precedence left ANDAND;
 precedence left EQEQ, NOTEQ;
 precedence left GT, GTEQ, LT, LTEQ;
 precedence left PLUS, MINUS;
-precedence left MUL, DIV, MOD;
+precedence left MULT, DIV, MOD;
 precedence left NOT, MINUS;
 precedence left LBRACK, DOT;
 
@@ -187,8 +189,8 @@ VariableDecl_star ::= VariableDecl VariableDecl_star | ;
 Stmt_star ::= Stmt Stmt_star | ;
 Stmt ::=  Expr_Stmt  SEMICOLON | IfStmt | WhileStmt | ForStmt | BreakStmt | ContinueStmt | ReturnStmt | PrintStmt | StmtBlock;
 Expr_Stmt ::= Expr | ;
-IfStmt ::= IF LPAREN Expr RPAREN Stmt  else_Stmt  ;
-else_Stmt ::= ELSE Stmt | ;
+IfStmt ::= IF LPAREN Expr RPAREN Stmt else_Stmt;
+else_Stmt ::= ELSE Stmt |;
 WhileStmt ::= WHILE LPAREN Expr RPAREN Stmt;
 ForStmt ::= FOR LPAREN  Expr_Stmt  SEMICOLON Expr SEMICOLON  Expr_Stmt  RPAREN Stmt;
 
