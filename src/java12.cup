@@ -147,6 +147,8 @@ nonterminal Stmt_star;
 nonterminal Expr_Stmt;
 nonterminal else_Stmt;
 
+nonterminal Expr_plus;
+
 start with Program;
 
 Program ::= Decl_plus | ;
@@ -178,11 +180,12 @@ else_Stmt ::= ELSE Stmt | ;
 WhileStmt ::=  LPAREN Expr RPAREN Stmt;
 ForStmt ::= FOR LPAREN  Expr_Stmt  SEMICOLON Expr SEMICOLON  Expr_Stmt  RPAREN Stmt;
 
-ReturnStmt ::= return  Expr SEMICOLON | return  SEMICOLON;
-BreakStmt ::= break SEMICOLON;
-ContinueStmt ::= continue SEMICOLON;
+ReturnStmt ::= RETURN  Expr SEMICOLON | RETURN SEMICOLON;
+BreakStmt ::= BREAK SEMICOLON;
+ContinueStmt ::= CONTINUE SEMICOLON;
 //+ ro doros kon
-PrintStmt ::= print LPAREN Expr+ COMMA RPAREN SEMICOLON;
+PrintStmt ::= PRINT LPAREN Expr_plus COMMA RPAREN SEMICOLON;
+EXPR_plus ::= EXPR | EXPR Expr_plus;
 
 Expr ::= LValue EQ Expr | Constant | LValue | this | Call | LPAREN Expr RPAREN | Expr PLUS Expr |
  Expr MINUS Expr | Expr MULT Expr | Expr DIV Expr | Expr MOD Expr | MINUS Expr | Expr LT Expr | Expr LTEQ Expr |
@@ -192,5 +195,5 @@ itod LPAREN Expr RPAREN | dtoi LPAREN Expr RPAREN | itob LPAREN Expr RPAREN | bt
 LValue ::= ident | Expr DOT ident | Expr LBRACK Expr RBRACK;
 Call ::= ident LPAREN Actuals RPAREN | Expr DOT ident LPAREN Actuals RPAREN;
 //+ ro doros kon
-Actuals ::= Expr+ COMMA | ;
-Constant ::= intConstant | doubleConstant | boolConstant | stringConstant | null
+Actuals ::= Expr_plus COMMA | ;
+Constant ::= intConstant | doubleConstant | boolConstant | stringConstant | NULL;
