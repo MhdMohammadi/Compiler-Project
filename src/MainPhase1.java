@@ -22,7 +22,7 @@ public class MainPhase1 {
             if (inputFileName != null)
                 reader = new FileReader("tests/" + inputFileName);
             else
-                reader = new FileReader("tests/t01.in");
+                reader = new FileReader("tests/t08.in");
 
             if (outputFileName != null)
                 writer = new FileWriter("out/" + outputFileName);
