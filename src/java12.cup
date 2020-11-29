@@ -43,24 +43,6 @@ JDK 1.2 Features added:
         |       name DOT SUPER DOT IDENTIFIER LPAREN argument_list_opt RPAREN ;
 */
 
-parser code  {:
-  public void report_error(String message, Object info) {
-    StringBuilder m = new StringBuilder("Error ");
-
-    if (info instanceof java_cup.runtime.Symbol)
-      m.append( "("+info.toString()+")" );
-
-    m.append(" : "+message);
-
-    System.out.println(m);
-  }
-
-  public void report_fatal_error(String message, Object info) {
-    report_error(message, info);
-    throw new RuntimeException("Fatal Syntax Error");
-  }
-:};
-
 terminal STRING, VOID, INT, DOUBLE, BOOL;
 terminal CLASS;
 terminal INTERFACE;
