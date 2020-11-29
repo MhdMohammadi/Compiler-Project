@@ -156,7 +156,7 @@ precedence left ANDAND;
 precedence left EQEQ, NOTEQ;
 precedence left GT, GTEQ, LT, LTEQ;
 precedence left PLUS, MINUS;
-precedence left MUL, DIV, MOD;
+precedence left MULT, DIV, MOD;
 precedence left NOT, MINUS;
 precedence left LBRACK, DOT;
 
