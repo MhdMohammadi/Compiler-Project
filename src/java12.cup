@@ -185,8 +185,8 @@ ReturnStmt ::= RETURN  Expr SEMICOLON | RETURN SEMICOLON;
 BreakStmt ::= BREAK SEMICOLON;
 ContinueStmt ::= CONTINUE SEMICOLON;
 //+ ro doros kon
-PrintStmt ::= PRINT LPAREN Expr_plus COMMA RPAREN SEMICOLON;
-EXPR_plus ::= EXPR | EXPR Expr_plus;
+PrintStmt ::= PRINT LPAREN Expr_plus RPAREN SEMICOLON;
+EXPR_plus ::= EXPR | EXPR COMMA Expr_plus;
 
 Expr ::= LValue EQ Expr | Constant | LValue | THIS | Call | LPAREN Expr RPAREN | Expr PLUS Expr |
  Expr MINUS Expr | Expr MULT Expr | Expr DIV Expr | Expr MOD Expr | MINUS Expr | Expr LT Expr | Expr LTEQ Expr |
@@ -196,5 +196,5 @@ ITOD LPAREN Expr RPAREN | DTOI LPAREN Expr RPAREN | ITOB LPAREN Expr RPAREN | BT
 LValue ::= IDENTIFIER | Expr DOT IDENTIFIER | Expr LBRACK Expr RBRACK;
 Call ::= IDENTIFIER LPAREN Actuals RPAREN | Expr DOT IDENTIFIER LPAREN Actuals RPAREN;
 //+ ro doros kon
-Actuals ::= Expr_plus COMMA | ;
+Actuals ::= Expr_plus | ;
 Constant ::= INTEGER_LITERAL | DOUBLE_LITERAL | BOOLEAN_LITERAL | STRING_LITERAL | NULL;
