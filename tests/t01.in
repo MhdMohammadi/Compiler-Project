@@ -1,4 +1,13 @@
-int main(){
+int getSomeValue() {
+    return something;
+}
+
+int main() {
+    int a;
     int b;
-    b = 1;
+    bool c;
+    double d;
+    d = 1.2E5 * 5. + 1.;
+    c = (a / b < 100);
+    c = true || false;
 }

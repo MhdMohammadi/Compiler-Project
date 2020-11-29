@@ -1,6 +1,6 @@
 import java.io.*;
 
-public class Main {
+public class MainPhase2 {
     public static void main(String[] args) throws IOException {
         String inputFileName = null;
         String outputFileName = null;
@@ -19,12 +19,12 @@ public class Main {
         if (inputFileName != null)
             reader = new FileReader("tests/" + inputFileName);
         else
-            reader = new FileReader("tests/t02.in");
+            reader = new FileReader("tests/t08.in");
 
         if (outputFileName != null)
             writer = new FileWriter("output/" + outputFileName);
         else
-            writer = new FileWriter("output/t01.out");
+            writer = new FileWriter("output/t08.out");
 
 
         parser p = new parser(new Scanner(reader));

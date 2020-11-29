@@ -150,6 +150,7 @@ nonterminal Expr_Stmt;
 nonterminal else_Stmt;
 nonterminal Expr_plus;
 
+
 precedence left ELSE;
 precedence right EQ;
 precedence left OROR;
@@ -170,7 +171,7 @@ DeclPlus ::= Decl | Decl DeclPlus;
 Decl ::= VariableDecl | FunctionDecl | ClassDecl | InterfaceDecl;
 VariableDecl ::= Variable SEMICOLON;
 Variable ::= Type IDENTIFIER;
-Type ::= INT | DOUBLE | BOOL | STRING | IDENTIFIER %prec DOT | Type LBRACK RBRACK;
+Type ::= Type LBRACK RBRACK | IDENTIFIER %prec MULT | INT | DOUBLE | BOOL | STRING;
 FunctionDecl ::= Type IDENTIFIER  LPAREN Formals RPAREN StmtBlock | VOID IDENTIFIER LPAREN Formals RPAREN StmtBlock;
 VariablePlus ::= Variable | Variable COMMA VariablePlus;
 Formals ::= VariablePlus | ;
