@@ -1,14 +1,6 @@
-
-int getSomeValue() {
-    return something;
-}
-
-int main() {
-    int a;
+int main(){
     int b;
-    bool c;
-    double d;
-    d = 1.2E5 * 5. + 1.;
-    c = (a / b < 100);
-    c = true || false;
+    c;
+    a = 1;
+    for(i = 1; i < 2; i = i + 1);
 }

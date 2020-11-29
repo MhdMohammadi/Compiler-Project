@@ -9,12 +9,10 @@ public class Main {
 
             if (args != null) {
                 for (int i = 0; i < args.length; i++) {
-                    if (args[i].equals("-i")) {
+                    if (args[i].equals("-i"))
                         inputFileName = args[i + 1];
-                    }
-                    if (args[i].equals("-o")) {
+                    if (args[i].equals("-o"))
                         outputFileName = args[i + 1];
-                    }
                 }
             }
 
