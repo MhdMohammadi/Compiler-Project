@@ -186,7 +186,7 @@ BreakStmt ::= BREAK SEMICOLON;
 ContinueStmt ::= CONTINUE SEMICOLON;
 //+ ro doros kon
 PrintStmt ::= PRINT LPAREN Expr_plus RPAREN SEMICOLON;
-EXPR_plus ::= EXPR | EXPR COMMA Expr_plus;
+EXPR_plus ::= Expr | Expr COMMA Expr_plus;
 
 Expr ::= LValue EQ Expr | Constant | LValue | THIS | Call | LPAREN Expr RPAREN | Expr PLUS Expr |
  Expr MINUS Expr | Expr MULT Expr | Expr DIV Expr | Expr MOD Expr | MINUS Expr | Expr LT Expr | Expr LTEQ Expr |
