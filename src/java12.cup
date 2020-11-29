@@ -187,13 +187,13 @@ ContinueStmt ::= CONTINUE SEMICOLON;
 PrintStmt ::= PRINT LPAREN Expr_plus COMMA RPAREN SEMICOLON;
 EXPR_plus ::= EXPR | EXPR Expr_plus;
 
-Expr ::= LValue EQ Expr | Constant | LValue | this | Call | LPAREN Expr RPAREN | Expr PLUS Expr |
+Expr ::= LValue EQ Expr | Constant | LValue | THIS | Call | LPAREN Expr RPAREN | Expr PLUS Expr |
  Expr MINUS Expr | Expr MULT Expr | Expr DIV Expr | Expr MOD Expr | MINUS Expr | Expr LT Expr | Expr LTEQ Expr |
 Expr GT Expr | Expr GTEQ Expr | Expr EQEQ Expr | Expr NOTEQ Expr | Expr ANDAND Expr | Expr OROR Expr |
-  NOT Expr | ReadInteger LPAREN RPAREN | readLine LPAREN RPAREN | new ident | NewArray LPAREN Expr COMMA Type RPAREN |
-itod LPAREN Expr RPAREN | dtoi LPAREN Expr RPAREN | itob LPAREN Expr RPAREN | btoi LPAREN Expr RPAREN;
-LValue ::= ident | Expr DOT ident | Expr LBRACK Expr RBRACK;
-Call ::= ident LPAREN Actuals RPAREN | Expr DOT ident LPAREN Actuals RPAREN;
+  NOT Expr | READINTEGER LPAREN RPAREN | READLINE LPAREN RPAREN | NEW IDENTIFIER | NEWARRAY LPAREN Expr COMMA Type RPAREN |
+ITOD LPAREN Expr RPAREN | DTOI LPAREN Expr RPAREN | ITOB LPAREN Expr RPAREN | BTOI LPAREN Expr RPAREN;
+LValue ::= IDENTIFIER | Expr DOT IDENTIFIER | Expr LBRACK Expr RBRACK;
+Call ::= IDENTIFIER LPAREN Actuals RPAREN | Expr DOT IDENTIFIER LPAREN Actuals RPAREN;
 //+ ro doros kon
 Actuals ::= Expr_plus COMMA | ;
-Constant ::= intConstant | doubleConstant | boolConstant | stringConstant | NULL;
+Constant ::= INTEGER_LITERAL | DOUBLE_LITERAL | BOOLEAN_LITERAL | STRING_LITERAL | NULL;
