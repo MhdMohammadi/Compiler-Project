@@ -136,8 +136,8 @@ nonterminal Call;
 nonterminal Actuals;
 nonterminal Constant;
 
-nonterminal Decl_plus;
-nonterminal Variable_plus;
+nonterminal DeclPlus;
+nonterminal VariablePlus;
 nonterminal ExtendStmt;
 nonterminal ImplementsStmt;
 nonterminal IdentifierImplementsStmt;
@@ -151,19 +151,20 @@ nonterminal Expr_plus;
 
 start with Program;
 
-Program ::= Decl_plus | ;
-Decl_plus ::= Decl | Decl Decl_plus;
+Program ::= DeclPlus;
+DeclPlus ::= Decl | Decl DeclPlus;
 Decl ::= VariableDecl | FunctionDecl | ClassDecl | InterfaceDecl;
 VariableDecl ::= Variable;
 Variable ::= Type IDENTIFIER;
 Type ::= INT | DOUBLE | BOOL | STRING | IDENTIFIER | Type LBRACK RBRACK;
 FunctionDecl ::= Type IDENTIFIER  LPAREN Formals RPAREN StmtBlock | VOID IDENTIFIER LPAREN Formals RPAREN StmtBlock;
-Variable_plus ::= Variable | Variable Variable_plus;
-Formals ::= Variable_plus COMMA | ;
+VariablePlus ::= Variable | Variable COMMA VariablePlus;
+Formals ::= VariablePlus | ;
 ExtendStmt ::= EXTENDS IDENTIFIER |;
-ImplementsStmt ::= IMPLEMENTS IdentiferImplementsStmt IDENTIFIER|;
-IdentifierImplementsStmt ::= IMPLEMENTS COMMA IdentifierImplementsStmt |;
-ClassDecl ::= CLASS IDENTIFIER ExtendStmt IMPLEMENTS  LBRACE Field RBRACE;
+ImplementsStmt ::= IMPLEMENTS IdentiferImplementsStmt|;
+IdentifierImplementsStmt ::= IDENTIFIER COMMA IdentifierImplementsStmt | IDENTIFIER;
+ClassDecl ::= CLASS IDENTIFIER ExtendStmt ImplementsStmt LBRACE FieldStar RBRACE;
+FieldStar ::= Field FieldStar | ;
 Field ::= AccessMode VariableDecl | AccessMode FunctionDecl;
 
 AccessMode ::= PRIVATE | PROTECTED | PUBLIC |  ;
