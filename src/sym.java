@@ -12,12 +12,12 @@ public class sym {
   public static final int READLINE = 24;
   public static final int MULT = 60;
   public static final int LTEQ = 37;
-  public static final int DOUBLE = 4;
+  public static final int DOUBLE = 5;
   public static final int LPAREN = 54;
   public static final int PRIVATE = 29;
   public static final int CONTINUE = 19;
   public static final int INTERFACE = 8;
-  public static final int INT = 3;
+  public static final int INT = 4;
   public static final int MINUS = 46;
   public static final int FOR = 13;
   public static final int RPAREN = 55;
@@ -28,7 +28,7 @@ public class sym {
   public static final int LT = 35;
   public static final int READINTEGER = 23;
   public static final int COMMA = 58;
-  public static final int BOOL = 5;
+  public static final int BOOL = 6;
   public static final int CLASS = 7;
   public static final int COMP = 48;
   public static final int DIV = 47;
@@ -48,7 +48,7 @@ public class sym {
   public static final int NULL = 9;
   public static final int MOD = 50;
   public static final int BREAK = 18;
-  public static final int VOID = 2;
+  public static final int VOID = 3;
   public static final int EQ = 59;
   public static final int DTOI = 25;
   public static final int LBRACK = 52;
@@ -66,7 +66,7 @@ public class sym {
   public static final int EXTENDS = 11;
   public static final int BTOI = 28;
   public static final int QUESTION = 38;
-  public static final int STRING = 6;
+  public static final int STRING = 2;
   public static final int DOUBLE_LITERAL = 65;
   public static final int FALSE = 33;
   public static final int IMPLEMENTS = 12;
@@ -78,11 +78,11 @@ public class sym {
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
+  "STRING",
   "VOID",
   "INT",
   "DOUBLE",
   "BOOL",
-  "STRING",
   "CLASS",
   "INTERFACE",
   "NULL",

@@ -61,7 +61,7 @@ parser code  {:
   }
 :};
 
-terminal VOID, INT, DOUBLE, BOOL, STRING;
+terminal STRING, VOID, INT, DOUBLE, BOOL;
 terminal CLASS;
 terminal INTERFACE;
 terminal NULL;
@@ -171,7 +171,7 @@ DeclPlus ::= Decl | Decl DeclPlus;
 Decl ::= VariableDecl | FunctionDecl | ClassDecl | InterfaceDecl;
 VariableDecl ::= Variable SEMICOLON;
 Variable ::= Type IDENTIFIER;
-Type ::= Type LBRACK RBRACK | IDENTIFIER %prec MULT | INT | DOUBLE | BOOL | STRING;
+Type ::= Type LBRACK RBRACK | IDENTIFIER %prec MULT | INT | DOUBLE | STRING | BOOL;
 FunctionDecl ::= Type IDENTIFIER  LPAREN Formals RPAREN StmtBlock | VOID IDENTIFIER LPAREN Formals RPAREN StmtBlock;
 VariablePlus ::= Variable | Variable COMMA VariablePlus;
 Formals ::= VariablePlus | ;
