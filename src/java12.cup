@@ -43,6 +43,24 @@ JDK 1.2 Features added:
         |       name DOT SUPER DOT IDENTIFIER LPAREN argument_list_opt RPAREN ;
 */
 
+parser code  {:
+  public void report_error(String message, Object info) {
+    StringBuilder m = new StringBuilder("Error ");
+
+    if (info instanceof java_cup.runtime.Symbol)
+      m.append( "("+info.toString()+")" );
+
+    m.append(" : "+message);
+
+    System.out.println(m);
+  }
+
+  public void report_fatal_error(String message, Object info) {
+    report_error(message, info);
+    throw new RuntimeException("Fatal Syntax Error");
+  }
+:};
+
 terminal STRING, VOID, INT, DOUBLE, BOOL;
 terminal CLASS;
 terminal INTERFACE;
@@ -145,7 +163,6 @@ precedence left NOT, MINUS;
 precedence left LBRACK, DOT;
 //precedence left IDENTIFIER;
 
-
 start with Program;
 
 Program ::= DeclPlus;
@@ -153,7 +170,7 @@ DeclPlus ::= Decl | Decl DeclPlus;
 Decl ::= VariableDecl | FunctionDecl | ClassDecl | InterfaceDecl;
 VariableDecl ::= Variable SEMICOLON;
 Variable ::= Type IDENTIFIER;
-Type ::= Type LBRACK RBRACK | IDENTIFIER %prec MULT | INT | DOUBLE | STRING | BOOL;
+Type ::= Type LBRACK RBRACK | IDENTIFIER %prec MULT | INT | DOUBLE | STRING | BOOL ;
 FunctionDecl ::= Type IDENTIFIER  LPAREN Formals RPAREN StmtBlock | VOID IDENTIFIER LPAREN Formals RPAREN StmtBlock;
 VariablePlus ::= Variable | Variable COMMA VariablePlus;
 Formals ::= VariablePlus | ;
@@ -192,7 +209,6 @@ Expr GT Expr | Expr GTEQ Expr | Expr EQEQ Expr | Expr NOTEQ Expr | Expr ANDAND E
 ITOD LPAREN Expr RPAREN | DTOI LPAREN Expr RPAREN | ITOB LPAREN Expr RPAREN | BTOI LPAREN Expr RPAREN;
 LValue ::= IDENTIFIER | Expr DOT IDENTIFIER | Expr LBRACK Expr RBRACK;
 Call ::= IDENTIFIER LPAREN Actuals RPAREN | Expr DOT IDENTIFIER LPAREN Actuals RPAREN;
-//+ ro doros kon
 Actuals ::= Expr_plus | ;
 Constant ::= INTEGER_LITERAL | DOUBLE_LITERAL | BOOLEAN_LITERAL | STRING_LITERAL | NULL;
 
