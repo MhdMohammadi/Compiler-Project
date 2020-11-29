@@ -117,6 +117,7 @@ nonterminal Formals;
 nonterminal ClassDecl;
 nonterminal Field;
 
+
 nonterminal AccessMode;
 nonterminal InterfaceDecl;
 nonterminal Prototype;
@@ -141,12 +142,12 @@ nonterminal VariablePlus;
 nonterminal ExtendStmt;
 nonterminal ImplementsStmt;
 nonterminal IdentifierImplementsStmt;
+nonterminal FieldStar;
 nonterminal Prototype_star;
 nonterminal VariableDecl_star;
 nonterminal Stmt_star;
 nonterminal Expr_Stmt;
 nonterminal else_Stmt;
-
 nonterminal Expr_plus;
 
 start with Program;
@@ -161,11 +162,11 @@ FunctionDecl ::= Type IDENTIFIER  LPAREN Formals RPAREN StmtBlock | VOID IDENTIF
 VariablePlus ::= Variable | Variable COMMA VariablePlus;
 Formals ::= VariablePlus | ;
 ExtendStmt ::= EXTENDS IDENTIFIER |;
-ImplementsStmt ::= IMPLEMENTS IdentiferImplementsStmt|;
+ImplementsStmt ::= IMPLEMENTS IdentifierImplementsStmt|;
 IdentifierImplementsStmt ::= IDENTIFIER COMMA IdentifierImplementsStmt | IDENTIFIER;
-ClassDecl ::= CLASS IDENTIFIER ExtendStmt ImplementsStmt LBRACE FieldStar RBRACE;
-FieldStar ::= Field FieldStar | ;
+FieldStar ::= Field FieldStar |;
 Field ::= AccessMode VariableDecl | AccessMode FunctionDecl;
+ClassDecl ::= CLASS IDENTIFIER ExtendStmt ImplementsStmt LBRACE FieldStar RBRACE;
 
 AccessMode ::= PRIVATE | PROTECTED | PUBLIC |  ;
 InterfaceDecl ::= INTERFACE IDENTIFIER LBRACE Prototype_star RBRACE;
