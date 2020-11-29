@@ -1,5 +1,8 @@
 # Created by .ignore support plugin (hsz.mobi)
 ### Java template
+
+Compiler-Project.iml
+
 # Compiled class file
 *.class
 
@@ -29,3 +32,6 @@ hs_err_pid*
 out/
 .idea/shelf/Uncommitted_changes_before_Update_at_10_21_2020_5_47_PM_[Default_Changelist]/
 .idea/
+
+report/
+src/Scanner.java~
