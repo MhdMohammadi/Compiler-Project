@@ -1,10 +1,12 @@
 import java.io.*;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args){
         try {
+
             String inputFileName = null;
             String outputFileName = null;
+
             if (args != null) {
                 for (int i = 0; i < args.length; i++) {
                     if (args[i].equals("-i")) {
@@ -15,47 +17,25 @@ public class Main {
                     }
                 }
             }
-            Reader read = null;
+
+            Reader reader;
             Writer writer;
-            if (inputFileName != null) {
-                read = new FileReader("tests/" + inputFileName);
-            }
+
+            if (inputFileName != null)
+                reader = new FileReader("tests/" + inputFileName);
+            else
+                reader = new FileReader("tests/t01.in");
+
+            parser p = new parser(new Scanner(reader));
+            p.parse();
+
             if (outputFileName != null) {
                 writer = new FileWriter("out/" + outputFileName);
-            } else {
-                writer = new OutputStreamWriter(System.out);
+                writer.flush();
+                writer.close();
             }
-            Scanner scanner = new Scanner(read);
-            while (true) {
-                try {
-                    writer.write(scanner.yylex() + '\n');
-                } catch (Exception e) {
-                    if(e.getMessage().equals("UNDEFINED_TOKEN"))
-                        writer.write(e.getMessage() + '\n');
-                    break;
-                }
-            }
-            writer.flush();
-            writer.close();
         } catch (Exception e) {
-            Writer writer;
-            String outputFile = null;
-            if (args != null) {
-                for (int i = 0; i < args.length; i++) {
-                    if (args[i].equals("-o")) {
-                        outputFile = args[i + 1];
-                    }
-                }
-            }
-            if (outputFile != null) {
-                writer = new FileWriter("out/" + outputFile);
-            } else {
-                writer = new OutputStreamWriter(System.out);
-            }
-
-            writer.write("NO");
-            writer.flush();
-            writer.close();
+            e.printStackTrace();
         }
     }
 }
