@@ -150,7 +150,8 @@ nonterminal Expr_Stmt;
 nonterminal else_Stmt;
 nonterminal Expr_plus;
 
-//precedence right IDENTIFIER;
+
+precedence right IDENTIFIER;
 precedence left ELSE;
 precedence right EQ;
 precedence left OROR;
@@ -184,8 +185,8 @@ AccessMode ::= PRIVATE | PROTECTED | PUBLIC |  ;
 InterfaceDecl ::= INTERFACE IDENTIFIER LBRACE Prototype_star RBRACE;
 Prototype_star ::=  Prototype Prototype_star | ;
 Prototype ::= Type IDENTIFIER LPAREN Formals RPAREN SEMICOLON | VOID IDENTIFIER LPAREN Formals RPAREN SEMICOLON;
-StmtBlock ::= LBRACE VariableDecl Stmt_star RBRACE;
-//VariableDecl_star ::= VariableDecl VariableDecl_star | ;
+StmtBlock ::= LBRACE VariableDecl_star Stmt_star RBRACE;
+VariableDecl_star ::= VariableDecl VariableDecl_star | ;
 Stmt_star ::= Stmt Stmt_star | ;
 Stmt ::=  Expr_Stmt  SEMICOLON | IfStmt | WhileStmt | ForStmt | BreakStmt | ContinueStmt | ReturnStmt | PrintStmt | StmtBlock;
 Expr_Stmt ::= Expr | ;
