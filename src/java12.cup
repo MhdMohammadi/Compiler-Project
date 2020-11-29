@@ -150,6 +150,16 @@ nonterminal Expr_Stmt;
 nonterminal else_Stmt;
 nonterminal Expr_plus;
 
+precedence right EQ;
+precedence left OROR;
+precedence left ANDAND;
+precedence left EQEQ, NOTEQ;
+precedence left GT, GTEQ, LT, LTEQ;
+precedence left PLUS, MINUS;
+precedence left MUL, DIV, MOD;
+precedence left NOT, MINUS;
+precedence left LBRACK, DOT;
+
 start with Program;
 
 Program ::= DeclPlus;
@@ -199,3 +209,4 @@ Call ::= IDENTIFIER LPAREN Actuals RPAREN | Expr DOT IDENTIFIER LPAREN Actuals R
 //+ ro doros kon
 Actuals ::= Expr_plus | ;
 Constant ::= INTEGER_LITERAL | DOUBLE_LITERAL | BOOLEAN_LITERAL | STRING_LITERAL | NULL;
+
