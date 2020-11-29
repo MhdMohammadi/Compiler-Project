@@ -150,8 +150,6 @@ nonterminal Expr_Stmt;
 nonterminal else_Stmt;
 nonterminal Expr_plus;
 
-
-precedence right IDENTIFIER;
 precedence left ELSE;
 precedence right EQ;
 precedence left OROR;
@@ -162,6 +160,8 @@ precedence left PLUS, MINUS;
 precedence left MULT, DIV, MOD;
 precedence left NOT, MINUS;
 precedence left LBRACK, DOT;
+//precedence left IDENTIFIER;
+
 
 start with Program;
 
@@ -170,7 +170,7 @@ DeclPlus ::= Decl | Decl DeclPlus;
 Decl ::= VariableDecl | FunctionDecl | ClassDecl | InterfaceDecl;
 VariableDecl ::= Variable SEMICOLON;
 Variable ::= Type IDENTIFIER;
-Type ::= INT | DOUBLE | BOOL | STRING | IDENTIFIER | Type LBRACK RBRACK;
+Type ::= INT | DOUBLE | BOOL | STRING | IDENTIFIER %prec DOT | Type LBRACK RBRACK;
 FunctionDecl ::= Type IDENTIFIER  LPAREN Formals RPAREN StmtBlock | VOID IDENTIFIER LPAREN Formals RPAREN StmtBlock;
 VariablePlus ::= Variable | Variable COMMA VariablePlus;
 Formals ::= VariablePlus | ;
@@ -186,7 +186,7 @@ InterfaceDecl ::= INTERFACE IDENTIFIER LBRACE Prototype_star RBRACE;
 Prototype_star ::=  Prototype Prototype_star | ;
 Prototype ::= Type IDENTIFIER LPAREN Formals RPAREN SEMICOLON | VOID IDENTIFIER LPAREN Formals RPAREN SEMICOLON;
 StmtBlock ::= LBRACE VariableDecl_star Stmt_star RBRACE;
-VariableDecl_star ::= VariableDecl VariableDecl_star | ;
+VariableDecl_star ::= VariableDecl VariableDecl_star | %prec PLUS;
 Stmt_star ::= Stmt Stmt_star | ;
 Stmt ::=  Expr_Stmt  SEMICOLON | IfStmt | WhileStmt | ForStmt | BreakStmt | ContinueStmt | ReturnStmt | PrintStmt | StmtBlock;
 Expr_Stmt ::= Expr | ;
