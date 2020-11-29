@@ -19,7 +19,7 @@ public class Main {
         if (inputFileName != null)
             reader = new FileReader("tests/" + inputFileName);
         else
-            reader = new FileReader("tests/t01.in");
+            reader = new FileReader("tests/t02.in");
 
         if (outputFileName != null)
             writer = new FileWriter("output/" + outputFileName);
