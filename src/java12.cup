@@ -154,7 +154,7 @@ start with Program;
 Program ::= DeclPlus;
 DeclPlus ::= Decl | Decl DeclPlus;
 Decl ::= VariableDecl | FunctionDecl | ClassDecl | InterfaceDecl;
-VariableDecl ::= Variable;
+VariableDecl ::= Variable SEMICOLON;
 Variable ::= Type IDENTIFIER;
 Type ::= INT | DOUBLE | BOOL | STRING | IDENTIFIER | Type LBRACK RBRACK;
 FunctionDecl ::= Type IDENTIFIER  LPAREN Formals RPAREN StmtBlock | VOID IDENTIFIER LPAREN Formals RPAREN StmtBlock;
