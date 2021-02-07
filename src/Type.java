@@ -39,8 +39,9 @@ public class Type {
         allPreTypes.add(preType);
     }
 
-    private Type(String name, boolean isArray, Type parent){
+    public boolean validate(){
 
+        return false;
     }
 
     public Type getParent() {
