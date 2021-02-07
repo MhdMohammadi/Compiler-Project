@@ -1,6 +1,12 @@
 import java.io.*;
 
 public class MainPhase2 {
+    public static void dfs(Node v){
+        System.out.println(v.getLeftHand().toString() + " " + v.getProductionRule().toString());
+        for (Node node: v.getChildren())
+            dfs(node);
+    }
+
     public static void main(String[] args) throws Exception {
         String inputFileName = "t01.in";
         //String outputFileName = null;
@@ -30,6 +36,7 @@ public class MainPhase2 {
         parser p = new parser(new Scanner(reader));
         p.parse();
         System.out.println(parser.root.getChildren().size());
+        dfs(parser.root);
         /* try {
             p.parse();
   //          writer.write("OK");
