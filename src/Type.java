@@ -40,8 +40,8 @@ public class Type {
     }
 
     public boolean validate(){
-        for (var i = 0; i < allPreTypes.size(); i++) {
-            for (var j = 0; j < allPreTypes.size(); j++) {
+        for (int i = 0; i < allPreTypes.size(); i++) {
+            for (int j = 0; j < allPreTypes.size(); j++) {
                 if (i != j) {
                     if (allPreTypes.get(i).getName().equals(allPreTypes.get(j).getName())) {
                         return false;
@@ -52,11 +52,17 @@ public class Type {
         for (PreType p: allPreTypes){
             Type type = new Type();
             type.setName(p.getName());
+            allTypes.add(type);
         }
-
-
-
-        return false;
+        for (int i = 0; i < allPreTypes.size(); i++){
+            Type x = getTypeByName(allPreTypes.get(i).getParent());
+            if (x == null){
+                return false;
+            } else {
+                allTypes.get(i).setParent(x);
+            }
+        }
+        return true;
     }
 
     public Type getTypeByName(String name){
