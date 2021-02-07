@@ -2,7 +2,7 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class Type {
-    class PreType{
+    static class PreType{
         private String name, parent;
 
         public PreType(String name, String parent){
@@ -34,7 +34,7 @@ public class Type {
     private boolean isArray;
     private String name;
 
-    public void createPreType(String name, String parent){
+    public static void createPreType(String name, String parent){
         PreType preType = new PreType(name, parent);
         allPreTypes.add(preType);
     }
