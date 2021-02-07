@@ -382,7 +382,18 @@ BreakStmt ::= BREAK SEMICOLON;
 ContinueStmt ::= CONTINUE SEMICOLON;
 //+ ro doros kon
 PrintStmt ::= PRINT LPAREN Expr_plus RPAREN SEMICOLON;
-Expr_plus ::= Expr | Expr COMMA Expr_plus;
+
+Expr_plus ::= Expr:e {:
+    Node tmp = new Node(LeftHand.Expr_plus, ProductionRule.Expr);
+    tmp.getChildren().add((Node)e);
+    RESULT = tmp;
+:} |
+Expr:e1 COMMA Expr_plus:e2 {:
+    Node tmp = new Node(LeftHand.Expr_plus, ProductionRule.Expr_COMMA_Expr_plus);
+    tmp.getChildren().add((Node)e1);
+    tmp.getChildren().add((Node)e2);
+    RESULT = tmp;
+:};
 
 Expr ::= LValue:l EQ Expr:e{:  Node tmp = new Node(LeftHand.Expr, ProductionRule.LValue_EQ_Expr);
                                 tmp.getChildren().add(l);
