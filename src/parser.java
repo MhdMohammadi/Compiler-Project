@@ -725,6 +725,8 @@ public class parser extends java_cup.runtime.lr_parser {
 
 
 
+    public static Node root;
+
   public void report_error(String message, Object info) {
     StringBuilder m = new StringBuilder("Error ");
 
@@ -784,7 +786,11 @@ class CUP$parser$actions {
           case 1: // Program ::= DeclPlus 
             {
               Object RESULT =null;
-
+		int dleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int dright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		Object d = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		 Node tmp = new Node(NonTerminal.Program, ProductionRule.DeclPlus); tmp.getChildren().add((Node) d);
+                        RESULT = tmp; root = tmp;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("Program",0, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;

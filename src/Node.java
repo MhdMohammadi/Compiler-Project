@@ -145,7 +145,7 @@ enum Type{
 public class Node {
     private NonTerminal nonTerminal;
     private ProductionRule productionRule;
-    private ArrayList<Node> children;
+    private ArrayList<Node> children = new ArrayList<Node>();
     private Object value;
     private Type type;
 
