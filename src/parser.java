@@ -1534,6 +1534,9 @@ RESULT = tmp;
           case 44: // VariableDecl_star ::= 
             {
               Object RESULT =null;
+		
+    Node tmp = new Node(LeftHand.VariableDecl_star, ProductionRule.NOTHING);
+    RESULT = tmp;
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("VariableDecl_star",33, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
