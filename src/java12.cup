@@ -167,7 +167,7 @@ precedence left LBRACK, DOT;
 
 start with Program;
 
-Program ::= DeclPlus:d {: Node tmp = new Node(NonTerminal.Program, ProductionRule.DeclPlus); tmp.getChildren().add((Node) d);
+Program ::= DeclPlus:d {: Node tmp = new Node(LeftHand.Program, ProductionRule.DeclPlus); tmp.getChildren().add((Node) d);
                         RESULT = tmp; root = tmp;:};
 DeclPlus ::= Decl:d {:
 
@@ -223,5 +223,11 @@ ITOD LPAREN Expr RPAREN | DTOI LPAREN Expr RPAREN | ITOB LPAREN Expr RPAREN | BT
 LValue ::= IDENTIFIER | Expr DOT IDENTIFIER | Expr LBRACK Expr RBRACK;
 Call ::= IDENTIFIER LPAREN Actuals RPAREN | Expr DOT IDENTIFIER LPAREN Actuals RPAREN;
 Actuals ::= Expr_plus | ;
-Constant ::= INTEGER_LITERAL | DOUBLE_LITERAL | BOOLEAN_LITERAL | STRING_LITERAL | NULL;
+Constant ::= INTEGER_LITERAL:i {:  Node tmp = new Node(NonTerminal.Constant, ProductionRule.INTEGRAL_LITERAL);
+                                   Node id = new Node(Nonterminal.INTE, ProductionRule.IDENTIFIER);
+                                   id.setValue(i);
+                                   tmp.getChildren().add(id);
+                                   RESULT = tmp;
+:}|
+ DOUBLE_LITERAL | BOOLEAN_LITERAL | STRING_LITERAL | NULL;
 
