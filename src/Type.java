@@ -39,12 +39,33 @@ public class Type {
         allPreTypes.add(preType);
     }
 
-    public boolean validate(){
-
-        return false;
+    public static boolean validate(){
+        for (int i = 0; i < allPreTypes.size(); i++) {
+            for (int j = 0; j < allPreTypes.size(); j++) {
+                if (i != j) {
+                    if (allPreTypes.get(i).getName().equals(allPreTypes.get(j).getName())) {
+                        return false;
+                    }
+                }
+            }
+        }
+        for (PreType p: allPreTypes){
+            Type type = new Type();
+            type.setName(p.getName());
+            allTypes.add(type);
+        }
+        for (int i = 0; i < allPreTypes.size(); i++){
+            Type x = getTypeByName(allPreTypes.get(i).getParent());
+            if (x == null){
+                return false;
+            } else {
+                allTypes.get(i).setParent(x);
+            }
+        }
+        return true;
     }
 
-    public Type getTypeByName(String name){
+    public static Type getTypeByName(String name){
         for(Type type : allTypes)
             if(type.name.equals(name))
                 return type;
