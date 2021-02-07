@@ -44,6 +44,13 @@ public class Type {
         return false;
     }
 
+    public Type getTypeByName(String name){
+        for(Type type : allTypes)
+            if(type.name.equals(name))
+                return type;
+        return null;
+    }
+
     public Type getParent() {
         return parent;
     }
