@@ -364,26 +364,25 @@ ClassDecl ::= CLASS IDENTIFIER:i1 ExtendStmt:e ImplementsStmt:i2 LBRACE FieldSta
 :};
 
 AccessMode ::= PRIVATE
-{: Node tmp = new Node(LeftHand.AccessMode, ProductionRule.TERMINAL);
+{: Node tmp = new Node(LeftHand.AccessMode, ProductionRule.PRIVATE);
 RESULT = tmp;:} |
-PROTECTED {: Node tmp = new Node(LeftHand.AccessMode, ProductionRule.TERMINAL);
+PROTECTED {: Node tmp = new Node(LeftHand.AccessMode, ProductionRule.PROTECTED);
 RESULT = tmp;:} |
-PUBLIC {: Node tmp = new Node(LeftHand.AccessMode, ProductionRule.TERMINAL);
+PUBLIC {: Node tmp = new Node(LeftHand.AccessMode, ProductionRule.PUBLIC);
 RESULT = tmp;:} |
 {: Node tmp = new Node(LeftHand.AccessMode, ProductionRule.NOTHING);
 RESULT = tmp;:} ;
 InterfaceDecl ::= INTERFACE IDENTIFIER:i LBRACE Prototype_star:ps RBRACE
 {: Node tmp = new Node(LeftHand.InterfaceDecl, ProductionRule.INTERFACE_IDENTIFIER_LBRACE_Prototype_star_RBRACE);
-tmp.getChildren().add((Node) ps);
 Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
 id.setValue(i);
 tmp.getChildren().add(id);
-Node in = new Node(LeftHand.INTERFACE, ProductionRule.TERMINAL);
-tmp.getChildren().add(in);
+tmp.getChildren().add((Node) ps);
 RESULT = tmp;:};
-Prototype_star ::=  Prototype:p Prototype_star
+Prototype_star ::=  Prototype:p Prototype_star:ps
 {: Node tmp = new Node(LeftHand.Prototype_star, ProductionRule.Prototype_Prototype_star);
 tmp.getChildren().add((Node) p);
+tmp.getChildren().add((Node) ps);
 RESULT = tmp;:} |
 {: Node tmp = new Node(LeftHand.Prototype_star, ProductionRule.NOTHING);
 RESULT = tmp;:};
@@ -396,37 +395,31 @@ tmp.getChildren().add(id);
 tmp.getChildren().add((Node) f);
 RESULT = tmp;:} | VOID IDENTIFIER:i LPAREN Formals:f RPAREN SEMICOLON
 {: Node tmp = new Node(LeftHand.Prototype, ProductionRule.VOID_IDENTIFIER_LPAREN_Formals_RPAREN_SEMICOLON);
-tmp.getChildren().add((Node) f);
-Node vo = new Node(LeftHand.VOID, ProductionRule.TERMINAL);
-tmp.getChildren().add(vo);
 Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
 id.setValue(i);
 tmp.getChildren().add(id);
+tmp.getChildren().add((Node) f);
 RESULT = tmp;:};
 StmtBlock ::= LBRACE VariableDecl_star:vs Stmt_star:ss RBRACE
 {: Node tmp = new Node(LeftHand.StmtBlock, ProductionRule.LBRACE_VariableDecl_star_Stmt_star_RBRACE);
 tmp.getChildren().add((Node) vs);
 tmp.getChildren().add((Node) ss);
-Node lb = new Node(LeftHand.LBRACE, ProductionRule.TERMINAL);
-tmp.getChildren().add(lb);
-Node rb = new Node(LeftHand.RBRACE, ProductionRule.TERMINAL);
-tmp.getChildren().add(rb);
 RESULT = tmp;:};
-VariableDecl_star ::= VariableDecl:v VariableDecl_star
- {: Node tmp = new Node(LeftHand.VariableDecl_star, ProductionRule.);
+VariableDecl_star ::= VariableDecl:v VariableDecl_star:vs
+ {: Node tmp = new Node(LeftHand.VariableDecl_star, ProductionRule.VariableDecl_VariableDecl_star_PLUS);
  tmp.getChildren().add((Node) v);
+ tmp.getChildren().add((Node) vs);
  RESULT = tmp;:} | %prec PLUS;
-Stmt_star ::= Stmt:s Stmt_star
+Stmt_star ::= Stmt:s Stmt_star:ss
 {: Node tmp = new Node(LeftHand.Stmt_star, ProductionRule.Stmt_Stmt_star);
 tmp.getChildren().add((Node) s);
+tmp.getChildren().add((Node) ss);
 RESULT = tmp;:} |
 {: Node tmp = new Node(LeftHand.Stmt_star, ProductionRule.NOTHING);
 RESULT = tmp;:};
 Stmt ::=  Expr_Stmt:es  SEMICOLON
 {: Node tmp = new Node(LeftHand.Stmt, ProductionRule.Expr_Stmt_SEMICOLON);
 tmp.getChildren().add((Node) es);
-Node s = new Node(LeftHand.SEMICOLON, ProductionRule.TERMINAL);
-tmp.getChildren().add(s);
 RESULT = tmp;:} | IfStmt:i
 {: Node tmp = new Node(LeftHand.Stmt, ProductionRule.IfStmt);
 tmp.getChildren().add((Node) i);
@@ -456,21 +449,17 @@ Expr_Stmt ::= Expr:e
 {: Node tmp = new Node(LeftHand.Expr_Stmt, ProductionRule.Expr);
 tmp.getChildren().add((Node) e);
 RESULT = tmp;:} |
-{: Node tmp = new Node(LeftHand.Prototype_star, ProductionRule.NOTHING);
+{: Node tmp = new Node(LeftHand.Expr_Stmt, ProductionRule.NOTHING);
 RESULT = tmp;:};
 IfStmt ::= IF LPAREN Expr:e RPAREN Stmt:s else_Stmt:es
 {: Node tmp = new Node(LeftHand.IfStmt, ProductionRule.IF_LPAREN_Expr_RPAREN_Stmt_else_Stmt);
 tmp.getChildren().add((Node) e);
 tmp.getChildren().add((Node) s);
 tmp.getChildren().add((Node) es);
-Node i = new Node(LeftHand.IF, ProductionRule.TERMINAL);
-tmp.getChildren().add(i);
 RESULT = tmp;:};
 else_Stmt ::= ELSE Stmt:s
 {: Node tmp = new Node(LeftHand.else_Stmt, ProductionRule.ELSE_Stmt);
 tmp.getChildren().add((Node) s);
-Node e = new Node(LeftHand.ELSE, ProductionRule.TERMINAL);
-tmp.getChildren().add(e);
 RESULT = tmp;:}|
 {: Node tmp = new Node(LeftHand.else_Stmt, ProductionRule.NOTHING);
 RESULT = tmp;:};
@@ -478,8 +467,6 @@ WhileStmt ::= WHILE LPAREN Expr:e RPAREN Stmt:s
 {: Node tmp = new Node(LeftHand.WhileStmt, ProductionRule.WHILE_LPAREN_Expr_RPAREN_Stmt);
 tmp.getChildren().add((Node) e);
 tmp.getChildren().add((Node) s);
-Node w = new Node(LeftHand.WHILE, ProductionRule.TERMINAL);
-tmp.getChildren().add(w);
 RESULT = tmp;:};
 ForStmt ::= FOR LPAREN  Expr_Stmt:es  SEMICOLON Expr:e SEMICOLON  Expr_Stmt:es1  RPAREN Stmt:s
 {: Node tmp = new Node(LeftHand.ForStmt, ProductionRule.FOR_LPAREN_Expr_Stmt_SEMICOLON_Expr_SEMICOLON_Expr_Stmt_RPAREN_Stmt);
@@ -487,36 +474,22 @@ tmp.getChildren().add((Node) es);
 tmp.getChildren().add((Node) e);
 tmp.getChildren().add((Node) es1);
 tmp.getChildren().add((Node) s);
-Node f = new Node(LeftHand.FOR, ProductionRule.TERMINAL);
-tmp.getChildren().add(f);
 RESULT = tmp;:};
-
 ReturnStmt ::= RETURN Expr:e SEMICOLON
 {: Node tmp = new Node(LeftHand.ReturnStmt, ProductionRule.RETURN_Expr_SEMICOLON);
 tmp.getChildren().add((Node) e);
-Node r = new Node(LeftHand.RETURN, ProductionRule.TERMINAL);
-tmp.getChildren().add(r);
 RESULT = tmp;:}| RETURN SEMICOLON
 {: Node tmp = new Node(LeftHand.ReturnStmt, ProductionRule.RETURN_SEMICOLON);
-Node r = new Node(LeftHand.RETURN, ProductionRule.TERMINAL);
-tmp.getChildren().add(r);
 RESULT = tmp;:};
 BreakStmt ::= BREAK SEMICOLON
 {: Node tmp = new Node(LeftHand.BreakStmt, ProductionRule.BREAK-SEMICOLON);
-Node b = new Node(LeftHand.BREAK, ProductionRule.TERMINAL);
-tmp.getChildren().add(b);
 RESULT = tmp;:};
 ContinueStmt ::= CONTINUE SEMICOLON
 {: Node tmp = new Node(LeftHand.ContinueStmt, ProductionRule.CONTINUE_SEMICOLON);
-Node c = new Node(LeftHand.CONTINUE, ProductionRule.TERMINAL);
-tmp.getChildren().add(c);
 RESULT = tmp;:};
-//+ ro doros kon
 PrintStmt ::= PRINT LPAREN Expr_plus:ep RPAREN SEMICOLON
 {: Node tmp = new Node(LeftHand.PrintStmt, ProductionRule.PRINT_LPAREN_Expr_plus_RPAREN_SEMICOLON);
 tmp.getChildren().add((Node) ep);
-Node p = new Node(LeftHand.PRINT, ProductionRule.TERMINAL);
-tmp.getChildren().add(p);
 RESULT = tmp;:};
 Expr_plus ::= Expr:e
 {: Node tmp = new Node(LeftHand.Expr_plus, ProductionRule.Expr);
@@ -525,8 +498,6 @@ RESULT = tmp;:}| Expr:e COMMA Expr_plus:ep
 {: Node tmp = new Node(LeftHand.Expr_plus, ProductionRule.Expr_COMMA_Expr_plus);
 tmp.getChildren().add((Node) e);
 tmp.getChildren().add((Node) ep);
-Node c = new Node(LeftHand.COMMA, ProductionRule.TERMINAL);
-tmp.getChildren().add(c);
 RESULT = tmp;:};
 
 Expr ::= LValue:l EQ Expr:e{:  Node tmp = new Node(LeftHand.Expr, ProductionRule.LValue_EQ_Expr);
