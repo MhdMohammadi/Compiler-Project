@@ -39,7 +39,7 @@ public class Type {
         allPreTypes.add(preType);
     }
 
-    public boolean validate(){
+    public static boolean validate(){
         for (int i = 0; i < allPreTypes.size(); i++) {
             for (int j = 0; j < allPreTypes.size(); j++) {
                 if (i != j) {
