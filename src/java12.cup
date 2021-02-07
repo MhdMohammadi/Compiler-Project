@@ -512,7 +512,7 @@ Expr ::= LValue:l EQ Expr:e{:  Node tmp = new Node(LeftHand.Expr, ProductionRule
                  RESULT = tmp;
  :} | THIS:t {:  Node tmp = new Node(LeftHand.Expr, ProductionRule.THIS);
                  Node id = new Node(LeftHand.THIS, ProductionRule.TERMINAL);
-                 id.setValue((Node)t);
+                 id.setValue(t);
                  tmp.getChildren().add((Node)t);
                  RESULT = tmp;
  :}| Call:c {:  Node tmp = new Node(LeftHand.Expr, ProductionRule.Call);
