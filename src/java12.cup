@@ -196,6 +196,7 @@ FunctionDecl:f {:
 ClassDecl:c{:
     Node tmp = new Node(LeftHand.Dec, ProductionRule.ClassDecl);
     tmp.getChildren().add((Node)c);
+
     RESULT = tmp;
 :} |
 InterfaceDecl:i {:
@@ -300,10 +301,12 @@ ExtendStmt ::= EXTENDS IDENTIFIER:i {:
     Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
     id.setValue(i);
     tmp.getChildren().add(id);
+    tmp.setValue(i);
     RESULT = tmp;
 :}|
 {:
     Node tmp = new Node(LeftHand.ExtendStmt, ProductionRule.NOTHING);
+    tmp.setValue(null);
     RESULT = tmp;
 :};
 ImplementsStmt ::= IMPLEMENTS IdentifierImplementsStmt:i {:
@@ -360,6 +363,7 @@ ClassDecl ::= CLASS IDENTIFIER:i1 ExtendStmt:e ImplementsStmt:i2 LBRACE FieldSta
     tmp.getChildren().add((Node)e);
     tmp.getChildren().add((Node)i2);
     tmp.getChildren().add((Node)f);
+    Type.createPreType(i1, (Node)e.getValue);
     RESULT = tmp;
 :};
 
