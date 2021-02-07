@@ -40,6 +40,21 @@ public class Type {
     }
 
     public boolean validate(){
+        for (var i = 0; i < allPreTypes.size(); i++) {
+            for (var j = 0; j < allPreTypes.size(); j++) {
+                if (i != j) {
+                    if (allPreTypes.get(i).getName().equals(allPreTypes.get(j).getName())) {
+                        return false;
+                    }
+                }
+            }
+        }
+        for (PreType p: allPreTypes){
+            Type type = new Type();
+            type.setName(p.getName());
+        }
+
+
 
         return false;
     }
