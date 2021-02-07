@@ -862,7 +862,6 @@ class CUP$parser$actions {
           case 9: // Variable ::= Type IDENTIFIER 
             {
               Object RESULT =null;
-
               CUP$parser$result = parser.getSymbolFactory().newSymbol("Variable",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
