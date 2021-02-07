@@ -1,10 +1,5 @@
 import java.util.ArrayList;
 
-
-enum Type{
-    INT, DOUBLE, STRING, BOOLEAN
-}
-
 public class Node {
     private LeftHand leftHand;
     private ProductionRule productionRule;
