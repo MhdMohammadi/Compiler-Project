@@ -1,6 +1,6 @@
 import java.io.*;
 
-public class MainPhase2 {
+public class MainPhase3 {
     public static void dfs(Node v){
         System.out.println(v.getLeftHand().toString() + " " + v.getProductionRule().toString());
         for (Node node: v.getChildren())
