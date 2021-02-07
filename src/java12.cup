@@ -44,6 +44,8 @@ JDK 1.2 Features added:
 */
 
 parser code  {:
+    public Node root;
+
   public void report_error(String message, Object info) {
     StringBuilder m = new StringBuilder("Error ");
 
@@ -165,7 +167,8 @@ precedence left LBRACK, DOT;
 
 start with Program;
 
-Program ::= DeclPlus;
+Program ::= DeclPlus:d {: Node tmp = new Node(NonTerminal.Program, ProductionRule.DeclPlus); tmp.getChildren().add(d);
+                        RESULT = tmp; this.root = tmp;:};
 DeclPlus ::= Decl | Decl DeclPlus;
 Decl ::= VariableDecl | FunctionDecl | ClassDecl | InterfaceDecl;
 VariableDecl ::= Variable SEMICOLON;

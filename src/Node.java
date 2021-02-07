@@ -124,7 +124,6 @@ enum ProductionRule{
     RETURN_Expr_SEMICOLON , RETURN_SEMICOLON,
     BREAK_SEMICOLON,
     CONTINUE_SEMICOLON,
-//+ ro doros kon
     PRINT_LPAREN_Expr_plus_RPAREN_SEMICOLON,
     Expr_COMMA_Expr_plus,
 
@@ -153,5 +152,45 @@ public class Node {
     public Node(NonTerminal nonTerminal, ProductionRule productionRule){
         this.nonTerminal = nonTerminal;
         this.productionRule = productionRule;
+    }
+
+    public NonTerminal getNonTerminal() {
+        return nonTerminal;
+    }
+
+    public void setNonTerminal(NonTerminal nonTerminal) {
+        this.nonTerminal = nonTerminal;
+    }
+
+    public ProductionRule getProductionRule() {
+        return productionRule;
+    }
+
+    public void setProductionRule(ProductionRule productionRule) {
+        this.productionRule = productionRule;
+    }
+
+    public ArrayList<Node> getChildren() {
+        return children;
+    }
+
+    public void setChildren(ArrayList<Node> children) {
+        this.children = children;
+    }
+
+    public Object getValue() {
+        return value;
+    }
+
+    public void setValue(Object value) {
+        this.value = value;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
     }
 }
