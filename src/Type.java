@@ -65,7 +65,7 @@ public class Type {
         return true;
     }
 
-    public Type getTypeByName(String name){
+    public static Type getTypeByName(String name){
         for(Type type : allTypes)
             if(type.name.equals(name))
                 return type;
