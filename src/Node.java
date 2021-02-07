@@ -17,6 +17,8 @@ public class Node {
         this.productionRule = productionRule;
     }
 
+
+
     public ProductionRule getProductionRule() {
         return productionRule;
     }
@@ -55,5 +57,9 @@ public class Node {
 
     public void setLeftHand(LeftHand leftHand) {
         this.leftHand = leftHand;
+    }
+
+    public ArrayList<Variable> getDefinedVariables() {
+        return definedVariables;
     }
 }
