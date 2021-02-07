@@ -169,14 +169,16 @@ start with Program;
 
 Program ::= DeclPlus:d {: Node tmp = new Node(LeftHand.Program, ProductionRule.DeclPlus); tmp.getChildren().add((Node) d);
                         RESULT = tmp; root = tmp;:};
-DeclPlus ::= Decl | Decl DeclPlus;
+DeclPlus ::= Decl:d {:
+
+:} | Decl DeclPlus;
 Decl ::= VariableDecl | FunctionDecl | ClassDecl | InterfaceDecl;
 VariableDecl ::= Variable SEMICOLON;
 Variable ::= Type:t IDENTIFIER:i{:
-    Node tmp = new Node(NonTerminal.Variable, ProductionRule.Type_IDENTIFIER);
+    Node tmp = new Node(NonTerminal.Variable, ProductionRule.TYPE_IDENTIFIER);
     tmp.getChildren().add((Node) t);
 
-    Node id = new Node(Node.IDENTIFIER, ProductionRule.IDENTIFIER);
+    Node id = new Node(NoneTerminal.IDENTIFIER, ProductionRule.IDENTIFIER);
     id.setValue(i);
     tmp.getChildren().add(id);
     RESULT = tmp;
