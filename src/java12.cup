@@ -221,11 +221,31 @@ ITOD LPAREN Expr RPAREN | DTOI LPAREN Expr RPAREN | ITOB LPAREN Expr RPAREN | BT
 LValue ::= IDENTIFIER | Expr DOT IDENTIFIER | Expr LBRACK Expr RBRACK;
 Call ::= IDENTIFIER LPAREN Actuals RPAREN | Expr DOT IDENTIFIER LPAREN Actuals RPAREN;
 Actuals ::= Expr_plus | ;
-Constant ::= INTEGER_LITERAL:i {:  Node tmp = new Node(NonTerminal.Constant, ProductionRule.INTEGRAL_LITERAL);
-                                   Node id = new Node(Nonterminal.INTE, ProductionRule.IDENTIFIER);
+Constant ::= INTEGER_LITERAL:i {:  Node tmp = new Node(LeftHand.Constant, ProductionRule.INTEGER_LITERAL);
+                                   Node id = new Node(LeftHand.INTEGER_LITERAL, ProductionRule.TERMINAL);
                                    id.setValue(i);
                                    tmp.getChildren().add(id);
                                    RESULT = tmp;
 :}|
- DOUBLE_LITERAL | BOOLEAN_LITERAL | STRING_LITERAL | NULL;
+ DOUBLE_LITERAL:d {:  Node tmp = new Node(LeftHand.Constant, ProductionRule.DOUBLE_LITERAL);
+                     Node id = new Node(LeftHand.DOUBLE_LITERAL, ProductionRule.TERMINAL);
+                     id.setValue(d);
+                     tmp.getChildren().add(id);
+                     RESULT = tmp;
+:} | BOOLEAN_LITERAL:b {:  Node tmp = new Node(LeftHand.Constant, ProductionRule.BOOLEAN_LITERAL);
+                          Node id = new Node(LeftHand.BOOLEAN_LITERAL, ProductionRule.TERMINAL);
+                          id.setValue(b);
+                          tmp.getChildren().add(id);
+                          RESULT = tmp;
+:} | STRING_LITERAL:s {:  Node tmp = new Node(LeftHand.Constant, ProductionRule.STRING_LITERAL);
+                         Node id = new Node(LeftHand.STRING_LITERAL, ProductionRule.TERMINAL);
+                         id.setValue(s);
+                         tmp.getChildren().add(id);
+                         RESULT = tmp;
+:} | NULL:n{:  Node tmp = new Node(LeftHand.Constant, ProductionRule.NULL);
+              Node id = new Node(LeftHand.NULL, ProductionRule.TERMINAL);
+              id.setValue(n);
+              tmp.getChildren().add(id);
+              RESULT = tmp;
+:};
 
