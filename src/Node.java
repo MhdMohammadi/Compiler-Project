@@ -11,7 +11,7 @@ public class Node {
     private ArrayList<Node> children = new ArrayList<Node>();
     private Object value;
     private Type type;
-
+    private ArrayList<Variable> definedVariables = new ArrayList<Variable>();
     public Node(LeftHand leftHand, ProductionRule productionRule){
         this.leftHand = leftHand;
         this.productionRule = productionRule;
