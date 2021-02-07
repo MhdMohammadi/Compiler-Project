@@ -12,7 +12,7 @@ public enum ProductionRule{
     IMPLEMENTS_IdentifierImplementsStmt,
     IDENTIFIER_COMMA_IdentifierImplementsStmt , IDENTIFIER,
     Field_FieldStar,
-    AccessMode_VariableDecl, AccessMode,
+    AccessMode_VariableDecl, AccessMode, AccessMode_FunctionDecl,
     CLASS_IDENTIFIER_ExtendStmt_ImplementsStmt_LBRACE_FieldStar_RBRACE,
     PRIVATE, PROTECTED, PUBLIC,
     INTERFACE_IDENTIFIER_LBRACE_Prototype_star_RBRACE,

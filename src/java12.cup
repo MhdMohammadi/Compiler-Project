@@ -256,56 +256,111 @@ BOOL:b {:
     tmp.getChildren().add(bo);
     RESULT = tmp;
 :};
-FunctionDecl ::= Type IDENTIFIER  LPAREN Formals RPAREN StmtBlock {:
-
+FunctionDecl ::= Type:t IDENTIFIER:i  LPAREN Formals:f RPAREN StmtBlock:s {:
+    Node tmp = new Node(LeftHand.FunctionDecl, ProductionRule.Type_IDENTIFIER_LPAREN_Formals_RPAREN_StmtBlock);
+    tmp.getChildren().add((Node)t);
+    Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
+    id.setValue(i);
+    tmp.getChildren().add(id);
+    tmp.getChildren().add((Node) f);
+    tmp.getChildren().add((Node) s);
+    RESULT = tmp;
 :} |
-VOID IDENTIFIER LPAREN Formals RPAREN StmtBlock {:
-
+VOID IDENTIFIER:i LPAREN Formals:f RPAREN StmtBlock:s {:
+    Node tmp = new Node(LeftHand.FunctionDecl, ProductionRule.VOID_IDENTIFIER_LPAREN_Formals_RPAREN_StmtBlock);
+    Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
+    id.setValue(i);
+    tmp.getChildren().add(id);
+    tmp.getChildren().add((Node)f);
+    tmp.getChildren().add((Node)s);
+    RESULT = tmp;
 :};
-VariablePlus ::= Variable {:
-
+VariablePlus ::= Variable:v {:
+    Node tmp = new Node(LeftHand.VariablePlus, ProductionRule.Variable);
+    tmp.getChildren().add((Node)v);
+    RESULT = tmp;
 :} |
-Variable COMMA VariablePlus {:
-
+Variable:v COMMA VariablePlus:vp {:
+    Node tmp = new Node(LeftHand.VariablePlus, ProductionRule.Variable_COMMA_VariablePlus);
+    tmp.getChildren().add((Node)v);
+    tmp.getChildren().add((Node)vp);
+    RESULT = tmp;
 :};
-Formals ::= VariablePlus {:
-
+Formals ::= VariablePlus:v {:
+    Node tmp = new Node(LeftHand.Formals, ProductionRule.VariablePlus);
+    tmp.getChildren().add((Node)v);
+    RESULT = tmp;
 :} |
 {:
-
+    Node tmp = new Node(LeftHand.Formals, ProductionRule.NOTHING);
+    RESULT = tmp;
 :};
-ExtendStmt ::= EXTENDS IDENTIFIER {:
-
+ExtendStmt ::= EXTENDS IDENTIFIER:i {:
+    Node tmp = new Node(LeftHand.ExtendStmt, ProductionRule.EXTENDS_IDENTIFIER);
+    Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
+    id.setValue(i);
+    tmp.getChildren().add(id);
+    RESULT = tmp;
 :}|
 {:
-
+    Node tmp = new Node(LeftHand.ExtendStmt, ProductionRule.NOTHING);
+    RESULT = tmp;
 :};
-ImplementsStmt ::= IMPLEMENTS IdentifierImplementsStmt {:
-
+ImplementsStmt ::= IMPLEMENTS IdentifierImplementsStmt:i {:
+    Node tmp = new Node(LeftHand.ImplementsStmt, ProductionRule.IMPLEMENTS_IdentifierImplementsStmt);
+    tmp.getChildren().add((Node)i);
+    RESULT = tmp;
 :}|
 {:
-
+    Node tmp = new Node(LeftHand.ImplementsStmt, ProductionRule.NOTHING);
+    RESULT = tmp;
 :};
-IdentifierImplementsStmt ::= IDENTIFIER COMMA IdentifierImplementsStmt {:
-
+IdentifierImplementsStmt ::= IDENTIFIER:i1 COMMA IdentifierImplementsStmt:i2 {:
+    Node tmp = new Node(LeftHand.IdentifierImplementsStmt, ProductionRule.IDENTIFIER_COMMA_IdentifierImplementsStmt);
+    Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
+    id.setValue(i1);
+    tmp.getChildren().add(id);
+    tmp.getChildren().add((Node)i2);
+    RESULT = tmp;
 :}|
-IDENTIFIER {:
-
+IDENTIFIER:i {:
+    Node tmp = new Node(LeftHand.IdentifierImplementsStmt, ProductionRule.IDENTIFIER);
+    Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
+    id.setValue(i);
+    tmp.getChildren().add(id);
+    RESTUL = tmp;
 :};
-FieldStar ::= Field FieldStar {:
-
+FieldStar ::= Field:f1 FieldStar:f2 {:
+    Node tmp = new Node(LeftHand.FieldStar, ProductionRule.Field_FieldStar);
+    tmp.getChildren().add((Node)f1);
+    tmp.getChildren().add((Node)f2);
+    RESULT = tmp;
 :}|
 {:
-
+    Node tmp = new Node(LeftHand.FieldStar, ProductionRule.NOTHING);
+    RESULT = tmp;
 :};
-Field ::= AccessMode VariableDecl {:
-
+Field ::= AccessMode:a VariableDecl:v {:
+    Node tmp = new Node(LeftHand.Field, ProductionRule.AccessMode_VariableDecl);
+    tmp.getChildren().add((Node)a);
+    tmp .getChildren().add((Node)v);
+    RESULT = tmp;
 :} |
-AccessMode FunctionDecl {:
-
+AccessMode:a FunctionDecl:f {:
+    Node tmp = new Node(LeftHand.Field, ProductionRule.AccessMode_FunctionDecl);
+    tmp.getChildren().add((Node)a);
+    tmp.getChildren().add((Node)f);
+    RESULT = tmp;
 :};
-ClassDecl ::= CLASS IDENTIFIER ExtendStmt ImplementsStmt LBRACE FieldStar RBRACE {:
-
+ClassDecl ::= CLASS IDENTIFIER:i1 ExtendStmt:e ImplementsStmt:i2 LBRACE FieldStar:f RBRACE {:
+    Node tmp = new Node(LeftHand.ClassDecl, ProductionRule.CLASS_IDENTIFIER_ExtendStmt_ImplementsStmt_LBRACE_FieldStar_RBRACE);
+    Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
+    id.setValue(i1);
+    tmp.getChildren().add(id);
+    tmp.getChildren().add((Node)e);
+    tmp.getChildren().add((Node)i2);
+    tmp.getChildren().add((Node)f);
+    RESULT = tmp;
 :};
 
 AccessMode ::= PRIVATE | PROTECTED | PUBLIC |  ;
