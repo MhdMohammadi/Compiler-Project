@@ -167,32 +167,146 @@ precedence left LBRACK, DOT;
 
 start with Program;
 
-Program ::= DeclPlus:d {: Node tmp = new Node(LeftHand.Program, ProductionRule.DeclPlus); tmp.getChildren().add((Node) d);
-                        RESULT = tmp; root = tmp;:};
+Program ::= DeclPlus:d {:
+    Node tmp = new Node(LeftHand.Program, ProductionRule.DeclPlus);
+    tmp.getChildren().add((Node) d);
+    RESULT = tmp; root = tmp;
+:};
 DeclPlus ::= Decl:d {:
-
-:} | Decl DeclPlus;
-Decl ::= VariableDecl | FunctionDecl | ClassDecl | InterfaceDecl;
-VariableDecl ::= Variable SEMICOLON;
+    Node tmp = new Node(LeftHand.DeclPlus, ProductionRule.Decl);
+    tmp.getChildren().add((Node)d);
+    RESULT = tmp;
+:} |
+Decl:d1 DeclPlus:d2{:
+    Node tmp = new Node(LeftHand.DeclPlus, ProductionRule.Decl_DeclPlus);
+    tmp.getChildren().add((Node)d1);
+    tmp.getChildren().add((Node)d2);
+    RESULT = tmp;
+:};
+Decl ::= VariableDecl:v{:
+    Node tmp = new Node(LeftHand.Dec, ProductionRule.VariableDecl)
+    tmp.getChildren().add((Node)v);
+    RESULT = tmp;
+:} |
+FunctionDecl:f {:
+    Node tmp = new Node(LeftHand.Dec, ProductionRule.FunctionDecl);
+    tmp.getChildren().add((Node)f);
+    RESULT = tmp;
+:}|
+ClassDecl:c{:
+    Node tmp = new Node(LeftHand.Dec, ProductionRule.ClassDecl);
+    tmp.getChildren().add((Node)c);
+    RESULT = tmp;
+:} |
+InterfaceDecl:i {:
+    Node tmp = new Node(LeftHand.Dec, ProductionRule.InterfaceDecl);
+    tmp.getChildren().add((Node)i);
+    RESULT = tmp;
+:};
+VariableDecl ::= Variable:v SEMICOLON {:
+    Node tmp = new Node(LeftHand.VariableDecl, ProductionRule.Variable);
+    tmp.getChildren().add((Node)v);
+    RESULT = tmp;
+:};
 Variable ::= Type:t IDENTIFIER:i{:
-    Node tmp = new Node(NonTerminal.Variable, ProductionRule.TYPE_IDENTIFIER);
+    Node tmp = new Node(LeftHand.Variable, ProductionRule.Type_IDENTIFIER);
     tmp.getChildren().add((Node) t);
-
-    Node id = new Node(NoneTerminal.IDENTIFIER, ProductionRule.IDENTIFIER);
+    Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
     id.setValue(i);
     tmp.getChildren().add(id);
     RESULT = tmp;
 :};
-Type ::= Type LBRACK RBRACK | IDENTIFIER %prec MULT | INT | DOUBLE | STRING | BOOL ;
-FunctionDecl ::= Type IDENTIFIER  LPAREN Formals RPAREN StmtBlock | VOID IDENTIFIER LPAREN Formals RPAREN StmtBlock;
-VariablePlus ::= Variable | Variable COMMA VariablePlus;
-Formals ::= VariablePlus | ;
-ExtendStmt ::= EXTENDS IDENTIFIER |;
-ImplementsStmt ::= IMPLEMENTS IdentifierImplementsStmt|;
-IdentifierImplementsStmt ::= IDENTIFIER COMMA IdentifierImplementsStmt | IDENTIFIER;
-FieldStar ::= Field FieldStar |;
-Field ::= AccessMode VariableDecl | AccessMode FunctionDecl;
-ClassDecl ::= CLASS IDENTIFIER ExtendStmt ImplementsStmt LBRACE FieldStar RBRACE;
+Type ::= Type:t LBRACK RBRACK {:
+    Node tmp = new Node(LeftHand.Type, ProductionRule.Type_LBRACK_RBRACK);
+    tmp.getChildren().add((Node)t);
+    RESULT = tmp;
+:} |
+IDENTIFIER:i {:
+    Node tmp = new Node(LeftHand.Type, ProductionRule.IDENTIFIER);
+    Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
+    id.setValue(i);
+    tmp.getChildren().add(id);
+    RESULT = tmp;
+:} %prec MULT  |
+INT:i {:
+    Node tmp = new Node(LeftHand.Type, ProductionRule.INT);
+    Node in = new Node(LeftHand.INT, ProductionRule.TERMINAL);
+    in.setValue(i);
+    tmp.getChildren().add(in);
+    RESULT = tmp;
+:}|
+DOUBLE:d {:
+    Node tmp = new Node(LeftHand.Type, ProductionRule.DOUBLE);
+    Node doub = new Node(LeftHand.DOUBLE, ProductionRule.TERMINAL);
+    doub.setValue(d);
+    tmp.getChildren().add(doub);
+    RESULT = tmp;
+:} |
+STRING:s {:
+    Node tmp = new Node(LeftHand.Type, ProductionRule.STRING);
+    Node str = new Node(LeftHand.STRING, ProductionRule.TERMINAL);
+    str.setValue(s);
+    tmp.getChildren().add(str);
+    RESULT = tmp;
+:} |
+BOOL:b {:
+    Node tmp = new Node(LeftHand.Type, ProductionRule.BOOL);
+    Node bo = new Node(LeftHand.BOOL, ProductionRule.TERMINAL);
+    bo.setValue(b);
+    tmp.getChildren().add(bo);
+    RESULT = tmp;
+:};
+FunctionDecl ::= Type IDENTIFIER  LPAREN Formals RPAREN StmtBlock {:
+
+:} |
+VOID IDENTIFIER LPAREN Formals RPAREN StmtBlock {:
+
+:};
+VariablePlus ::= Variable {:
+
+:} |
+Variable COMMA VariablePlus {:
+
+:};
+Formals ::= VariablePlus {:
+
+:} |
+{:
+
+:};
+ExtendStmt ::= EXTENDS IDENTIFIER {:
+
+:}|
+{:
+
+:};
+ImplementsStmt ::= IMPLEMENTS IdentifierImplementsStmt {:
+
+:}|
+{:
+
+:};
+IdentifierImplementsStmt ::= IDENTIFIER COMMA IdentifierImplementsStmt {:
+
+:}|
+IDENTIFIER {:
+
+:};
+FieldStar ::= Field FieldStar {:
+
+:}|
+{:
+
+:};
+Field ::= AccessMode VariableDecl {:
+
+:} |
+AccessMode FunctionDecl {:
+
+:};
+ClassDecl ::= CLASS IDENTIFIER ExtendStmt ImplementsStmt LBRACE FieldStar RBRACE {:
+
+:};
 
 AccessMode ::= PRIVATE | PROTECTED | PUBLIC |  ;
 InterfaceDecl ::= INTERFACE IDENTIFIER LBRACE Prototype_star RBRACE;
