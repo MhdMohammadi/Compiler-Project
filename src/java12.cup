@@ -221,8 +221,29 @@ Expr GT Expr | Expr GTEQ Expr | Expr EQEQ Expr | Expr NOTEQ Expr | Expr ANDAND E
   NOT Expr | READINTEGER LPAREN RPAREN | READLINE LPAREN RPAREN | NEW IDENTIFIER | NEWARRAY LPAREN Expr COMMA Type RPAREN |
 ITOD LPAREN Expr RPAREN | DTOI LPAREN Expr RPAREN | ITOB LPAREN Expr RPAREN | BTOI LPAREN Expr RPAREN;
 LValue ::= IDENTIFIER | Expr DOT IDENTIFIER | Expr LBRACK Expr RBRACK;
-Call ::= IDENTIFIER LPAREN Actuals RPAREN | Expr DOT IDENTIFIER LPAREN Actuals RPAREN;
-Actuals ::= Expr_plus | ;
+Call ::= IDENTIFIER:i LPAREN Actuals:a RPAREN {:  Node tmp = new Node(LeftHand.Call, ProductionRule.IDENTIFIER_LPAREN_Actuals_RPAREN);
+                                                 Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
+                                                 id.setValue(i);
+                                                 tmp.getChildren().add(id);
+                                                 tmp.getChildren().add(a);
+                                                 RESULT = tmp;
+  :}| Expr:e DOT IDENTIFIER:i LPAREN Actuals:a RPAREN {:  Node tmp = new Node(LeftHand.Call, ProductionRule.Expr_DOT_IDENTIFIER_LPAREN_Actuals_RPAREN);
+                                                         Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
+                                                         id.setValue(i);
+                                                         tmp.getChildren().add(e);
+                                                         tmp.getChildren().add(id);
+                                                         tmp.getChildren().add(a);
+                                                         RESULT = tmp;
+  :};
+
+Actuals ::= Expr_plus:e{:  Node tmp = new Node(LeftHand.Actuals, ProductionRule.Expr_plus);
+                          tmp.getChildren().add(e);
+                          RESULT = tmp;
+:} | {:  Node tmp = new Node(LeftHand.Constant, ProductionRule.INTEGER_LITERAL);
+        Node id = new Node(LeftHand.Actuals, ProductionRule.NOTHING);
+        RESULT = tmp;
+:};
+
 Constant ::= INTEGER_LITERAL:i {:  Node tmp = new Node(LeftHand.Constant, ProductionRule.INTEGER_LITERAL);
                                    Node id = new Node(LeftHand.INTEGER_LITERAL, ProductionRule.TERMINAL);
                                    id.setValue(i);
