@@ -12,8 +12,6 @@ public class Node {
         this.productionRule = productionRule;
     }
 
-
-
     public ProductionRule getProductionRule() {
         return productionRule;
     }
