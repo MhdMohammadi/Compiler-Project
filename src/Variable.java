@@ -3,12 +3,23 @@ enum AccessMode{
 }
 
 public class Variable {
-    private String type;
     private String name;
+    private String type;
     private int number;
     private AccessMode accessMode;
     public String getType() {
         return type;
+    }
+
+    public Variable(){
+
+    }
+
+    public Variable(String name, String type, int number, AccessMode accessMode){
+        this.name = name;
+        this.type = type;
+        this.number = number;
+        this.accessMode = accessMode;
     }
 
     public void setType(String type) {
