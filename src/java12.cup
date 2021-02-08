@@ -170,22 +170,26 @@ start with Program;
 Program ::= DeclPlus:d {:
     Node tmp = new Node(LeftHand.Program, ProductionRule.DeclPlus);
     tmp.getChildren().add((Node) d);
+    tmp.getDefinedVariables().addAll(((Node)d).getDefinedVariables());
     RESULT = tmp; root = tmp;
 :};
 DeclPlus ::= Decl:d {:
     Node tmp = new Node(LeftHand.DeclPlus, ProductionRule.Decl);
     tmp.getChildren().add((Node)d);
+    tmp.getDefinedVariables().addAll(((Node)d).getDefinedVariables());
     RESULT = tmp;
 :} |
 Decl:d1 DeclPlus:d2{:
     Node tmp = new Node(LeftHand.DeclPlus, ProductionRule.Decl_DeclPlus);
     tmp.getChildren().add((Node)d1);
     tmp.getChildren().add((Node)d2);
+    tmp.getDefinedVariables().addAll(((Node)d1).getDefinedVariables());
     RESULT = tmp;
 :};
 Decl ::= VariableDecl:v{:
     Node tmp = new Node(LeftHand.Dec, ProductionRule.VariableDecl);
     tmp.getChildren().add((Node)v);
+    tmp.getDefinedVariables().addAll(((Node)v).getDefinedVariables());
     RESULT = tmp;
 :} |
 FunctionDecl:f {:
@@ -207,6 +211,7 @@ InterfaceDecl:i {:
 VariableDecl ::= Variable:v SEMICOLON {:
     Node tmp = new Node(LeftHand.VariableDecl, ProductionRule.Variable);
     tmp.getChildren().add((Node)v);
+    tmp.getDefinedVariables().addAll(((Node)v).getDefinedVariables());
     RESULT = tmp;
 :};
 Variable ::= Type:t IDENTIFIER:i{:
@@ -215,11 +220,17 @@ Variable ::= Type:t IDENTIFIER:i{:
     Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
     id.setValue(i);
     tmp.getChildren().add(id);
+    Variable variable = new Variable();
+    variable.setName(i);
+    tmp.getDefinedVariables().add(variable);
     RESULT = tmp;
 :};
 Type ::= Type:t LBRACK RBRACK {:
+    //badan bara array dorost she
     Node tmp = new Node(LeftHand.Type, ProductionRule.Type_LBRACK_RBRACK);
     tmp.getChildren().add((Node)t);
+    tmp.setTypeName(((Node)t).getTypeName());
+    tmp.setArrayDegree(((Node)t).getArrayDegree() + 1);
     RESULT = tmp;
 :} |
 IDENTIFIER:i {:
@@ -227,6 +238,8 @@ IDENTIFIER:i {:
     Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
     id.setValue(i);
     tmp.getChildren().add(id);
+    tmp.setValue(i);
+    tmp.setTypeName(i);
     RESULT = tmp;
 :} %prec MULT  |
 INT:i {:
@@ -234,6 +247,7 @@ INT:i {:
     Node in = new Node(LeftHand.INT, ProductionRule.TERMINAL);
     in.setValue(i);
     tmp.getChildren().add(in);
+    tmp.setTypeName("int");
     RESULT = tmp;
 :}|
 DOUBLE:d {:
@@ -241,6 +255,7 @@ DOUBLE:d {:
     Node doub = new Node(LeftHand.DOUBLE, ProductionRule.TERMINAL);
     doub.setValue(d);
     tmp.getChildren().add(doub);
+    tmp.setTypeName("double");
     RESULT = tmp;
 :} |
 STRING:s {:
@@ -248,6 +263,7 @@ STRING:s {:
     Node str = new Node(LeftHand.STRING, ProductionRule.TERMINAL);
     str.setValue(s);
     tmp.getChildren().add(str);
+    tmp.setTypeName("string");
     RESULT = tmp;
 :} |
 BOOL:b {:
@@ -255,6 +271,7 @@ BOOL:b {:
     Node bo = new Node(LeftHand.BOOL, ProductionRule.TERMINAL);
     bo.setValue(b);
     tmp.getChildren().add(bo);
+    tmp.setTypeName("boolean");
     RESULT = tmp;
 :};
 FunctionDecl ::= Type:t IDENTIFIER:i  LPAREN Formals:f RPAREN StmtBlock:s {:
@@ -279,17 +296,21 @@ VOID IDENTIFIER:i LPAREN Formals:f RPAREN StmtBlock:s {:
 VariablePlus ::= Variable:v {:
     Node tmp = new Node(LeftHand.VariablePlus, ProductionRule.Variable);
     tmp.getChildren().add((Node)v);
+    tmp.getDefinedVariables().addAll(((Node)v).getDefinedVariables());
     RESULT = tmp;
 :} |
 Variable:v COMMA VariablePlus:vp {:
     Node tmp = new Node(LeftHand.VariablePlus, ProductionRule.Variable_COMMA_VariablePlus);
     tmp.getChildren().add((Node)v);
     tmp.getChildren().add((Node)vp);
+    tmp.getDefinedVariables().addAll(((Node)v).getDefinedVariables());
+    tmp.getDefinedVariables().addAll(((Node)vp).getDefinedVariables());
     RESULT = tmp;
 :};
 Formals ::= VariablePlus:v {:
     Node tmp = new Node(LeftHand.Formals, ProductionRule.VariablePlus);
     tmp.getChildren().add((Node)v);
+    tmp.getDefinedVariables().addAll(((Node)v).getDefinedVariables());
     RESULT = tmp;
 :} |
 {:
@@ -347,6 +368,10 @@ Field ::= AccessMode:a VariableDecl:v {:
     Node tmp = new Node(LeftHand.Field, ProductionRule.AccessMode_VariableDecl);
     tmp.getChildren().add((Node)a);
     tmp .getChildren().add((Node)v);
+    tmp.getDefinedVariables().addAll(((Node)v).getDefinedVariables());
+    for(Variable variable: ((Node)v).getDefinedVariables()){
+        variable.setAccessMode(((Node)a).getAccessMode());
+    }
     RESULT = tmp;
 :} |
 AccessMode:a FunctionDecl:f {:
@@ -365,17 +390,21 @@ ClassDecl ::= CLASS IDENTIFIER:i1 ExtendStmt:e ImplementsStmt:i2 LBRACE FieldSta
     tmp.getChildren().add((Node)i2);
     tmp.getChildren().add((Node)f);
     Type.createPreType(i1, (String)((Node)e).getValue());
+    tmp.getDefinedVariables().addAll(((Node)f).getDefinedVariables());
     RESULT = tmp;
 :};
 
 AccessMode ::= PRIVATE
 {: Node tmp = new Node(LeftHand.AccessMode, ProductionRule.PRIVATE);
+tmp.setAccessMode(AccessMode.PRIVATE);
 RESULT = tmp;:} |
 PROTECTED {: Node tmp = new Node(LeftHand.AccessMode, ProductionRule.PROTECTED);
+tmp.setAccessMode(AccessMode.PROTECTED);
 RESULT = tmp;:} |
 PUBLIC {: Node tmp = new Node(LeftHand.AccessMode, ProductionRule.PUBLIC);
 RESULT = tmp;:} |
 {: Node tmp = new Node(LeftHand.AccessMode, ProductionRule.NOTHING);
+tmp.setAccessMode(AccessMode.PUBLIC);
 RESULT = tmp;:} ;
 InterfaceDecl ::= INTERFACE IDENTIFIER:i LBRACE Prototype_star:ps RBRACE
 {: Node tmp = new Node(LeftHand.InterfaceDecl, ProductionRule.INTERFACE_IDENTIFIER_LBRACE_Prototype_star_RBRACE);
@@ -409,11 +438,14 @@ StmtBlock ::= LBRACE VariableDecl_star:vs Stmt_star:ss RBRACE
 {: Node tmp = new Node(LeftHand.StmtBlock, ProductionRule.LBRACE_VariableDecl_star_Stmt_star_RBRACE);
 tmp.getChildren().add((Node) vs);
 tmp.getChildren().add((Node) ss);
+tmp.getDefinedVariables().addAll(((Node)vs).getDefinedVariables());
 RESULT = tmp;:};
 VariableDecl_star ::= VariableDecl:v VariableDecl_star:vs
  {: Node tmp = new Node(LeftHand.VariableDecl_star, ProductionRule.VariableDecl_VariableDecl_star_PLUS);
  tmp.getChildren().add((Node) v);
  tmp.getChildren().add((Node) vs);
+ tmp.getDefinedVariables().addAll(((Node)v).getDefinedVariables());
+ tmp.getDefinedVariables().addAll(((Node)vs).getDefinedVariables());
  RESULT = tmp;:} |
 {:
     Node tmp = new Node(LeftHand.VariableDecl_star, ProductionRule.NOTHING);
@@ -453,6 +485,7 @@ tmp.getChildren().add((Node) p);
 RESULT = tmp;:}| StmtBlock:s
 {: Node tmp = new Node(LeftHand.Stmt, ProductionRule.StmtBlock);
 tmp.getChildren().add((Node) s);
+tmp.getDefinedVariables().addAll(((Node)s).getDefinedVariables());
 RESULT = tmp;:};
 Expr_Stmt ::= Expr:e
 {: Node tmp = new Node(LeftHand.Expr_Stmt, ProductionRule.Expr);
