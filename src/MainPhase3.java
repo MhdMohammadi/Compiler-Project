@@ -32,7 +32,7 @@ public class MainPhase3 {
         parser p = new parser(new Scanner(reader));
         p.parse();
         Compiler c = new Compiler(parser.root);
-        c.preprocess(c.getRoot());
+        c.preProcess(c.getRoot());
         /* try {
             p.parse();
   //          writer.write("OK");

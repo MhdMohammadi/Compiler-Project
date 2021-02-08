@@ -6,12 +6,12 @@ public class Compiler {
         this.root = root;
     }
 
-    public void preprocess(Node v){
+    public void preProcess(Node v){
         v.setIndex(cnt);
         cnt ++;
         for (Node node: v.getChildren()) {
             node.setParent(v);
-            preprocess(node);
+            preProcess(node);
         }
     }
 
