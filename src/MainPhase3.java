@@ -33,6 +33,7 @@ public class MainPhase3 {
         p.parse();
         Compiler c = new Compiler(parser.root);
         c.preProcess(c.getRoot());
+        System.out.println(Type.validate());
         /* try {
             p.parse();
   //          writer.write("OK");
