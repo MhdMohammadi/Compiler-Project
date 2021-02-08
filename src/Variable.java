@@ -1,29 +1,23 @@
-enum AccessMode{
+enum AccessMode {
     PROTECTED, PUBLIC, PRIVATE;
 }
 
 public class Variable {
     private String name;
-    private String type;
+    private Type type;
+    private int nodeIndex;
     private int number;
     private AccessMode accessMode;
-    public String getType() {
-        return type;
-    }
 
-    public Variable(){
+    public Variable() {
 
     }
 
-    public Variable(String name, String type, int number, AccessMode accessMode){
+    public Variable(String name, Type type, int number, AccessMode accessMode) {
         this.name = name;
         this.type = type;
         this.number = number;
         this.accessMode = accessMode;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public String getName() {
@@ -49,4 +43,21 @@ public class Variable {
     public void setAccessMode(AccessMode accessMode) {
         this.accessMode = accessMode;
     }
+
+    public int getNodeIndex() {
+        return nodeIndex;
+    }
+
+    public void setNodeIndex(int nodeIndex) {
+        this.nodeIndex = nodeIndex;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+
 }
