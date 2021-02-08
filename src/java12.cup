@@ -238,7 +238,6 @@ IDENTIFIER:i {:
     Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
     id.setValue(i);
     tmp.getChildren().add(id);
-    tmp.setValue(i);
     tmp.setTypeName(i);
     RESULT = tmp;
 :} %prec MULT  |
@@ -282,6 +281,8 @@ FunctionDecl ::= Type:t IDENTIFIER:i  LPAREN Formals:f RPAREN StmtBlock:s {:
     tmp.getChildren().add(id);
     tmp.getChildren().add((Node) f);
     tmp.getChildren().add((Node) s);
+    tmp.getDefinedVariables().addAll(((Node)f).getDefinedVariables());
+    tmp.getDefinedVariables().addAll(((Node)s).getDefinedVariables());
     RESULT = tmp;
 :} |
 VOID IDENTIFIER:i LPAREN Formals:f RPAREN StmtBlock:s {:
@@ -291,6 +292,8 @@ VOID IDENTIFIER:i LPAREN Formals:f RPAREN StmtBlock:s {:
     tmp.getChildren().add(id);
     tmp.getChildren().add((Node)f);
     tmp.getChildren().add((Node)s);
+    tmp.getDefinedVariables().addAll(((Node)f).getDefinedVariables());
+    tmp.getDefinedVariables().addAll(((Node)s).getDefinedVariables());
     RESULT = tmp;
 :};
 VariablePlus ::= Variable:v {:
@@ -358,6 +361,8 @@ FieldStar ::= Field:f1 FieldStar:f2 {:
     Node tmp = new Node(LeftHand.FieldStar, ProductionRule.Field_FieldStar);
     tmp.getChildren().add((Node)f1);
     tmp.getChildren().add((Node)f2);
+    tmp.getDefinedVariables().addAll(((Node)f1).getDefinedVariables());
+    tmp.getDefinedVariables().addAll(((Node)f2).getDefinedVariables());
     RESULT = tmp;
 :}|
 {:
@@ -485,7 +490,6 @@ tmp.getChildren().add((Node) p);
 RESULT = tmp;:}| StmtBlock:s
 {: Node tmp = new Node(LeftHand.Stmt, ProductionRule.StmtBlock);
 tmp.getChildren().add((Node) s);
-tmp.getDefinedVariables().addAll(((Node)s).getDefinedVariables());
 RESULT = tmp;:};
 Expr_Stmt ::= Expr:e
 {: Node tmp = new Node(LeftHand.Expr_Stmt, ProductionRule.Expr);
