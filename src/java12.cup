@@ -355,6 +355,7 @@ AccessMode:a FunctionDecl:f {:
     tmp.getChildren().add((Node)f);
     RESULT = tmp;
 :};
+
 ClassDecl ::= CLASS IDENTIFIER:i1 ExtendStmt:e ImplementsStmt:i2 LBRACE FieldStar:f RBRACE {:
     Node tmp = new Node(LeftHand.ClassDecl, ProductionRule.CLASS_IDENTIFIER_ExtendStmt_ImplementsStmt_LBRACE_FieldStar_RBRACE);
     Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
@@ -363,7 +364,7 @@ ClassDecl ::= CLASS IDENTIFIER:i1 ExtendStmt:e ImplementsStmt:i2 LBRACE FieldSta
     tmp.getChildren().add((Node)e);
     tmp.getChildren().add((Node)i2);
     tmp.getChildren().add((Node)f);
-    Type.createPreType(i1, (String) ((Node)e).getValue());
+    Type.createPreType(i1, (String)((Node)e).getValue());
     RESULT = tmp;
 :};
 

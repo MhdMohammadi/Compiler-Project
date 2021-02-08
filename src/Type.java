@@ -60,14 +60,14 @@ public class Type {
         }
         for (int i = 0; i < allPreTypes.size(); i++){
             String parentName = allPreTypes.get(i).getParent();
-            if(parentName.equals("int") || parentName.equals("double") || parentName.equals("boolean") || parentName.equals("string"))
+            if(parentName == null) continue;
+            if (parentName.equals("int") || parentName.equals("double") || parentName.equals("boolean") || parentName.equals("string"))
                 return false;
-            Type x = getTypeByName(allPreTypes.get(i).getParent());
-            if (x == null){
+            Type x = getTypeByName(parentName);
+            if (x == null)
                 return false;
-            } else {
+            else
                 allTypes.get(i).setParent(x);
-            }
         }
         return true;
     }

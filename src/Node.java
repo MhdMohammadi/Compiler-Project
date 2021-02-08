@@ -7,6 +7,8 @@ public class Node {
     private Object value;
     private Type type;
     private ArrayList<Variable> definedVariables = new ArrayList<Variable>();
+    private int index;
+    private Node parent;
     public Node(LeftHand leftHand, ProductionRule productionRule){
         this.leftHand = leftHand;
         this.productionRule = productionRule;
@@ -54,5 +56,21 @@ public class Node {
 
     public ArrayList<Variable> getDefinedVariables() {
         return definedVariables;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    public Node getParent() {
+        return parent;
+    }
+
+    public void setParent(Node parent) {
+        this.parent = parent;
     }
 }
