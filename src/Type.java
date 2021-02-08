@@ -31,7 +31,7 @@ public class Type {
     public static ArrayList<PreType> allPreTypes = new ArrayList<>();
 
     private Type parent;
-    private boolean isArray;
+    private int isArray;
     private String name;
 
     public static void createPreType(String name, String parent){
