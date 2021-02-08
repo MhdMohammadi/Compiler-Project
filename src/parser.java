@@ -1359,7 +1359,7 @@ class CUP$parser$actions {
     tmp.getChildren().add((Node)e);
     tmp.getChildren().add((Node)i2);
     tmp.getChildren().add((Node)f);
-    Type.createPreType(i1, (Node)e.getValue);
+    Type.createPreType(i1, (String)((Node)e).getValue());
     RESULT = tmp;
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ClassDecl",7, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-6)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);

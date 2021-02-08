@@ -1,11 +1,7 @@
-import java.io.*;
+import java.io.FileReader;
+import java.io.Reader;
 
 public class MainPhase3 {
-    public static void dfs(Node v){
-        System.out.println(v.getLeftHand().toString() + " " + v.getProductionRule().toString());
-        for (Node node: v.getChildren())
-            dfs(node);
-    }
 
     public static void main(String[] args) throws Exception {
         String inputFileName = "t01.in";
@@ -35,8 +31,8 @@ public class MainPhase3 {
 
         parser p = new parser(new Scanner(reader));
         p.parse();
-        System.out.println(parser.root.getChildren().size());
-        dfs(parser.root);
+        Compiler c = new Compiler(parser.root);
+        c.preprocess(c.getRoot());
         /* try {
             p.parse();
   //          writer.write("OK");
