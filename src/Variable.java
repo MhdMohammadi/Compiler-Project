@@ -4,8 +4,7 @@ enum AccessMode {
 
 public class Variable {
     private String name;
-    private ُ
-    Type type;
+    private Type type;
     private int nodeIndex;
     private int number;
     private AccessMode accessMode;

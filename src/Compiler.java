@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Compiler {
     private Node root;
     private int cnt = 0;
@@ -30,6 +32,16 @@ public class Compiler {
         }
         for(Node node : v.getChildren())
             setVariablesType(node);
+    }
+
+    public boolean areAllVariablesUnique(Node v){
+        ArrayList<Variable> variables = v.getDefinedVariables();
+        for(int i = 0; i < variables.size(); i++)
+            for(int j = i + 1; j < variables.size(); j++) {
+                if (variables.get(i).getName().equals(variables.get(j).getName()))
+                    semanticError();
+            }
+        return true;
     }
 
     public Node getRoot() {
