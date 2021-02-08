@@ -876,6 +876,7 @@ class CUP$parser$actions {
 		
     Node tmp = new Node(LeftHand.Dec, ProductionRule.ClassDecl);
     tmp.getChildren().add((Node)c);
+
     RESULT = tmp;
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("Decl",1, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
@@ -1174,6 +1175,7 @@ class CUP$parser$actions {
     Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
     id.setValue(i);
     tmp.getChildren().add(id);
+    tmp.setValue(i);
     RESULT = tmp;
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ExtendStmt",28, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
@@ -1186,6 +1188,7 @@ class CUP$parser$actions {
               Object RESULT =null;
 		
     Node tmp = new Node(LeftHand.ExtendStmt, ProductionRule.NOTHING);
+    tmp.setValue(null);
     RESULT = tmp;
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ExtendStmt",28, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
@@ -1356,6 +1359,7 @@ class CUP$parser$actions {
     tmp.getChildren().add((Node)e);
     tmp.getChildren().add((Node)i2);
     tmp.getChildren().add((Node)f);
+    Type.createPreType(i1, (Node)e.getValue);
     RESULT = tmp;
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ClassDecl",7, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-6)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
@@ -2514,7 +2518,7 @@ RESULT = tmp;
           case 105: // Actuals ::= 
             {
               Object RESULT =null;
-		  Node tmp = new Node(LeftHand.Constant, ProductionRule.INTEGER_LITERAL);
+		  Node tmp = new Node(LeftHand.Constant, ProductionRule.NOTHING);
         Node id = new Node(LeftHand.Actuals, ProductionRule.NOTHING);
         RESULT = tmp;
 
