@@ -1,7 +1,7 @@
 
 public class Variable {
     private String name;
-    Type type;
+    private Type type;
     private int nodeIndex;
     private int number;
     private AccessMode accessMode;
