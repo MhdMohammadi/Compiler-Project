@@ -40,6 +40,10 @@ public class Type {
     }
 
     public static boolean validate(){
+        allPreTypes.add(new PreType("int", null));
+        allPreTypes.add(new PreType("double", null));
+        allPreTypes.add(new PreType("boolean", null));
+        allPreTypes.add(new PreType("string", null));
         for (int i = 0; i < allPreTypes.size(); i++) {
             for (int j = 0; j < allPreTypes.size(); j++) {
                 if (i != j) {
@@ -55,6 +59,9 @@ public class Type {
             allTypes.add(type);
         }
         for (int i = 0; i < allPreTypes.size(); i++){
+            String parentName = allPreTypes.get(i).getParent();
+            if(parentName.equals("int") || parentName.equals("double") || parentName.equals("boolean") || parentName.equals("string"))
+                return false;
             Type x = getTypeByName(allPreTypes.get(i).getParent());
             if (x == null){
                 return false;

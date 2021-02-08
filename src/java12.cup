@@ -653,7 +653,7 @@ Call ::= IDENTIFIER:i LPAREN Actuals:a RPAREN {:  Node tmp = new Node(LeftHand.C
 Actuals ::= Expr_plus:e{:  Node tmp = new Node(LeftHand.Actuals, ProductionRule.Expr_plus);
                           tmp.getChildren().add((Node)e);
                           RESULT = tmp;
-:} | {:  Node tmp = new Node(LeftHand.Constant, ProductionRule.INTEGER_LITERAL);
+:} | {:  Node tmp = new Node(LeftHand.Constant, ProductionRule.NOTHING);
         Node id = new Node(LeftHand.Actuals, ProductionRule.NOTHING);
         RESULT = tmp;
 :};
