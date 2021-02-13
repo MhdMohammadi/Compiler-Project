@@ -72,6 +72,18 @@ public class Type {
         return true;
     }
 
+    public static Type createArrayType(Type type){
+        for(Type type1 : allTypes){
+            if(type1.name == type.name && type1.arrayDegree == type.arrayDegree + 1)
+                return type1;
+        }
+        Type type1 = new Type();
+        type1.arrayDegree = type.arrayDegree + 1;
+        type1.name = type.name;
+        allTypes.add(type1);
+        return type1;
+    }
+
     public static Type getTypeByName(String name){
         for(Type type : allTypes)
             if(type.name.equals(name))
@@ -84,7 +96,7 @@ public class Type {
     }
 
     public static boolean possible(Type t1, Operator operator){
-
+        return false;
     }
 
     public Type getParent() {

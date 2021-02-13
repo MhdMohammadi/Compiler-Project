@@ -43,7 +43,7 @@ public class Compiler {
         return null;
     }
 
-    public boolean setVariablesType(Node v){
+    public void setVariablesType(Node v){
         if(v.getLeftHand() == LeftHand.Variable){
             Type type = Type.getTypeByName((String)v.getChildren().get(0).getValue());
             if(type == null) Compiler.semanticError();
@@ -53,17 +53,20 @@ public class Compiler {
             setVariablesType(node);
     }
 
-    public boolean areAllVariablesUnique(Node v){
+    public void areAllVariablesUnique(Node v){
         ArrayList<Variable> variables = v.getDefinedVariables();
         for(int i = 0; i < variables.size(); i++)
             for(int j = i + 1; j < variables.size(); j++) {
                 if (variables.get(i).getName().equals(variables.get(j).getName()))
                     semanticError();
             }
-        return true;
+        for(Node node : v.getChildren())
+            areAllVariablesUnique(node);
     }
 
     public void setAllNodesType(Node v){
+        for(Node node : v.getChildren())
+            setVariablesType(node);
         switch (v.getLeftHand()){
             case Constant:
                 switch (v.getProductionRule()){
@@ -84,10 +87,28 @@ public class Compiler {
                 }
                 break;
             case Call:
-                // todo
+                switch (v.getProductionRule()){
+                    case IDENTIFIER_LPAREN_Actuals_RPAREN:
+                        //todo
+                        break;
+                    case Expr_DOT_IDENTIFIER_LPAREN_Actuals_RPAREN:
+                        //todo
+                        break;
+                }
                 break;
             case LValue:
-                // todo
+                switch (v.getProductionRule()){
+                    case IDENTIFIER:
+                        v.setType(v.getChildren().get(0).getType());
+                        break;
+                    case Expr_DOT_IDENTIFIER:
+                        Type type = v.getChildren().get(0).getType();
+                        //todo
+                        break;
+                    case Expr_LBRACK_Expr_RBRACK:
+                        v.setType(v.getChildren().get(0).getType());
+                        break;
+                }
                 break;
             case Expr:
                 switch (v.getProductionRule()){
@@ -144,49 +165,62 @@ public class Compiler {
                     case Expr_LT_Expr:
                         if(!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.LT))
                             semanticError();
-                        v.setType(v.getChildren().get(0).getType());
+                        v.setType(Type.getTypeByName("boolean"));
                         break;
                     case Expr_LTEQ_Expr:
                         if(!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.LTEQ))
                             semanticError();
-                        v.setType(v.getChildren().get(0).getType());
+                        v.setType(Type.getTypeByName("boolean"));
                         break;
                     case Expr_GT_Expr:
                         if(!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.GT))
                             semanticError();
-                        v.setType(v.getChildren().get(0).getType());
+                        v.setType(Type.getTypeByName("boolean"));
                         break;
                     case Expr_GTEQ_Expr:
                         if(!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.GTEQ))
                             semanticError();
-                        v.setType(v.getChildren().get(0).getType());
+                        v.setType(Type.getTypeByName("boolean"));
                         break;
                     case Expr_EQEQ_Expr:
                         if(!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.EQEQ))
                             semanticError();
-                        v.setType(v.getChildren().get(0).getType());
+                        v.setType(Type.getTypeByName("boolean"));
                         break;
                     case Expr_NOTEQ_Expr:
-                        if(!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.word))
+                        if(!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.NOTEQ))
                             semanticError();
-                        v.setType(v.getChildren().get(0).getType());
-
+                        v.setType(Type.getTypeByName("boolean"));
                         break;
                     case Expr_ANDAND_Expr:
+                        if(!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.ANDAND))
+                            semanticError();
+                        v.setType(Type.getTypeByName("boolean"));
                         break;
                     case Expr_OROR_Expr:
+                        if(!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.OROR))
+                            semanticError();
+                        v.setType(Type.getTypeByName("boolean"));
                         break;
                     case NOT_Expr:
+                        if(!Type.possible(v.getChildren().get(0).getType(), Operator.SINGLE_NOT))
+                            semanticError();
+                        v.setType(Type.getTypeByName("boolean"));
                         break;
                     case READINTEGER_LPAREN_RPAREN:
+                        v.setType(Type.getTypeByName("int"));
                         break;
                     case READLINE_LPAREN_RPAREN:
+                        v.setType(Type.getTypeByName("string"));
                         break;
                     case NEW_IDENTIFIER:
+                        v.setType(v.getChildren().get(0).getType());
                         break;
                     case NEWARRAY_LPAREN_Expr_COMMA_Type_RPAREN:
+                        v.setType(Type.createArrayType(v.getChildren().get(1).getType()));
                         break;
                 }
+                break;
         }
     }
 
