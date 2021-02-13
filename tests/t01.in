@@ -1,3 +1,7 @@
+class hi{
+
+}
+
 int main(){
-    hi  id;
+    hi id;
 }
