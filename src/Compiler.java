@@ -43,6 +43,7 @@ public class Compiler {
         return null;
     }
 
+
     public void setVariablesType(Node v){
         if(v.getLeftHand() == LeftHand.Variable){
             Type type = Type.getTypeByName((String)v.getChildren().get(0).getValue());
