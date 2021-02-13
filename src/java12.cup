@@ -163,7 +163,7 @@ precedence left PLUS, MINUS;
 precedence left MULT, DIV, MOD;
 precedence left NOT, MINUS;
 precedence left LBRACK, DOT;
-//precedence left IDENTIFIER;
+precedence left IDENTIFIER;
 
 start with Program;
 
@@ -439,7 +439,7 @@ id.setValue(i);
 tmp.getChildren().add(id);
 tmp.getChildren().add((Node) f);
 RESULT = tmp;:};
-StmtBlock ::= LBRACE VariableDecl_star:vs Stmt_star:ss RBRACE
+StmtBlock ::= LBRACE VariableDecl_star:vs  Stmt_star:ss RBRACE
 {: Node tmp = new Node(LeftHand.StmtBlock, ProductionRule.LBRACE_VariableDecl_star_Stmt_star_RBRACE);
 tmp.getChildren().add((Node) vs);
 tmp.getChildren().add((Node) ss);
@@ -455,7 +455,7 @@ VariableDecl_star ::= VariableDecl:v VariableDecl_star:vs
 {:
     Node tmp = new Node(LeftHand.VariableDecl_star, ProductionRule.NOTHING);
     RESULT = tmp;
-:}  %prec PLUS;
+:} %prec PLUS;
 Stmt_star ::= Stmt:s Stmt_star:ss
 {: Node tmp = new Node(LeftHand.Stmt_star, ProductionRule.Stmt_Stmt_star);
 tmp.getChildren().add((Node) s);

@@ -1,16 +1,3 @@
-class A extends B{
-
-}
-
-class B extends C{
-
-}
-
-class C{
-
-}
-
-int main() {
-
-    INT x;
+int main(){
+    hi  id;
 }
