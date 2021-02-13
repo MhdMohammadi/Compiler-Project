@@ -31,7 +31,7 @@ public class Type {
     public static ArrayList<PreType> allPreTypes = new ArrayList<>();
 
     private Type parent;
-    private int isArray;
+    private int arrayDegree;
     private String name;
 
     public static void createPreType(String name, String parent){
@@ -95,12 +95,12 @@ public class Type {
         this.parent = parent;
     }
 
-    public boolean isArray() {
-        return isArray;
+    public int isArray() {
+        return arrayDegree;
     }
 
-    public void setArray(boolean array) {
-        isArray = array;
+    public void setArray(int array) {
+        arrayDegree = array;
     }
 
     public String getName() {

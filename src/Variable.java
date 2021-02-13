@@ -1,6 +1,3 @@
-enum AccessMode {
-    PROTECTED, PUBLIC, PRIVATE;
-}
 
 public class Variable {
     private String name;

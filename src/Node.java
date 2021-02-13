@@ -1,10 +1,15 @@
 import java.util.ArrayList;
 
 public class Node {
+    private AccessMode accessMode;
     private LeftHand leftHand;
     private ProductionRule productionRule;
     private ArrayList<Node> children = new ArrayList<Node>();
     private Object value;
+
+    private String typeName;
+    private int arrayDegree = 0;
+
     private Type type;
     private ArrayList<Variable> definedVariables = new ArrayList<Variable>();
     private int index;
@@ -72,5 +77,29 @@ public class Node {
 
     public void setParent(Node parent) {
         this.parent = parent;
+    }
+
+    public String getTypeName() {
+        return typeName;
+    }
+
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
+    }
+
+    public int getArrayDegree() {
+        return arrayDegree;
+    }
+
+    public void setArrayDegree(int arrayDegree) {
+        this.arrayDegree = arrayDegree;
+    }
+
+    public AccessMode getAccessMode() {
+        return accessMode;
+    }
+
+    public void setAccessMode(AccessMode accessMode) {
+        this.accessMode = accessMode;
     }
 }
