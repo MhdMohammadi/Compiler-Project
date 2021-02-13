@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.rmi.registry.LocateRegistry;
 import java.util.ArrayList;
 
 public class Type {
@@ -72,11 +73,51 @@ public class Type {
         return true;
     }
 
+    public static Type createArrayType(Type type){
+        for(Type type1 : allTypes){
+            if(type1.name == type.name && type1.arrayDegree == type.arrayDegree + 1)
+                return type1;
+        }
+        Type type1 = new Type();
+        type1.arrayDegree = type.arrayDegree + 1;
+        type1.name = type.name;
+        allTypes.add(type1);
+        return type1;
+    }
+
     public static Type getTypeByName(String name){
         for(Type type : allTypes)
             if(type.name.equals(name))
                 return type;
         return null;
+    }
+
+    public static boolean possible(Type t1, Type t2, Operator operator){
+        if(t1 != t2) return false;
+
+        Type INT = getTypeByName("int");
+        Type DOUBLE = getTypeByName("double");
+        Type BOOLEAN = getTypeByName("boolean");
+        Type STRING = getTypeByName("string");
+
+        if(operator == Operator.MOD && t1 != INT) return false;
+        if((operator == Operator.MINUS || operator == Operator.DIV || operator == Operator.MULT)
+                && (t1 != INT && t1 != DOUBLE)) return false;
+        if((operator == Operator.PLUS) && (t1 != INT && t1 != DOUBLE && t1 != BOOLEAN && t1 != STRING && t1.arrayDegree == 0)) return false;
+        if((operator == Operator.ANDAND || operator == Operator.OROR || operator == Operator.SINGLE_NOT || operator == Operator.LT
+            || operator == Operator.GT || operator == Operator.LTEQ || operator == Operator.GTEQ || operator == Operator.EQEQ
+            || operator == Operator.NOTEQ) && t1 != BOOLEAN) return false;
+
+        return true;
+    }
+
+    public static boolean possible(Type t1, Operator operator){
+        Type INT = getTypeByName("int");
+        Type DOUBLE = getTypeByName("double");
+        Type BOOLEAN = getTypeByName("boolean");
+        if(operator == Operator.SINGLE_NOT && t1 == BOOLEAN) return true;
+        if(operator == Operator.SINGLE_MINUS && (t1 == INT || t1 == DOUBLE)) return true;
+        return false;
     }
 
     public Type getParent() {

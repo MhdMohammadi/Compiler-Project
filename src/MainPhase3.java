@@ -5,7 +5,7 @@ public class MainPhase3 {
 
     public static void main(String[] args) throws Exception {
         String inputFileName = "t01.in";
-        //String outputFileName = null;
+//        String outputFileName = null;
 
 /*        if (args != null)
             for (int i = 0; i < args.length; i++) {
@@ -16,7 +16,7 @@ public class MainPhase3 {
             }
 */
         Reader reader;
-        //Writer writer;
+//        Writer writer;
 
         if (inputFileName != null)
             reader = new FileReader("tests/" + inputFileName);
