@@ -79,6 +79,14 @@ public class Type {
         return null;
     }
 
+    public static boolean possible(Type t1, Type t2, Operator operator){
+        return false;
+    }
+
+    public static boolean possible(Type t1, Operator operator){
+
+    }
+
     public Type getParent() {
         return parent;
     }

@@ -63,6 +63,133 @@ public class Compiler {
         return true;
     }
 
+    public void setAllNodesType(Node v){
+        switch (v.getLeftHand()){
+            case Constant:
+                switch (v.getProductionRule()){
+                    case INTEGER_LITERAL:
+                        v.setType(Type.getTypeByName("int"));
+                        break;
+                    case DOUBLE_LITERAL:
+                        v.setType(Type.getTypeByName("double"));
+                        break;
+                    case BOOLEAN_LITERAL:
+                        v.setType(Type.getTypeByName("boolean"));
+                        break;
+                    case STRING:
+                        v.setType(Type.getTypeByName("string"));
+                        break;
+                    case NULL:
+                        break;
+                }
+                break;
+            case Call:
+                // todo
+                break;
+            case LValue:
+                // todo
+                break;
+            case Expr:
+                switch (v.getProductionRule()){
+                    case LValue_EQ_Expr:
+                        if(!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.EQ))
+                            semanticError();
+                        v.setType(Type.getTypeByName("boolean"));
+                        break;
+                    case Constant:
+                        v.setType(v.getChildren().get(0).getType());
+                        break;
+                    case LValue:
+                        v.setType(v.getChildren().get(0).getType());
+                        break;
+                    case THIS:
+                        // todo
+                        break;
+                    case Call:
+                        v.setType(v.getChildren().get(0).getType());
+                        break;
+                    case LPAREN_Expr_RPAREN:
+                        v.setType(v.getChildren().get(0).getType());
+                        break;
+                    case Expr_PLUS_Expr:
+                        if(!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.PLUS))
+                            semanticError();
+                        v.setType(v.getChildren().get(0).getType());
+                        break;
+                    case Expr_MINUS_Expr:
+                        if(!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.MINUS))
+                            semanticError();
+                        v.setType(v.getChildren().get(0).getType());
+                        break;
+                    case Expr_MULT_Expr:
+                        if(!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.MULT))
+                            semanticError();
+                        v.setType(v.getChildren().get(0).getType());
+                        break;
+                    case Expr_DIV_Expr:
+                        if(!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.DIV))
+                            semanticError();
+                        v.setType(v.getChildren().get(0).getType());
+                        break;
+                    case Expr_MOD_Expr:
+                        if(!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.MOD))
+                            semanticError();
+                        v.setType(v.getChildren().get(0).getType());
+                        break;
+                    case MINUS_Expr:
+                        if(!Type.possible(v.getChildren().get(0).getType(), Operator.SINGLE_MINUS))
+                            semanticError();
+                        v.setType(v.getChildren().get(0).getType());
+                        break;
+                    case Expr_LT_Expr:
+                        if(!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.LT))
+                            semanticError();
+                        v.setType(v.getChildren().get(0).getType());
+                        break;
+                    case Expr_LTEQ_Expr:
+                        if(!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.LTEQ))
+                            semanticError();
+                        v.setType(v.getChildren().get(0).getType());
+                        break;
+                    case Expr_GT_Expr:
+                        if(!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.GT))
+                            semanticError();
+                        v.setType(v.getChildren().get(0).getType());
+                        break;
+                    case Expr_GTEQ_Expr:
+                        if(!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.GTEQ))
+                            semanticError();
+                        v.setType(v.getChildren().get(0).getType());
+                        break;
+                    case Expr_EQEQ_Expr:
+                        if(!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.EQEQ))
+                            semanticError();
+                        v.setType(v.getChildren().get(0).getType());
+                        break;
+                    case Expr_NOTEQ_Expr:
+                        if(!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.word))
+                            semanticError();
+                        v.setType(v.getChildren().get(0).getType());
+
+                        break;
+                    case Expr_ANDAND_Expr:
+                        break;
+                    case Expr_OROR_Expr:
+                        break;
+                    case NOT_Expr:
+                        break;
+                    case READINTEGER_LPAREN_RPAREN:
+                        break;
+                    case READLINE_LPAREN_RPAREN:
+                        break;
+                    case NEW_IDENTIFIER:
+                        break;
+                    case NEWARRAY_LPAREN_Expr_COMMA_Type_RPAREN:
+                        break;
+                }
+        }
+    }
+
     public Node getRoot() {
         return root;
     }
