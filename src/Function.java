@@ -3,7 +3,7 @@ import java.util.ArrayList;
 public class Function {
     private String name;
     private ArrayList<Variable> parameter = new ArrayList<Variable>();
-
+    
     public String getName() {
         return name;
     }
