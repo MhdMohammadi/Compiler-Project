@@ -43,6 +43,24 @@ public class Compiler {
         return null;
     }
 
+    public Function findFunction(Node node){
+        Node node1 = node;
+        while (true){
+            for (Function function: node1.getDefinedFunctions()){
+                if (function.getName().equals((String)node.getValue())){
+                    return function;
+                }
+            }
+            if (node1.getParent() == null){
+                break;
+            } else {
+                node1 = node1.getParent();
+            }
+        }
+        return null;
+    }
+
+
     public void setVariablesType(Node v){
         if(v.getLeftHand() == LeftHand.Variable){
             Type type = Type.getTypeByName((String)v.getChildren().get(0).getTypeName());
