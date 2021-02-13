@@ -33,7 +33,9 @@ public class MainPhase3 {
         p.parse();
         Compiler c = new Compiler(parser.root);
         c.preProcess(c.getRoot());
-        System.out.println(Type.validate());
+        Type.validate();
+        c.setVariablesType(c.getRoot());
+//        c.areAllVariablesUnique(c.getRoot());
         /* try {
             p.parse();
   //          writer.write("OK");

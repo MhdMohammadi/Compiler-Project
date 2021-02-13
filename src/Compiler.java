@@ -45,7 +45,7 @@ public class Compiler {
 
     public void setVariablesType(Node v){
         if(v.getLeftHand() == LeftHand.Variable){
-            Type type = Type.getTypeByName((String)v.getChildren().get(0).getValue());
+            Type type = Type.getTypeByName((String)v.getChildren().get(0).getTypeName());
             if(type == null) Compiler.semanticError();
             v.getDefinedVariables().get(0).setType(type);
         }

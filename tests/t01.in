@@ -11,4 +11,6 @@ class C{
 }
 
 int main() {
+
+    INT x;
 }
