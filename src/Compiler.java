@@ -79,10 +79,12 @@ public class Compiler {
                     case BOOLEAN_LITERAL:
                         v.setType(Type.getTypeByName("boolean"));
                         break;
-                    case STRING:
+                    case STRING_LITERAL:
                         v.setType(Type.getTypeByName("string"));
                         break;
                     case NULL:
+                        //todo
+                        //what's NULL's type?
                         break;
                 }
                 break;
