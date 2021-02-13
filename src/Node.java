@@ -12,6 +12,7 @@ public class Node {
 
     private Type type;
     private ArrayList<Variable> definedVariables = new ArrayList<Variable>();
+    private ArrayList<Function> definedFunctions = new ArrayList<>();
     private int index;
     private Node parent;
     public Node(LeftHand leftHand, ProductionRule productionRule){
@@ -101,5 +102,13 @@ public class Node {
 
     public void setAccessMode(AccessMode accessMode) {
         this.accessMode = accessMode;
+    }
+
+    public ArrayList<Function> getDefinedFunctions() {
+        return definedFunctions;
+    }
+
+    public void setDefinedFunctions(ArrayList<Function> definedFunctions) {
+        this.definedFunctions = definedFunctions;
     }
 }

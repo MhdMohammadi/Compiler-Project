@@ -54,6 +54,16 @@ public class Compiler {
             setVariablesType(node);
     }
 
+    public void setFunctionType(Node v){
+        if(v.getLeftHand() == LeftHand.FunctionDecl){
+            Type type = Type.getTypeByName((String)v.getChildren().get(0).getValue());
+            if(type == null) Compiler.semanticError();
+            v.getDefinedFunctions().get(0).setType(type);
+        }
+        for(Node node : v.getChildren())
+            setFunctionType(node);
+    }
+
     public void areAllVariablesUnique(Node v){
         ArrayList<Variable> variables = v.getDefinedVariables();
         for(int i = 0; i < variables.size(); i++)
