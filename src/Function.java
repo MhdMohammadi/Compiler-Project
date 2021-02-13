@@ -5,7 +5,7 @@ public class Function {
     private Type type;
     private AccessMode accessMode;
     private ArrayList<Variable> parameter = new ArrayList<Variable>();
-
+    
     public String getName() {
         return name;
     }
