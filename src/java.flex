@@ -1,71 +1,20 @@
-import java_cup.runtime.*;
-
+import java.io.*;
 %%
 
 %public
-%class Scanner
-%implements sym
-
-    %unicode
-
 %line
 %column
-
+%type Symbol
+%class MyScanner
+%unicode
 %cup
-%cupdebug
 
 %{
-  StringBuilder string = new StringBuilder();
+  String string = "";
 
-  private Symbol symbol(int type) {
-    return new Symbol(type, yyline+1, yycolumn+1);
+  public Symbol token(int tokenType, String content) {
+      return new Symbol(tokenType, content) ;
   }
-
-  private Symbol symbol(int type, Object value) {
-    return new Symbol(type, yyline+1, yycolumn+1, value);
-  }
-
-  /**
-   * assumes correct representation of a long value for
-   * specified radix in scanner buffer from <code>start</code>
-   * to <code>end</code>
-   */
-
-  private long parseLong(int start, int end, int radix) {
-    long result = 0;
-    long digit;
-
-    for (int i = start; i < end; i++) {
-      digit  = Character.digit(yycharat(i),radix);
-      result*= radix;
-      result+= digit;
-    }
-
-    return result;
-  }
-
-  public String yylex() throws Exception {
-    java_cup.runtime.Symbol currentSymbol = next_token();
-    switch (currentSymbol.sym){
-      case BOOLEAN_LITERAL:
-        return "T_BOOLEANLITERAL " + yytext();
-      case INTEGER_LITERAL:
-        return "T_INTLITERAL " + yytext();
-      case STRING_LITERAL:
-        return "T_STRINGLITERAL \"" + currentSymbol.value.toString() + "\"";
-      case DOUBLE_LITERAL:
-        return "T_DOUBLELITERAL " + yytext();
-      case IDENTIFIER:
-        return "T_ID " + currentSymbol.value.toString();
-      case EOF:
-          throw new Exception("EOF");
-      case UNDEFINED_TOKEN:
-          throw new Exception("UNDEFINED_TOKEN");
-      default:
-            return yytext();
-    }
-  }
-
 %}
 
 %type Symbol
