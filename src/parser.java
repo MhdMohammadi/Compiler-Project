@@ -2638,7 +2638,7 @@ RESULT = tmp;
 		int dleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int dright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		String d = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		 Node tmp = new Node(LeftHand.Constant, ProductionRule.DECIMAL);
+		 Node tmp = new Node(LeftHand.Constant, ProductionRule.INTLITERAL);
                            Node id = new Node(LeftHand.INTLITERAL, ProductionRule.TERMINAL);
                            id.setValue(d);
                            tmp.getChildren().add(id);
