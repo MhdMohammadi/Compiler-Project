@@ -99,9 +99,6 @@ DeclStar ::=            Decl:d1 DeclStar:d2{:
     tmp.getDefinedFunctions().addAll(((Node)d1).getDefinedFunctions());
     tmp.getDefinedFunctions().addAll(((Node)d2).getDefinedFunctions());
 
-    tmp.getDefinedFunctions().addAll(((Node)d1).getDefinedFunctions());
-    tmp.getDefinedFunctions().addAll(((Node)d2).getDefinedFunctions());
-
     RESULT = tmp;
 :}
 						| {:
@@ -139,6 +136,7 @@ Decl ::=                VariableDecl:v{:
 VariableDecl ::=        Variable:v SEMICOLON{:
     Node tmp = new Node(LeftHand.VariableDecl, ProductionRule.Variable_SEMICOLON);
     tmp.getChildren().add((Node)v);
+    tmp.getDefinedVariables().addAll(((Node)v).getDefinedVariables());
     RESULT = tmp;
 :};
 

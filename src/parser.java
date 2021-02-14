@@ -837,9 +837,6 @@ class CUP$parser$actions {
     tmp.getDefinedFunctions().addAll(((Node)d1).getDefinedFunctions());
     tmp.getDefinedFunctions().addAll(((Node)d2).getDefinedFunctions());
 
-    tmp.getDefinedFunctions().addAll(((Node)d1).getDefinedFunctions());
-    tmp.getDefinedFunctions().addAll(((Node)d2).getDefinedFunctions());
-
     RESULT = tmp;
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("DeclStar",1, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
