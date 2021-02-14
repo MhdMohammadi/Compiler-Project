@@ -1,6 +1,7 @@
 public class CodeGenerator {
-    public void readLine(){
-        System.out.println("li $v0, 5");
+    public String readLine(){
+        String s = "";
+        s += "li $v0, 5\n";
         System.out.println("syscall");
         System.out.println("move $t0, $v0");
     }
