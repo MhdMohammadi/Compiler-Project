@@ -51,15 +51,39 @@ public class CodeGenerator {
         return null;
     }
 
-    public Code addExprInt(Node node1, Node nod2){
-        return null;
+    public Code addExprInt(Node node1, Node node2){
+        Code code = new Code();
+        code.addCode(node1.getCode());
+        code.addCode("sub $sp, $sp, 4");
+        code.addCode("sw $t0, 0($sp)");
+        code.addCode(node2.getCode());
+        code.addCode("lw $t1, 0($sp)");
+        code.addCode("add $sp, $sp, 4");
+        code.addCode("add $t0, $t0, $t1");
+        return code;
     }
 
     public Code addExprBoolean(Node node1, Node node2){
-        return null;
+        Code code = new Code();
+        code.addCode(node1.getCode());
+        code.addCode("sub $sp, $sp, 4");
+        code.addCode("sw $t0, 0($sp)");
+        code.addCode(node2.getCode());
+        code.addCode("lw $t1, 0($sp)");
+        code.addCode("add $sp, $sp, 4");
+        code.addCode("or $t0, $t0, $t1");
+        return code;
     }
 
     public Code addExprDouble(Node node1, Node node2){
-        return null;
+        Code code = new Code();
+        code.addCode(node1.getCode());
+        code.addCode("sub $sp, $sp, 4");
+        code.addCode("sw $f0, 0($sp)");
+        code.addCode(node2.getCode());
+        code.addCode("lw $f1, 0($sp)");
+        code.addCode("add $sp, $sp, 4");
+        code.addCode("add $f0, $f0, $f1");
+        return code;
     }
 }
