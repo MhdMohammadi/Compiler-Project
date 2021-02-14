@@ -93,5 +93,6 @@ public enum ProductionRule {
 	FLOATINGPOINT,
 	BOOLEANLITERAL,
 	STRINGLITERAL,
-	NULL
+	NULL,
+	TERMINAL
 }
