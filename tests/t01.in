@@ -3,5 +3,5 @@ class hi{
 }
 
 int main(){
-    hi x;
+    a = b + c;
 }

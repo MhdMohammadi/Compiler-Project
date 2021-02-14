@@ -31,7 +31,8 @@ public class Compiler {
         while (true) {
             for (Variable variable : node1.getDefinedVariables()) {
                 if (variable.getName().equals(name)) {
-                    if (variable.getNumber() < node.getIndex()) {
+                    if(node.getLeftHand() == LeftHand.ClassDecl || node.getLeftHand() == LeftHand.Program || variable.getNumber() < node.getIndex())
+                    {
                         return variable;
                     }
                 }
