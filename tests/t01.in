@@ -3,5 +3,6 @@ class hi{
 }
 
 int main(){
-    hi id;
+    hi x;
+    a + 10;
 }

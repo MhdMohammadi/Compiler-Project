@@ -36,6 +36,7 @@ public class MainPhase3 {
         Type.validate();
         c.setVariablesType(c.getRoot());
         c.areAllVariablesUnique(c.getRoot());
+        c.setAllNodesType(c.getRoot());
         /* try {
             p.parse();
   //          writer.write("OK");
