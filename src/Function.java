@@ -2,7 +2,6 @@ import java.util.ArrayList;
 
 public class Function {
     private String name;
-    private String typeName;
     private Type type;
     private AccessMode accessMode;
     private ArrayList<Variable> parameter = new ArrayList<Variable>();
@@ -39,11 +38,4 @@ public class Function {
         this.accessMode = accessMode;
     }
 
-    public String getTypeName() {
-        return typeName;
-    }
-
-    public void setTypeName(String typeName) {
-        this.typeName = typeName;
-    }
 }
