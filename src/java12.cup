@@ -130,68 +130,184 @@ Field ::=               AccessMode VariableDecl
 						| AccessMode FunctionDecl
 						;
 
-AccessMode ::=          PRIVATE
-						| PROTECTED
-						| PUBLIC
+AccessMode ::=          PRIVATE {: Node tmp = new Node(LeftHand.AccessMode, ProductionRule.PRIVATE);
+                                tmp.setAccessMode(AccessMode.PRIVATE);
+                                RESULT = tmp;:}
+						| PROTECTED {: Node tmp = new Node(LeftHand.AccessMode, ProductionRule.PROTECTED);
+                                    tmp.setAccessMode(AccessMode.PROTECTED);
+                                    RESULT = tmp;:}
+						| PUBLIC {: Node tmp = new Node(LeftHand.AccessMode, ProductionRule.PUBLIC);
+						         tmp.setAccessMode(AccessMode.PUBLIC);
+                                 RESULT = tmp;:}
 						| /*epsilon*/
-						;
+						{: Node tmp = new Node(LeftHand.AccessMode, ProductionRule.EPSILON);
+                        RESULT = tmp;:} ;
 
-InterfaceDecl ::=       INTERFACE IDENTIFIER OPENCURLYBRACES PrototypeStar CLOSECURLYBRACES;
-PrototypeStar ::=       Prototype PrototypeStar
+
+InterfaceDecl ::=       INTERFACE IDENTIFIER:i OPENCURLYBRACES PrototypeStar:ps CLOSECURLYBRACES
+{: Node tmp = new Node(LeftHand.InterfaceDecl, ProductionRule.INTERFACE_IDENTIFIER_OPENCURLYBRACES_PrototypeStar_CLOSECURLYBRACES);
+Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
+id.setValue(i);
+tmp.getChildren().add(id);
+tmp.getChildren().add((Node) ps);
+RESULT = tmp;:};
+PrototypeStar ::=       Prototype:p PrototypeStar:ps
+{: Node tmp = new Node(LeftHand.PrototypeStar, ProductionRule.Prototype_PrototypeStar);
+tmp.getChildren().add((Node) p);
+tmp.getChildren().add((Node) ps);
+RESULT = tmp;:}
 						| /*epsilon*/
+						{: Node tmp = new Node(LeftHand.PrototypeStar, ProductionRule.EPSILON);
+                        RESULT = tmp;:}
 						;
 
-Prototype ::=           Type IDENTIFIER OPENPARENTHESIS Formals CLOSEPARENTHESIS SEMICOLON
-						| VOID IDENTIFIER OPENPARENTHESIS Formals CLOSEPARENTHESIS SEMICOLON
+Prototype ::=           Type:t IDENTIFIER:i OPENPARENTHESIS Formals:f CLOSEPARENTHESIS SEMICOLON
+{: Node tmp = new Node(LeftHand.Prototype, ProductionRule.Type_IDENTIFIER_OPENPARENTHESIS_Formals_CLOSEPARENTHESIS_SEMICOLON);
+tmp.getChildren().add((Node) t);
+Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
+id.setValue(i);
+tmp.getChildren().add(id);
+tmp.getChildren().add((Node) f);
+RESULT = tmp;:}
+						| VOID IDENTIFIER:i OPENPARENTHESIS Formals:f CLOSEPARENTHESIS SEMICOLON
+						{: Node tmp = new Node(LeftHand.Prototype, ProductionRule.VOID_IDENTIFIER_OPENPARENTHESIS_Formals_CLOSEPARENTHESIS_SEMICOLON);
+                        Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
+                        id.setValue(i);
+                        tmp.getChildren().add(id);
+                        tmp.getChildren().add((Node) f);
+                        RESULT = tmp;:}
 						;
 
-StmtBlock ::=           OPENCURLYBRACES InsideStmtBlock CLOSECURLYBRACES;
-InsideStmtBlock ::=     VariableDecl InsideStmtBlock
-						| StmtStar
+StmtBlock ::=           OPENCURLYBRACES InsideStmtBlock:i CLOSECURLYBRACES
+{: Node tmp = new Node(LeftHand.StmtBlock, ProductionRule.OPENCURLYBRACES_InsideStmtBlock_CLOSECURLYBRACES);
+tmp.getChildren().add((Node) i);
+RESULT = tmp;:};
+InsideStmtBlock ::=     VariableDecl:v InsideStmtBlock:i
+{: Node tmp = new Node(LeftHand.InsideStmtBlock, ProductionRule.VariableDecl_InsideStmtBlock);
+tmp.getChildren().add((Node) v);
+tmp.getChildren().add((Node) i);
+RESULT = tmp;:}
+						| StmtStar:s
+						{: Node tmp = new Node(LeftHand.InsideStmtBlock, ProductionRule.StmtStar);
+                        tmp.getChildren().add((Node) s);
+                        RESULT = tmp;:}
 						;
-StmtStar ::=            Stmt StmtStar
+StmtStar ::=            Stmt:s StmtStar:ss
+{: Node tmp = new Node(LeftHand.StmtStar, ProductionRule.Stmt_StmtStar);
+tmp.getChildren().add((Node) s);
+tmp.getChildren().add((Node) ss);
+RESULT = tmp;:}
 						| /*epsilon*/
+						{: Node tmp = new Node(LeftHand.StmtStar, ProductionRule.EPSILON);
+                        RESULT = tmp;:}
 						;
 
-Stmt ::=                ExprPrime SEMICOLON
-						| IfStmt
-						| WhileStmt
-						| ForStmt
-						| BreakStmt
-						| ContinueStmt
-						| ReturnStmt
-						| PrintStmt
-						| StmtBlock
+Stmt ::=                ExprPrime:e SEMICOLON
+{: Node tmp = new Node(LeftHand.Stmt, ProductionRule.ExprPrime_SEMICOLON);
+tmp.getChildren().add((Node) e);
+RESULT = tmp;:}
+						| IfStmt:i
+						{: Node tmp = new Node(LeftHand.Stmt, ProductionRule.IfStmt);
+                        tmp.getChildren().add((Node) i);
+                        RESULT = tmp;:}
+						| WhileStmt:w
+						{: Node tmp = new Node(LeftHand.Stmt, ProductionRule.WhileStmt);
+                        tmp.getChildren().add((Node) w);
+                        RESULT = tmp;:}
+						| ForStmt:f
+						{: Node tmp = new Node(LeftHand.Stmt, ProductionRule.ForStmt);
+                        tmp.getChildren().add((Node) f);
+                        RESULT = tmp;:}
+						| BreakStmt:b
+						{: Node tmp = new Node(LeftHand.Stmt, ProductionRule.BreakStmt);
+                        tmp.getChildren().add((Node) b);
+                        RESULT = tmp;:}
+						| ContinueStmt:c
+						{: Node tmp = new Node(LeftHand.Stmt, ProductionRule.ContinueStmt);
+                        tmp.getChildren().add((Node) c);
+                        RESULT = tmp;:}
+						| ReturnStmt:r
+						{: Node tmp = new Node(LeftHand.Stmt, ProductionRule.ReturnStmt);
+                        tmp.getChildren().add((Node) r);
+                        RESULT = tmp;:}
+						| PrintStmt:p
+						{: Node tmp = new Node(LeftHand.Stmt, ProductionRule.PrintStmt);
+                        tmp.getChildren().add((Node) p);
+                        RESULT = tmp;:}
+						| StmtBlock:s
+						{: Node tmp = new Node(LeftHand.Stmt, ProductionRule.StmtBlock);
+                        tmp.getChildren().add((Node) s);
+                        RESULT = tmp;:}
 						;
 
 ExprPrime ::=           Expr:e
+{: Node tmp = new Node(LeftHand.ExprPrime, ProductionRule.Expr);
+                        tmp.getChildren().add((Node) e);
+                        RESULT = tmp;:}
 						| /*epsilon*/
+						{: Node tmp = new Node(LeftHand.ExprPrime, ProductionRule.EPSILON);
+						RESULT = tmp;:}
 						;
 
-IfStmt ::=              IF OPENPARENTHESIS Expr:e CLOSEPARENTHESIS Stmt ElsePrime
+IfStmt ::=              IF OPENPARENTHESIS Expr:e CLOSEPARENTHESIS Stmt:s ElsePrime:ep
+{: Node tmp = new Node(LeftHand.IfStmt, ProductionRule.IF_OPENPARENTHESIS_Expr_CLOSEPARENTHESIS_Stmt_ElsePrime);
+tmp.getChildren().add((Node) e);
+tmp.getChildren().add((Node) s);
+tmp.getChildren().add((Node) ep);
+RESULT = tmp;:}
                         ;
 
 ElsePrime ::=           ELSE Stmt:s
+{: Node tmp = new Node(LeftHand.ElsePrime, ProductionRule.ELSE_Stmt);
+tmp.getChildren().add((Node) s);
+RESULT = tmp;:}
 						| /*epsilon*/
+						{: Node tmp = new Node(LeftHand.ElsePrime, ProductionRule.EPSILON);
+						RESULT = tmp;:}
                         ;
 
 
-WhileStmt ::=           WHILE OPENPARENTHESIS Expr:e CLOSEPARENTHESIS Stmt:s;
+WhileStmt ::=           WHILE OPENPARENTHESIS Expr:e CLOSEPARENTHESIS Stmt:s
+{: Node tmp = new Node(LeftHand.WhileStmt, ProductionRule.WHILE_OPENPARENTHESIS_Expr_CLOSEPARENTHESIS_Stmt);
+tmp.getChildren().add((Node) e);
+tmp.getChildren().add((Node) s);
+RESULT = tmp;:};
 
-ForStmt ::=             FOR OPENPARENTHESIS ExprPrime SEMICOLON Expr:e SEMICOLON ExprPrime CLOSEPARENTHESIS Stmt;
+ForStmt ::=             FOR OPENPARENTHESIS ExprPrime:ep SEMICOLON Expr:e SEMICOLON ExprPrime:ep1 CLOSEPARENTHESIS Stmt:s
+{: Node tmp = new Node(LeftHand.ForStmt, ProductionRule.FOR_OPENPARENTHESIS_ExprPrime_SEMICOLON_Expr_SEMICOLON_ExprPrime_CLOSEPARENTHESIS_Stmt);
+tmp.getChildren().add((Node) ep);
+tmp.getChildren().add((Node) e);
+tmp.getChildren().add((Node) ep1);
+tmp.getChildren().add((Node) s);
+RESULT = tmp;:};
 
 ReturnStmt ::=          RETURN ExprPrime:e SEMICOLON
-						;
+{: Node tmp = new Node(LeftHand.ReturnStmt, ProductionRule.RETURN_ExprPrime_SEMICOLON);
+tmp.getChildren().add((Node) e);
+RESULT = tmp;:};
 
-BreakStmt ::=           BREAK SEMICOLON;
+BreakStmt ::=           BREAK SEMICOLON
+{: Node tmp = new Node(LeftHand.BreakStmt, ProductionRule.BREAK_SEMICOLON);
+RESULT = tmp;:};
 
-ContinueStmt ::=        CONTINUE SEMICOLON;
+ContinueStmt ::=        CONTINUE SEMICOLON
+{: Node tmp = new Node(LeftHand.ContinueStmt, ProductionRule.CONTINUE_SEMICOLON);
+RESULT = tmp;:};
 
-PrintStmt ::=           PRINT OPENPARENTHESIS Expr:e PrintCommaExpr CLOSEPARENTHESIS SEMICOLON
-						;
+PrintStmt ::=           PRINT OPENPARENTHESIS Expr:e PrintCommaExpr:p CLOSEPARENTHESIS SEMICOLON
+{: Node tmp = new Node(LeftHand.PrintStmt, ProductionRule.PRINT_OPENPARENTHESIS_Expr_PrintCommaExpr_CLOSEPARENTHESIS_SEMICOLON);
+tmp.getChildren().add((Node) e);
+tmp.getChildren().add((Node) p);
+RESULT = tmp;:};
 
-PrintCommaExpr ::=      COMMA Expr:e PrintCommaExpr
+PrintCommaExpr ::=      COMMA Expr:e PrintCommaExpr:p
+{: Node tmp = new Node(LeftHand.PrintCommaExpr, ProductionRule.COMMA_Expr_PrintCommaExpr);
+tmp.getChildren().add((Node) e);
+tmp.getChildren().add((Node) p);
+RESULT = tmp;:}
 						|
+						{: Node tmp = new Node(LeftHand.PrintCommaExpr, ProductionRule.EPSILON);
+						RESULT = tmp;:}
 						/*epsilon*/
 						;
 
