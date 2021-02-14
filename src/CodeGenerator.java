@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 public class CodeGenerator {
-    public Code readLine(){
+    public Code readLine() {
         Code code = new Code();
         code.addCode("li $v0, 5");
         code.addCode("syscall");
@@ -9,7 +9,7 @@ public class CodeGenerator {
         return code;
     }
 
-    public Code readInteger(){
+    public Code readInteger() {
         Code code = new Code();
         code.addCode("li $v0, 8");
         code.addCode("la $a0, buffer");
@@ -18,9 +18,11 @@ public class CodeGenerator {
         return code;
     }
 
-    public void print(ArrayList<Node> nodes){
-        for (int i = 0; i < nodes.size(); i++){
-
+    public Code print(ArrayList<Node> nodes) {
+        Code code = new Code();
+        for (Node node: nodes) {
+            code.addCode(node.getCode());
+            if (node.getType())
         }
     }
 
