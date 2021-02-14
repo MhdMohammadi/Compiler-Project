@@ -10,6 +10,7 @@ public enum LeftHand {
     CommaVariables,
     ClassDecl,
     ClassDeclImplements,
+    ClassDeclExtends,
     CommaIdentifiers,
     FieldStar,
     Field,
