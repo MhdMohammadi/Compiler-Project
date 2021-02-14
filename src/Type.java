@@ -85,9 +85,9 @@ public class Type {
         return type1;
     }
 
-    public static Type getTypeByName(String name){
+    public static Type getTypeByName(String name, int degree){
         for(Type type : allTypes)
-            if(type.name.equals(name))
+            if(type.name.equals(name) && type.arrayDegree == degree)
                 return type;
         return null;
     }

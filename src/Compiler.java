@@ -73,7 +73,7 @@ public class Compiler {
 
     public void setFunctionType(Node v){
         if(v.getLeftHand() == LeftHand.FunctionDecl){
-            Type type = Type.getTypeByName((String)v.getChildren().get(0).getValue());
+            Type type = Type.getTypeByName((String)v.getChildren().get(0).getTypeName());
             if(type == null) Compiler.semanticError();
             v.getDefinedFunctions().get(0).setType(type);
         }
@@ -95,7 +95,7 @@ public class Compiler {
     // age be terminal bere, type bayad moshakhas shode bashe
     public void setAllNodesType(Node v){
         for(Node node : v.getChildren())
-            setVariablesType(node);
+            setAllNodesType(node);
         switch (v.getLeftHand()){
             case Constant:
                 switch (v.getProductionRule()){

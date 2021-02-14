@@ -11,4 +11,6 @@ public class CodeGenerator {
         System.out.println("li $a1, 1000");
         System.out.println("syscall");
     }
+
+    public void 
 }
