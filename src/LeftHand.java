@@ -43,5 +43,9 @@ public enum LeftHand {
     BOOLEANLITERAL,
     STRINGLITERAL,
     NULL,
-    IDENTIFIER
+    IDENTIFIER,
+    INT,
+    DOUBLE,
+    STRING,
+    BOOL
 }

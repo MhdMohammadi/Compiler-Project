@@ -83,8 +83,8 @@ Program ::=             Decl:d1 DeclStar:d2{:
     tmp.getDefinedVariables().addAll(((Node)d1).getDefinedVariables());
     tmp.getDefinedVariables().addAll(((Node)d2).getDefinedVariables());
 
-    tmp.getDefinedFunctions().add(((Node)d1).getDefinedFunctions());
-    tmp.getDefinedFunctions().add(((Node)d2).getDefinedFunctions());
+    tmp.getDefinedFunctions().addAll(((Node)d1).getDefinedFunctions());
+    tmp.getDefinedFunctions().addAll(((Node)d2).getDefinedFunctions());
 
     RESULT = tmp; root = tmp;
 :};
@@ -96,9 +96,8 @@ DeclStar ::=            Decl:d1 DeclStar:d2{:
     tmp.getDefinedVariables().addAll(((Node)d1).getDefinedVariables());
     tmp.getDefinedVariables().addAll(((Node)d2).getDefinedVariables());
 
-    tmp.getDefinedFunctions().add(((Node)d1).getDefinedFunctions());
-    tmp.getDefinedFunctions().add(((Node)d2).getDefinedFunctions());
-
+    tmp.getDefinedFunctions().addAll(((Node)d1).getDefinedFunctions());
+    tmp.getDefinedFunctions().addAll(((Node)d2).getDefinedFunctions());
 
     RESULT = tmp;
 :}
@@ -118,7 +117,7 @@ Decl ::=                VariableDecl:v{:
     Node tmp = new Node(LeftHand.Decl, ProductionRule.FunctionDecl);
     tmp.getChildren().add((Node)f);
 
-    tmp.getDefinedFunctions().add(((Node)f).getDefinedFunctions());
+    tmp.getDefinedFunctions().addAll(((Node)f).getDefinedFunctions());
 
     RESULT = tmp;
 :}
@@ -263,7 +262,7 @@ Formals ::=             Variable:v CommaVariables:c{:
 :}/*epsilon*/
 ;
 CommaVariables ::=      COMMA Variable:v CommaVariables:c{:
-    Node tmp = new Node(LeftHand.CommaVariables, ProductionRule.COMMA_Variable_CommaVariables;
+    Node tmp = new Node(LeftHand.CommaVariables, ProductionRule.COMMA_Variable_CommaVariables);
     tmp.getChildren().add((Node)v);
     tmp.getChildren().add((Node)c);
     tmp.getDefinedVariables().addAll(((Node)v).getDefinedVariables());
@@ -279,7 +278,7 @@ CommaVariables ::=      COMMA Variable:v CommaVariables:c{:
 ClassDecl ::=           CLASS IDENTIFIER:i ClassDeclExtends:c1 ClassDeclImplements:c2 OPENCURLYBRACES FieldStar:f CLOSECURLYBRACES{:
     Node tmp = new Node(LeftHand.ClassDecl, ProductionRule.CLASS_IDENTIFIER_ClassDeclExtends_ClassDeclImplements_OPENCURLYBRACES_FieldStar_CLOSECURLYBRACES);
     Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
-    id.setValue(i1);
+    id.setValue(i);
     tmp.getChildren().add(id);
     tmp.getChildren().add((Node)c1);
     tmp.getChildren().add((Node)c2);

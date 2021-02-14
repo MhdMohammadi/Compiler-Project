@@ -808,8 +808,8 @@ class CUP$parser$actions {
     tmp.getDefinedVariables().addAll(((Node)d1).getDefinedVariables());
     tmp.getDefinedVariables().addAll(((Node)d2).getDefinedVariables());
 
-    tmp.getDefinedFunctions().add(((Node)d1).getDefinedFunctions());
-    tmp.getDefinedFunctions().add(((Node)d2).getDefinedFunctions());
+    tmp.getDefinedFunctions().addAll(((Node)d1).getDefinedFunctions());
+    tmp.getDefinedFunctions().addAll(((Node)d2).getDefinedFunctions());
 
     RESULT = tmp; root = tmp;
 
@@ -834,9 +834,8 @@ class CUP$parser$actions {
     tmp.getDefinedVariables().addAll(((Node)d1).getDefinedVariables());
     tmp.getDefinedVariables().addAll(((Node)d2).getDefinedVariables());
 
-    tmp.getDefinedFunctions().add(((Node)d1).getDefinedFunctions());
-    tmp.getDefinedFunctions().add(((Node)d2).getDefinedFunctions());
-
+    tmp.getDefinedFunctions().addAll(((Node)d1).getDefinedFunctions());
+    tmp.getDefinedFunctions().addAll(((Node)d2).getDefinedFunctions());
 
     RESULT = tmp;
 
@@ -884,7 +883,7 @@ class CUP$parser$actions {
     Node tmp = new Node(LeftHand.Decl, ProductionRule.FunctionDecl);
     tmp.getChildren().add((Node)f);
 
-    tmp.getDefinedFunctions().add(((Node)f).getDefinedFunctions());
+    tmp.getDefinedFunctions().addAll(((Node)f).getDefinedFunctions());
 
     RESULT = tmp;
 
@@ -978,6 +977,7 @@ class CUP$parser$actions {
      in.setValue(i);
      tmp.getChildren().add(in);
      tmp.setTypeName("int");
+     tmp.setArrayDegree(0);
      RESULT = tmp;
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("Type",35, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
@@ -997,6 +997,7 @@ class CUP$parser$actions {
      doub.setValue(d);
      tmp.getChildren().add(doub);
      tmp.setTypeName("double");
+     tmp.setArrayDegree(0);
      RESULT = tmp;
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("Type",35, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
@@ -1016,6 +1017,7 @@ class CUP$parser$actions {
      bo.setValue(b);
      tmp.getChildren().add(bo);
      tmp.setTypeName("boolean");
+     tmp.setArrayDegree(0);
      RESULT = tmp;
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("Type",35, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
@@ -1035,6 +1037,7 @@ class CUP$parser$actions {
      str.setValue(s);
      tmp.getChildren().add(str);
      tmp.setTypeName("string");
+     tmp.setArrayDegree(0);
      RESULT = tmp;
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("Type",35, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
@@ -1054,6 +1057,7 @@ class CUP$parser$actions {
     id.setValue(i);
     tmp.getChildren().add(id);
     tmp.setTypeName(i);
+    tmp.setArrayDegree(0);
     RESULT = tmp;
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("Type",35, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
@@ -1108,8 +1112,9 @@ class CUP$parser$actions {
     Function function = new Function();
     function.setName(i);
     function.setParameter(((Node)f).getDefinedVariables());
-    function.setTypeName(((Node)t).getTypeName());
     tmp.getDefinedFunctions().add(function);
+    tmp.setTypeName(((Node)t).getTypeName());
+    tmp.setArrayDegree(((Node)t).getArrayDegree());
 
     RESULT = tmp;
 
@@ -1143,8 +1148,9 @@ class CUP$parser$actions {
     Function function = new Function();
     function.setName(i);
     function.setParameter(((Node)f).getDefinedVariables());
-    function.setTypeName(((Node)t).getTypeName());
     tmp.getDefinedFunctions().add(function);
+    tmp.setTypeName("void");
+    tmp.setArrayDegree(0);
 
     RESULT = tmp;
 
@@ -1198,7 +1204,7 @@ class CUP$parser$actions {
 		int cright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object c = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
-    Node tmp = new Node(LeftHand.CommaVariables, ProductionRule.COMMA_Variable_CommaVariables;
+    Node tmp = new Node(LeftHand.CommaVariables, ProductionRule.COMMA_Variable_CommaVariables);
     tmp.getChildren().add((Node)v);
     tmp.getChildren().add((Node)c);
     tmp.getDefinedVariables().addAll(((Node)v).getDefinedVariables());
@@ -1240,7 +1246,7 @@ class CUP$parser$actions {
 		
     Node tmp = new Node(LeftHand.ClassDecl, ProductionRule.CLASS_IDENTIFIER_ClassDeclExtends_ClassDeclImplements_OPENCURLYBRACES_FieldStar_CLOSECURLYBRACES);
     Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
-    id.setValue(i1);
+    id.setValue(i);
     tmp.getChildren().add(id);
     tmp.getChildren().add((Node)c1);
     tmp.getChildren().add((Node)c2);
@@ -1252,6 +1258,11 @@ class CUP$parser$actions {
     tmp.getDefinedVariables().addAll(((Node)f).getDefinedVariables());
 
     tmp.getDefinedFunctions().add(((Node)f).getDefinedFunctions());
+
+    Clazz clazz = new Clazz();
+    clazz.setFunctions(tmp.getDefinedFunctions());
+    clazz.setVariables(tmp.getDefinedVariables());
+    clazz.setName(i);
 
     RESULT = tmp;
 
