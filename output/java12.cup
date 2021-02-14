@@ -82,8 +82,8 @@ Program ::=             Decl:d1 DeclStar:d2{:
     tmp.getDefinedVariables().addAll(((Node)d1).getDefinedVariables());
     tmp.getDefinedVariables().addAll(((Node)d2).getDefinedVariables());
 
-    tmp.getDefinedFunctions().add(((Node)d1).getDefinedFunctions());
-    tmp.getDefinedFunctions().add(((Node)d2).getDefinedFunctions());
+    tmp.getDefinedFunctions().addAll(((Node)d1).getDefinedFunctions());
+    tmp.getDefinedFunctions().addAll(((Node)d2).getDefinedFunctions());
 
     RESULT = tmp; root = tmp;
 :};
@@ -95,9 +95,11 @@ DeclStar ::=            Decl:d1 DeclStar:d2{:
     tmp.getDefinedVariables().addAll(((Node)d1).getDefinedVariables());
     tmp.getDefinedVariables().addAll(((Node)d2).getDefinedVariables());
 
-    tmp.getDefinedFunctions().add(((Node)d1).getDefinedFunctions());
-    tmp.getDefinedFunctions().add(((Node)d2).getDefinedFunctions());
+    tmp.getDefinedFunctions().addAll(((Node)d1).getDefinedFunctions());
+    tmp.getDefinedFunctions().addAll(((Node)d2).getDefinedFunctions());
 
+    tmp.getDefinedFunctions().addAll(((Node)d1).getDefinedFunctions());
+    tmp.getDefinedFunctions().addAll(((Node)d2).getDefinedFunctions());
 
     RESULT = tmp;
 :}
@@ -117,7 +119,7 @@ Decl ::=                VariableDecl:v{:
     Node tmp = new Node(LeftHand.Decl, ProductionRule.FunctionDecl);
     tmp.getChildren().add((Node)f);
 
-    tmp.getDefinedFunctions().add(((Node)f).getDefinedFunctions());
+    tmp.getDefinedFunctions().addAll(((Node)f).getDefinedFunctions());
 
     RESULT = tmp;
 :}
@@ -278,18 +280,18 @@ CommaVariables ::=      COMMA Variable:v CommaVariables:c{:
 ClassDecl ::=           CLASS IDENTIFIER:i ClassDeclExtends:c1 ClassDeclImplements:c2 OPENCURLYBRACES FieldStar:f CLOSECURLYBRACES{:
     Node tmp = new Node(LeftHand.ClassDecl, ProductionRule.CLASS_IDENTIFIER_ClassDeclExtends_ClassDeclImplements_OPENCURLYBRACES_FieldStar_CLOSECURLYBRACES);
     Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
-    id.setValue(i1);
+    id.setValue(i);
     tmp.getChildren().add(id);
     tmp.getChildren().add((Node)c1);
     tmp.getChildren().add((Node)c2);
     tmp.getChildren().add((Node)f);
-    if(((Node)e).getValue() != null)
-        Type.createPreType(i1, (String)((Node)e).getValue());
+    if(((Node)c1).getValue() != null)
+        Type.createPreType(i, (String)((Node)c1).getValue());
     else
-        Type.createPreType(i1, null);
+        Type.createPreType(i, null);
     tmp.getDefinedVariables().addAll(((Node)f).getDefinedVariables());
 
-    tmp.getDefinedFunctions().add(((Node)f).getDefinedFunctions());
+    tmp.getDefinedFunctions().addAll(((Node)f).getDefinedFunctions());
 
     Clazz clazz = new Clazz();
     clazz.setFunctions(tmp.getDefinedFunctions());
@@ -314,7 +316,9 @@ ClassDeclExtends ::=    EXTENDS IDENTIFIER:i{:
 						;
 ClassDeclImplements ::= IMPLEMENTS IDENTIFIER:i CommaIdentifiers:c{:
     Node tmp = new Node(LeftHand.ClassDeclImplements, ProductionRule.IMPLEMENTS_IDENTIFIER_CommaIdentifiers);
-    tmp.getChildren().add((Node)i);
+    Node idNode = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
+    idNode.setValue(i);
+    tmp.getChildren().add(idNode);
     tmp.getChildren().add((Node)c);
     RESULT = tmp;
 :}
@@ -343,8 +347,8 @@ FieldStar ::=           Field:f1 FieldStar:f2{:
     tmp.getDefinedVariables().addAll(((Node)f1).getDefinedVariables());
     tmp.getDefinedVariables().addAll(((Node)f2).getDefinedVariables());
 
-    tmp.getDefinedFunctions().add(((Node)f1).getDefinedFunctions());
-    tmp.getDefinedFunctions().add(((Node)f2).getDefinedFunctions());
+    tmp.getDefinedFunctions().addAll(((Node)f1).getDefinedFunctions());
+    tmp.getDefinedFunctions().addAll(((Node)f2).getDefinedFunctions());
 
 
     RESULT = tmp;
@@ -371,7 +375,7 @@ Field ::=               AccessMode:a VariableDecl:v{:
     tmp.getChildren().add((Node)f);
 
     ((Node)f).getDefinedFunctions().get(0).setAccessMode(((Node)a).getAccessMode());
-    tmp.getDefinedFunctions().add(((Node)f).getDefinedFunctions());
+    tmp.getDefinedFunctions().addAll(((Node)f).getDefinedFunctions());
 
     RESULT = tmp;
 :}

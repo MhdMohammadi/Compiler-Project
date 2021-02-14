@@ -7,5 +7,5 @@ class hi extends bye{
 }
 
 int main(){
-    hi x;
+    a = b + c;
 }
