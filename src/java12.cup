@@ -82,6 +82,10 @@ Program ::=             Decl:d1 DeclStar:d2{:
     tmp.getChildren().add((Node) d2);
     tmp.getDefinedVariables().addAll(((Node)d1).getDefinedVariables());
     tmp.getDefinedVariables().addAll(((Node)d2).getDefinedVariables());
+
+    tmp.getDefinedFunctions().add(((Node)d1).getDefinedFunctions());
+    tmp.getDefinedFunctions().add(((Node)d2).getDefinedFunctions());
+
     RESULT = tmp; root = tmp;
 :};
 
@@ -91,6 +95,11 @@ DeclStar ::=            Decl:d1 DeclStar:d2{:
     tmp.getChildren().add((Node)d2);
     tmp.getDefinedVariables().addAll(((Node)d1).getDefinedVariables());
     tmp.getDefinedVariables().addAll(((Node)d2).getDefinedVariables());
+
+    tmp.getDefinedFunctions().add(((Node)d1).getDefinedFunctions());
+    tmp.getDefinedFunctions().add(((Node)d2).getDefinedFunctions());
+
+
     RESULT = tmp;
 :}
 						| {:
@@ -108,6 +117,9 @@ Decl ::=                VariableDecl:v{:
 						| FunctionDecl:f{:
     Node tmp = new Node(LeftHand.Decl, ProductionRule.FunctionDecl);
     tmp.getChildren().add((Node)f);
+
+    tmp.getDefinedFunctions().add(((Node)f).getDefinedFunctions());
+
     RESULT = tmp;
 :}
 						| ClassDecl:c{:
@@ -200,6 +212,13 @@ FunctionDecl ::=        Type:t IDENTIFIER:i OPENPARENTHESIS Formals:f CLOSEPAREN
     tmp.getChildren().add((Node) s);
     tmp.getDefinedVariables().addAll(((Node)f).getDefinedVariables());
     tmp.getDefinedVariables().addAll(((Node)s).getDefinedVariables());
+
+    Function function = new Function();
+    function.setName(i);
+    function.setParameter(((Node)f).getDefinedVariables());
+    function.setTypeName(((Node)t).getTypeName());
+    tmp.getDefinedFunctions().add(function);
+
     RESULT = tmp;
 :}
 						| VOID IDENTIFIER:i OPENPARENTHESIS Formals:f CLOSEPARENTHESIS StmtBlock:s{:
@@ -211,6 +230,13 @@ FunctionDecl ::=        Type:t IDENTIFIER:i OPENPARENTHESIS Formals:f CLOSEPAREN
     tmp.getChildren().add((Node)s);
     tmp.getDefinedVariables().addAll(((Node)f).getDefinedVariables());
     tmp.getDefinedVariables().addAll(((Node)s).getDefinedVariables());
+
+    Function function = new Function();
+    function.setName(i);
+    function.setParameter(((Node)f).getDefinedVariables());
+    function.setTypeName(((Node)t).getTypeName());
+    tmp.getDefinedFunctions().add(function);
+
     RESULT = tmp;
 :}
 						;
@@ -221,6 +247,7 @@ Formals ::=             Variable:v CommaVariables:c{:
     tmp.getChildren().add((Node)c);
     tmp.getDefinedVariables().addAll(((Node)v).getDefinedVariables());
     tmp.getDefinedVariables().addAll(((Node)c).getDefinedVariables());
+
     RESULT = tmp;
 :}
 						| {:
@@ -255,6 +282,9 @@ ClassDecl ::=           CLASS IDENTIFIER:i ClassDeclExtends:c1 ClassDeclImplemen
     else
         Type.createPreType(i1, null);
     tmp.getDefinedVariables().addAll(((Node)f).getDefinedVariables());
+
+    tmp.getDefinedFunctions().add(((Node)f).getDefinedFunctions());
+
     RESULT = tmp;
 :};
 ClassDeclExtends ::=    EXTENDS IDENTIFIER:i{:
@@ -301,6 +331,11 @@ FieldStar ::=           Field:f1 FieldStar:f2{:
     tmp.getChildren().add((Node)f2);
     tmp.getDefinedVariables().addAll(((Node)f1).getDefinedVariables());
     tmp.getDefinedVariables().addAll(((Node)f2).getDefinedVariables());
+
+    tmp.getDefinedFunctions().add(((Node)f1).getDefinedFunctions());
+    tmp.getDefinedFunctions().add(((Node)f2).getDefinedFunctions());
+
+
     RESULT = tmp;
 :}
 						| {:
@@ -323,6 +358,10 @@ Field ::=               AccessMode:a VariableDecl:v{:
     Node tmp = new Node(LeftHand.Field, ProductionRule.AccessMode_FunctionDecl);
     tmp.getChildren().add((Node)a);
     tmp.getChildren().add((Node)f);
+
+    ((Node)f).getDefinedFunctions().get(0).setAccessMode(((Node)a).getAccessMode());
+    tmp.getDefinedFunctions().add(((Node)f).getDefinedFunctions());
+
     RESULT = tmp;
 :}
 						;
