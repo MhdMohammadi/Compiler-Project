@@ -4,10 +4,10 @@ public class Variable {
     private Type type;
     private int nodeIndex;
     private int number;
-    private AccessMode accessMode;
+    private AccessMode accessMode = AccessMode.PUBLIC;
 
     public Variable() {
-
+        this.accessMode = AccessMode.PUBLIC;
     }
 
     public Variable(String name, Type type, int number, AccessMode accessMode) {
