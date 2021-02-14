@@ -35,7 +35,6 @@ terminal        String INT, DOUBLE, BOOL, STRING;
 terminal        String INTLITERAL;
 terminal        String BOOLEANLITERAL;
 terminal        String STRINGLITERAL;
-terminal        String INTLITERAL;
 terminal        String DOUBLELITERAL;
 terminal        NULL;
 

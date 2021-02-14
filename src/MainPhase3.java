@@ -33,11 +33,8 @@ public class MainPhase3 {
         p.parse();
         Compiler c = new Compiler(parser.root);
         c.preProcess(c.getRoot());
-        for(Function function : c.getRoot().getDefinedFunctions()){
-            System.out.println(function.getName() + " " + function.getAccessMode().toString() + " " + function.getType().getName() + " " + function.get);
-        }
-//        Type.validate();
-//        c.setVariablesType(c.getRoot());
+        Type.validate();
+        c.setVariablesType(c.getRoot());
 //        c.areAllVariablesUnique(c.getRoot());
 //        c.setAllNodesType(c.getRoot());
         /* try {

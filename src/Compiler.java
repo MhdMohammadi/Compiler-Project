@@ -128,14 +128,14 @@ public class Compiler {
     // age be terminal bere, type bayad moshakhas shode bashe
     public void setAllNodesType(Node v){
         for(Node node : v.getChildren())
-            setVariablesType(node);
+            setAllNodesType(node);
         switch (v.getLeftHand()){
             case Constant:
                 switch (v.getProductionRule()) {
                     case DECIMAL:
                         v.setType(Type.getTypeByName("int", 0));
                         break;
-                    case FLOATINGPOINT:
+                    case DOUBLELITERAL:
                         v.setType(Type.getTypeByName("double", 0));
                         break;
                     case BOOLEANLITERAL:

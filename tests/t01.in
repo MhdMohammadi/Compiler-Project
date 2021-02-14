@@ -1,4 +1,8 @@
-class hi{
+class bye{
+
+}
+
+class hi extends bye{
 
 }
 
