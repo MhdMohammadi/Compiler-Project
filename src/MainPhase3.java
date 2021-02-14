@@ -31,8 +31,8 @@ public class MainPhase3 {
 
         parser p = new parser(new MyScanner(reader));
         p.parse();
-//        Compiler c = new Compiler(parser.root);
-//        c.preProcess(c.getRoot());
+        Compiler c = new Compiler(parser.root);
+        c.preProcess(c.getRoot());
 //        Type.validate();
 //        c.setVariablesType(c.getRoot());
 //        c.areAllVariablesUnique(c.getRoot());
