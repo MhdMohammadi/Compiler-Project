@@ -839,6 +839,8 @@ class CUP$parser$actions {
     tmp.getDefinedFunctions().addAll(((Node)d1).getDefinedFunctions());
     tmp.getDefinedFunctions().addAll(((Node)d2).getDefinedFunctions());
 
+    tmp.getDefinedFunctions().addAll(((Node)d1).getDefinedFunctions());
+    tmp.getDefinedFunctions().addAll(((Node)d2).getDefinedFunctions());
 
     RESULT = tmp;
 
@@ -1249,18 +1251,18 @@ class CUP$parser$actions {
 		
     Node tmp = new Node(LeftHand.ClassDecl, ProductionRule.CLASS_IDENTIFIER_ClassDeclExtends_ClassDeclImplements_OPENCURLYBRACES_FieldStar_CLOSECURLYBRACES);
     Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
-    id.setValue(i1);
+    id.setValue(i);
     tmp.getChildren().add(id);
     tmp.getChildren().add((Node)c1);
     tmp.getChildren().add((Node)c2);
     tmp.getChildren().add((Node)f);
     if(((Node)c1).getValue() != null)
-        Type.createPreType(i1, (String)((Node)c1).getValue());
+        Type.createPreType(i, (String)((Node)c1).getValue());
     else
-        Type.createPreType(i1, null);
+        Type.createPreType(i, null);
     tmp.getDefinedVariables().addAll(((Node)f).getDefinedVariables());
 
-    tmp.getDefinedFunctions().add(((Node)f).getDefinedFunctions());
+    tmp.getDefinedFunctions().addAll(((Node)f).getDefinedFunctions());
 
     Clazz clazz = new Clazz();
     clazz.setFunctions(tmp.getDefinedFunctions());
@@ -1317,7 +1319,9 @@ class CUP$parser$actions {
 		Object c = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
     Node tmp = new Node(LeftHand.ClassDeclImplements, ProductionRule.IMPLEMENTS_IDENTIFIER_CommaIdentifiers);
-    tmp.getChildren().add((Node)i);
+    Node idNode = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
+    idNode.setValue(i);
+    tmp.getChildren().add(idNode);
     tmp.getChildren().add((Node)c);
     RESULT = tmp;
 
@@ -1388,8 +1392,8 @@ class CUP$parser$actions {
     tmp.getDefinedVariables().addAll(((Node)f1).getDefinedVariables());
     tmp.getDefinedVariables().addAll(((Node)f2).getDefinedVariables());
 
-    tmp.getDefinedFunctions().add(((Node)f1).getDefinedFunctions());
-    tmp.getDefinedFunctions().add(((Node)f2).getDefinedFunctions());
+    tmp.getDefinedFunctions().addAll(((Node)f1).getDefinedFunctions());
+    tmp.getDefinedFunctions().addAll(((Node)f2).getDefinedFunctions());
 
 
     RESULT = tmp;
@@ -1450,7 +1454,7 @@ class CUP$parser$actions {
     tmp.getChildren().add((Node)f);
 
     ((Node)f).getDefinedFunctions().get(0).setAccessMode(((Node)a).getAccessMode());
-    tmp.getDefinedFunctions().add(((Node)f).getDefinedFunctions());
+    tmp.getDefinedFunctions().addAll(((Node)f).getDefinedFunctions());
 
     RESULT = tmp;
 
