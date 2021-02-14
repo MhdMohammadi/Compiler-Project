@@ -22,8 +22,21 @@ public class CodeGenerator {
         Code code = new Code();
         for (Node node: nodes) {
             code.addCode(node.getCode());
-            if (node.getType())
+            if (Type.getTypeByName("int",0).equals(node.getType())){
+                code.addCode("li $v0, 1");
+                code.addCode("move $a0, $t0");
+                code.addCode("syscall");
+            } else if (Type.getTypeByName("double",0).equals(node.getType())){
+                code.addCode("li $v0, 3");
+                code.addCode("mov.d $f12, $f0");
+                code.addCode("syscall");
+            } else if (Type.getTypeByName("string",0).equals(node.getType())){
+                code.addCode("li $v0, 4");
+                code.addCode("move $a0, $t0");
+                code.addCode("syscall");
+            }
         }
+        return code;
     }
 
     public Code addExpr(Node node1, Node node2) {
