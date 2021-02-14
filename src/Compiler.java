@@ -2,6 +2,8 @@ import java.util.ArrayList;
 
 public class Compiler {
     private Node root;
+
+
     private int cnt = 0;
 
     public Compiler(Node root) {
@@ -83,6 +85,32 @@ public class Compiler {
         }
         for (Node node : v.getChildren())
             setFunctionType(node);
+    }
+
+    public void setClazzType(){
+        for(Clazz clazz: Clazz.getClazzes()){
+            clazz.setType(Type.getTypeByName(clazz.getName(), 0));
+        }
+    }
+
+    public void setClazzAttributesAndFunctions(Clazz clazz){
+        clazz.setSetAttributesAndFunctions(true);
+        Type clazzType = clazz.getType();
+        Type parentType = clazzType.getParent();
+        if(parentType == null)return;
+        Clazz parentClazz = Clazz.getClazzByName(parentType.getName());
+        if(parentClazz.isSetAttributesAndFunctions() == false) setClazzAttributesAndFunctions(parentClazz);
+
+        ArrayList<Function> functions = new ArrayList<>();
+        functions.addAll(parentClazz.getFunctions());
+        functions.addAll(clazz.getFunctions());
+        clazz.setFunctions(functions);
+
+        ArrayList<Variable> variables = new ArrayList<>();
+        variables.addAll(parentClazz.getVariables());
+        variables.addAll(clazz.getVariables());
+        clazz.setVariables(variables);
+
     }
 
     public void areAllVariablesUnique(Node v) {
