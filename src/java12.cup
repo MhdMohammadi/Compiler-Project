@@ -286,9 +286,9 @@ ClassDecl ::=           CLASS IDENTIFIER:i ClassDeclExtends:c1 ClassDeclImplemen
     tmp.getChildren().add((Node)c2);
     tmp.getChildren().add((Node)f);
     if(((Node)c1).getValue() != null)
-        Type.createPreType(i1, (String)((Node)c1).getValue());
+        Type.createPreType(i, (String)((Node)c1).getValue());
     else
-        Type.createPreType(i1, null);
+        Type.createPreType(i, null);
     tmp.getDefinedVariables().addAll(((Node)f).getDefinedVariables());
 
     tmp.getDefinedFunctions().addAll(((Node)f).getDefinedFunctions());
@@ -316,7 +316,9 @@ ClassDeclExtends ::=    EXTENDS IDENTIFIER:i{:
 						;
 ClassDeclImplements ::= IMPLEMENTS IDENTIFIER:i CommaIdentifiers:c{:
     Node tmp = new Node(LeftHand.ClassDeclImplements, ProductionRule.IMPLEMENTS_IDENTIFIER_CommaIdentifiers);
-    tmp.getChildren().add((Node)i);
+    Node idNode = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
+    idNode.setValue(i);
+    tmp.getChildren().add(idNode);
     tmp.getChildren().add((Node)c);
     RESULT = tmp;
 :}
@@ -345,8 +347,8 @@ FieldStar ::=           Field:f1 FieldStar:f2{:
     tmp.getDefinedVariables().addAll(((Node)f1).getDefinedVariables());
     tmp.getDefinedVariables().addAll(((Node)f2).getDefinedVariables());
 
-    tmp.getDefinedFunctions().add(((Node)f1).getDefinedFunctions());
-    tmp.getDefinedFunctions().add(((Node)f2).getDefinedFunctions());
+    tmp.getDefinedFunctions().addAll(((Node)f1).getDefinedFunctions());
+    tmp.getDefinedFunctions().addAll(((Node)f2).getDefinedFunctions());
 
 
     RESULT = tmp;
@@ -373,7 +375,7 @@ Field ::=               AccessMode:a VariableDecl:v{:
     tmp.getChildren().add((Node)f);
 
     ((Node)f).getDefinedFunctions().get(0).setAccessMode(((Node)a).getAccessMode());
-    tmp.getDefinedFunctions().add(((Node)f).getDefinedFunctions());
+    tmp.getDefinedFunctions().addAll(((Node)f).getDefinedFunctions());
 
     RESULT = tmp;
 :}

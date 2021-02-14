@@ -110,10 +110,10 @@ public class MyScanner implements java_cup.runtime.Scanner {
     "\1\43\1\22\1\44\12\22\1\0\1\33\3\22\1\45"+
     "\1\22\1\46\3\22\1\47\1\50\3\22\1\51\1\52"+
     "\1\53\5\22\1\54\1\55\1\56\2\22\1\57\2\22"+
-    "\1\60\1\61\12\22\1\62\4\22\1\63\5\22\1\64"+
-    "\1\65\1\66\4\22\1\67\2\22\1\70\1\22\1\71"+
-    "\1\22\1\72\1\73\5\22\1\74\1\75\1\22\1\76"+
-    "\1\77";
+    "\1\60\1\61\12\22\1\62\4\22\1\33\5\22\1\63"+
+    "\1\64\1\65\4\22\1\66\2\22\1\67\1\22\1\70"+
+    "\1\22\1\71\1\72\5\22\1\73\1\74\1\22\1\75"+
+    "\1\76";
 
   private static int [] zzUnpackAction() {
     int [] result = new int[197];
@@ -876,318 +876,313 @@ public class MyScanner implements java_cup.runtime.Scanner {
             { ;
             }
             // fall through
-          case 64: break;
+          case 63: break;
           case 2:
             { return token(sym.NOT, yytext());
             }
             // fall through
-          case 65: break;
+          case 64: break;
           case 3:
             { yybegin(STRING); string = "" + yytext();
             }
             // fall through
-          case 66: break;
+          case 65: break;
           case 4:
             { return token(sym.MOD, yytext());
             }
             // fall through
-          case 67: break;
+          case 66: break;
           case 5:
             { return token(sym.OPENPARENTHESIS, yytext());
             }
             // fall through
-          case 68: break;
+          case 67: break;
           case 6:
             { return token(sym.CLOSEPARENTHESIS, yytext());
             }
             // fall through
-          case 69: break;
+          case 68: break;
           case 7:
             { return token(sym.MULTIPLY, yytext());
             }
             // fall through
-          case 70: break;
+          case 69: break;
           case 8:
             { return token(sym.PLUS, yytext());
             }
             // fall through
-          case 71: break;
+          case 70: break;
           case 9:
             { return token(sym.COMMA, yytext());
             }
             // fall through
-          case 72: break;
+          case 71: break;
           case 10:
             { return token(sym.MINUS, yytext());
             }
             // fall through
-          case 73: break;
+          case 72: break;
           case 11:
             { return token(sym.DOT, yytext());
             }
             // fall through
-          case 74: break;
+          case 73: break;
           case 12:
             { return token(sym.DIVIDE, yytext());
             }
             // fall through
-          case 75: break;
+          case 74: break;
           case 13:
             { return token(sym.DECIMAL, yytext());
             }
             // fall through
-          case 76: break;
+          case 75: break;
           case 14:
             { return token(sym.SEMICOLON, yytext());
             }
             // fall through
-          case 77: break;
+          case 76: break;
           case 15:
             { return token(sym.LESS, yytext());
             }
             // fall through
-          case 78: break;
+          case 77: break;
           case 16:
             { return token(sym.ASSIGN, yytext());
             }
             // fall through
-          case 79: break;
+          case 78: break;
           case 17:
             { return token(sym.GREATER, yytext());
             }
             // fall through
-          case 80: break;
+          case 79: break;
           case 18:
             { return token(sym.IDENTIFIER, yytext());
             }
             // fall through
-          case 81: break;
+          case 80: break;
           case 19:
             { return token(sym.OPENBRACKET, yytext());
             }
             // fall through
-          case 82: break;
+          case 81: break;
           case 20:
             { return token(sym.CLOSEBRACKET, yytext());
             }
             // fall through
-          case 83: break;
+          case 82: break;
           case 21:
             { return token(sym.OPENCURLYBRACES, yytext());
             }
             // fall through
-          case 84: break;
+          case 83: break;
           case 22:
             { return token(sym.CLOSECURLYBRACES, yytext());
             }
             // fall through
-          case 85: break;
+          case 84: break;
           case 23:
             { string = string + yytext();
             }
             // fall through
-          case 86: break;
+          case 85: break;
           case 24:
             { yybegin(YYINITIAL);
 		return token(sym.STRINGLITERAL, string + yytext());
             }
             // fall through
-          case 87: break;
+          case 86: break;
           case 25:
             { return token(sym.NOTEQUAL, yytext());
             }
             // fall through
-          case 88: break;
+          case 87: break;
           case 26:
             { return token(sym.AND, yytext());
             }
             // fall through
-          case 89: break;
+          case 88: break;
           case 27:
-            { return token(sym.FLOATINGPOINT, yytext());
+            { return token(sym.DOUBLE, yytext());
             }
             // fall through
-          case 90: break;
+          case 89: break;
           case 28:
             { return token(sym.LESSEQUAL, yytext());
             }
             // fall through
-          case 91: break;
+          case 90: break;
           case 29:
             { return token(sym.EQUAL, yytext());
             }
             // fall through
-          case 92: break;
+          case 91: break;
           case 30:
             { return token(sym.GREATEREQUAL, yytext());
             }
             // fall through
-          case 93: break;
+          case 92: break;
           case 31:
             { return token(sym.OPENCLOSEBRACKET, yytext());
             }
             // fall through
-          case 94: break;
+          case 93: break;
           case 32:
             { return token(sym.IF, yytext());
             }
             // fall through
-          case 95: break;
+          case 94: break;
           case 33:
             { return token(sym.OR, yytext());
             }
             // fall through
-          case 96: break;
+          case 95: break;
           case 34:
             { return token(sym.FOR, yytext());
             }
             // fall through
-          case 97: break;
+          case 96: break;
           case 35:
             { return token(sym.INT, yytext());
             }
             // fall through
-          case 98: break;
+          case 97: break;
           case 36:
             { return token(sym.NEW, yytext());
             }
             // fall through
-          case 99: break;
+          case 98: break;
           case 37:
             { return token(sym.BOOL, yytext());
             }
             // fall through
-          case 100: break;
+          case 99: break;
           case 38:
             { return token(sym.BTOI, yytext());
             }
             // fall through
-          case 101: break;
+          case 100: break;
           case 39:
             { return token(sym.DTOI, yytext());
             }
             // fall through
-          case 102: break;
+          case 101: break;
           case 40:
             { return token(sym.ELSE, yytext());
             }
             // fall through
-          case 103: break;
+          case 102: break;
           case 41:
             { return token(sym.ITOB, yytext());
             }
             // fall through
-          case 104: break;
+          case 103: break;
           case 42:
             { return token(sym.ITOD, yytext());
             }
             // fall through
-          case 105: break;
+          case 104: break;
           case 43:
             { return token(sym.NULL, yytext());
             }
             // fall through
-          case 106: break;
+          case 105: break;
           case 44:
             { return token(sym.THIS, yytext());
             }
             // fall through
-          case 107: break;
+          case 106: break;
           case 45:
             { return token(sym.BOOLEANLITERAL, yytext());
             }
             // fall through
-          case 108: break;
+          case 107: break;
           case 46:
             { return token(sym.VOID, yytext());
             }
             // fall through
-          case 109: break;
+          case 108: break;
           case 47:
             { return token(sym.PRINT, yytext());
             }
             // fall through
-          case 110: break;
+          case 109: break;
           case 48:
             { return token(sym.BREAK, yytext());
             }
             // fall through
-          case 111: break;
+          case 110: break;
           case 49:
             { return token(sym.CLASS, yytext());
             }
             // fall through
-          case 112: break;
+          case 111: break;
           case 50:
             { return token(sym.WHILE, yytext());
             }
             // fall through
-          case 113: break;
+          case 112: break;
           case 51:
-            { return token(sym.DOUBLE, yytext());
-            }
-            // fall through
-          case 114: break;
-          case 52:
             { return token(sym.PUBLIC, yytext());
             }
             // fall through
-          case 115: break;
-          case 53:
+          case 113: break;
+          case 52:
             { return token(sym.RETURN, yytext());
             }
             // fall through
-          case 116: break;
-          case 54:
+          case 114: break;
+          case 53:
             { return token(sym.STRING, yytext());
             }
             // fall through
-          case 117: break;
-          case 55:
+          case 115: break;
+          case 54:
             { return token(sym.EXTENDS, yytext());
             }
             // fall through
-          case 118: break;
-          case 56:
+          case 116: break;
+          case 55:
             { return token(sym.PRIVATE, yytext());
             }
             // fall through
-          case 119: break;
-          case 57:
+          case 117: break;
+          case 56:
             { return token(sym.NEWARRAY, yytext());
             }
             // fall through
-          case 120: break;
-          case 58:
+          case 118: break;
+          case 57:
             { return token(sym.READLINE, yytext());
             }
             // fall through
-          case 121: break;
-          case 59:
+          case 119: break;
+          case 58:
             { return token(sym.CONTINUE, yytext());
             }
             // fall through
-          case 122: break;
-          case 60:
+          case 120: break;
+          case 59:
             { return token(sym.INTERFACE, yytext());
             }
             // fall through
-          case 123: break;
-          case 61:
+          case 121: break;
+          case 60:
             { return token(sym.PROTECTED, yytext());
             }
             // fall through
-          case 124: break;
-          case 62:
+          case 122: break;
+          case 61:
             { return token(sym.IMPLEMENTS, yytext());
             }
             // fall through
-          case 125: break;
-          case 63:
+          case 123: break;
+          case 62:
             { return token(sym.READINTEGER, yytext());
             }
             // fall through
-          case 126: break;
+          case 124: break;
           default:
             zzScanError(ZZ_NO_MATCH);
         }
