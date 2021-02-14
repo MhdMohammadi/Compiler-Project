@@ -163,13 +163,13 @@ precedence left PLUS, MINUS;
 precedence left MULT, DIV, MOD;
 precedence left NOT, MINUS;
 precedence left LBRACK, DOT;
-//precedence left IDENTIFIER;
+precedence left IDENTIFIER;
 
 start with Program;
 
 Program ::= DeclPlus:d {:
     Node tmp = new Node(LeftHand.Program, ProductionRule.DeclPlus);
-    tmp.getChildren().add((Node) d);
+88    tmp.getChildren().add((Node) d);
     tmp.getDefinedVariables().addAll(((Node)d).getDefinedVariables());
     RESULT = tmp; root = tmp;
 :};
@@ -226,7 +226,6 @@ Variable ::= Type:t IDENTIFIER:i{:
     RESULT = tmp;
 :};
 Type ::= Type:t LBRACK RBRACK {:
-    //badan bara array dorost she
     Node tmp = new Node(LeftHand.Type, ProductionRule.Type_LBRACK_RBRACK);
     tmp.getChildren().add((Node)t);
     tmp.setTypeName(((Node)t).getTypeName());
@@ -283,6 +282,12 @@ FunctionDecl ::= Type:t IDENTIFIER:i  LPAREN Formals:f RPAREN StmtBlock:s {:
     tmp.getChildren().add((Node) s);
     tmp.getDefinedVariables().addAll(((Node)f).getDefinedVariables());
     tmp.getDefinedVariables().addAll(((Node)s).getDefinedVariables());
+
+    Function function = new Function();
+    function.setName(i);
+    function.setParameter(((Node)f).getDefinedVariables());
+
+    tmp.getDefinedFunctions().add(function);
     RESULT = tmp;
 :} |
 VOID IDENTIFIER:i LPAREN Formals:f RPAREN StmtBlock:s {:
@@ -451,7 +456,7 @@ VariableDecl_star ::= VariableDecl:v VariableDecl_star:vs
  tmp.getChildren().add((Node) vs);
  tmp.getDefinedVariables().addAll(((Node)v).getDefinedVariables());
  tmp.getDefinedVariables().addAll(((Node)vs).getDefinedVariables());
- RESULT = tmp;:} |
+ RESULT = tmp;:}|
 {:
     Node tmp = new Node(LeftHand.VariableDecl_star, ProductionRule.NOTHING);
     RESULT = tmp;
@@ -660,7 +665,8 @@ LValue ::= IDENTIFIER:i  {:  Node tmp = new Node(LeftHand.LValue, ProductionRule
                              id.setValue(i);
                              tmp.getChildren().add(id);
                              RESULT = tmp;
-:} | Expr:e DOT IDENTIFIER:i {:  Node tmp = new Node(LeftHand.LValue, ProductionRule.Expr_DOT_IDENTIFIER);
+:} |
+ Expr:e DOT IDENTIFIER:i {:  Node tmp = new Node(LeftHand.LValue, ProductionRule.Expr_DOT_IDENTIFIER);
                               Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
                               id.setValue(i);
                               tmp.getChildren().add((Node)e);
