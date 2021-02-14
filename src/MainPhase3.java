@@ -35,7 +35,12 @@ public class MainPhase3 {
         c.preProcess(c.getRoot());
         Type.validate();
         c.setVariablesType(c.getRoot());
-        c.areAllVariablesUnique(c.getRoot());
+
+        c.setFunctionType(c.getRoot());
+        for (Function function: c.getRoot().getDefinedFunctions()){
+            System.out.println(function.getName() + " " + function.getType().getName() + " " + function.getAccessMode().toString());
+        }
+//        c.areAllVariablesUnique(c.getRoot());
 //        c.setAllNodesType(c.getRoot());
         /* try {
             p.parse();
