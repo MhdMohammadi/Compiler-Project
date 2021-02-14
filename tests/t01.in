@@ -6,6 +6,14 @@ class hi extends bye{
 
 }
 
+double go(int a, double b){
+
+}
+
 int main(){
-    a = b + c;
+
+}
+
+void fd(){
+
 }
