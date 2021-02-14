@@ -40,6 +40,7 @@ public class Type {
         allPreTypes.add(preType);
     }
 
+    //todo age circular bashe mitereke
     public static boolean validate(){
         allPreTypes.add(new PreType("int", null));
         allPreTypes.add(new PreType("double", null));
@@ -49,7 +50,7 @@ public class Type {
             for (int j = 0; j < allPreTypes.size(); j++) {
                 if (i != j) {
                     if (allPreTypes.get(i).getName().equals(allPreTypes.get(j).getName())) {
-                        return false;
+                        Compiler.semanticError();
                     }
                 }
             }
@@ -63,10 +64,12 @@ public class Type {
             String parentName = allPreTypes.get(i).getParent();
             if(parentName == null) continue;
             if (parentName.equals("int") || parentName.equals("double") || parentName.equals("boolean") || parentName.equals("string"))
-                return false;
+                Compiler.semanticError();
+            if (parentName.equals(allPreTypes.get(i).name))
+                Compiler.semanticError();
             Type x = getTypeByName(parentName, 0);
             if (x == null)
-                return false;
+                Compiler.semanticError();
             else
                 allTypes.get(i).setParent(x);
         }
@@ -75,7 +78,7 @@ public class Type {
 
     public static Type createArrayType(Type type){
         for(Type type1 : allTypes){
-            if(type1.name == type.name && type1.arrayDegree == type.arrayDegree + 1)
+            if(type1.name.equals(type.name) && type1.arrayDegree == type.arrayDegree + 1)
                 return type1;
         }
         Type type1 = new Type();

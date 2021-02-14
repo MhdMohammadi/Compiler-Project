@@ -90,7 +90,7 @@ public enum ProductionRule {
 	Expr_ActualsCommaExpr,
 	COMMA_Expr_ActualsCommaExpr,
 	DECIMAL,
-	FLOATINGPOINT,
+	DOUBLELITERAL,
 	BOOLEANLITERAL,
 	STRINGLITERAL,
 	NULL,
