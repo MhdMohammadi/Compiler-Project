@@ -292,6 +292,11 @@ ClassDecl ::=           CLASS IDENTIFIER:i ClassDeclExtends:c1 ClassDeclImplemen
 
     tmp.getDefinedFunctions().add(((Node)f).getDefinedFunctions());
 
+    Clazz clazz = new Clazz();
+    clazz.setFunctions(tmp.getDefinedFunctions());
+    clazz.setVariables(tmp.getDefinedVariables());
+    clazz.setName(i);
+
     RESULT = tmp;
 :};
 ClassDeclExtends ::=    EXTENDS IDENTIFIER:i{:
