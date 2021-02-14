@@ -28,12 +28,12 @@ underLine = "_"
 whiteSpace = {endLine} | [ \t\f]
 id = {alphabet}({alphabet} | {digit} | {underLine})*
 endLine = \n|\r|\r\n
-decimal = ({digit})+
+intLiteral = ({digit})+
 hexadigit = {digit} | [a-fA-F]
 hexadecimal = 0[xX]({hexadigit})+
-double = ({digit}+\.{digit}*)
-scientificDouble = {double}[Ee][+-]?{decimal}
-doubleAll = {double} | {scientificDouble}
+doubleLiteral = ({digit}+\.{digit}*)
+scientificDoubleLiteral = {doubleLiteral}[Ee][+-]?{intLiteral}
+doubleLiteralAll = {doubleLiteral} | {scientificDoubleLiteral}
 inputCharacter = [^\r\n]
 singleLineComment = \/\/{inputCharacter}*
 multiLineComment = \/\*~\*\/
@@ -103,9 +103,9 @@ multiLineComment = \/\*~\*\/
 	"]"    {return token(sym.CLOSEBRACKET, yytext()); }
 //
 //
-	{decimal}               {return token(sym.DECIMAL, yytext());}
-	{doubleAll}      {return token(sym.DOUBLE, yytext());}
-	{hexadecimal}           {return token(sym.DECIMAL, yytext()); }
+	{INTLITERAL}               {return token(sym.INTLITERAL, yytext());}
+	{doubleLiteralAll}      {return token(sym.DOUBLELITERAL, yytext());}
+	{hexadecimal}           {return token(sym.INTLITERAL, yytext()); }
 	{id}                    {return token(sym.IDENTIFIER, yytext());}
 	{whiteSpace}            {;}
 	{singleLineComment}     {;}

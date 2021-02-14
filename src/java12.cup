@@ -32,9 +32,11 @@ terminal        DOT;
 terminal        String INT, DOUBLE, BOOL, STRING;
 
 // literals
-terminal        String DECIMAL;
+terminal        String INTLITERAL;
 terminal        String BOOLEANLITERAL;
 terminal        String STRINGLITERAL;
+terminal        String INTLITERAL;
+terminal        String DOUBLELITERAL;
 terminal        NULL;
 
 // signs
@@ -790,16 +792,16 @@ ActualsCommaExpr ::=    COMMA Expr:e ActualsCommaExpr
                         :}
 						;
 
-Constant ::=            DECIMAL:d
-						{: Node tmp = new Node(LeftHand.Constant, ProductionRule.DECIMAL);
-                           Node id = new Node(LeftHand.DECIMAL, ProductionRule.TERMINAL);
+Constant ::=            INTLITERAL:d
+						{: Node tmp = new Node(LeftHand.Constant, ProductionRule.INTLITERAL);
+                           Node id = new Node(LeftHand.INTLITERAL, ProductionRule.TERMINAL);
                            id.setValue(d);
                            tmp.getChildren().add(id);
                            RESULT = tmp;
                         :}
-						| DOUBLE:f
-						{:  Node tmp = new Node(LeftHand.Constant, ProductionRule.DOUBLE);
-                             Node id = new Node(LeftHand.DOUBLE, ProductionRule.TERMINAL);
+						| DOUBLELITERAL:f
+						{:  Node tmp = new Node(LeftHand.Constant, ProductionRule.DOUBLELITERAL);
+                             Node id = new Node(LeftHand.DOUBLELITERAL, ProductionRule.TERMINAL);
                              id.setValue(f);
                              tmp.getChildren().add(id);
                              RESULT = tmp;
