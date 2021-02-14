@@ -42,5 +42,6 @@ public enum LeftHand {
     FLOATINGPOINT,
     BOOLEANLITERAL,
     STRINGLITERAL,
-    NULL
+    NULL,
+    IDENTIFIER
 }
