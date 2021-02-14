@@ -196,35 +196,166 @@ PrintCommaExpr ::=      COMMA Expr:e PrintCommaExpr
 						;
 
 Expr ::=                LValue:lv ASSIGN Expr:e
+						{:  Node tmp = new Node(LeftHand.Expr, ProductionRule.LValue_ASSIGN_Expr);
+                        tmp.getChildren().add((Node) lv);
+                        tmp.getChildren().add((Node) e);
+                        RESULT = tmp;
+                        :}
 						| Constant:c
+						{:  Node tmp = new Node(LeftHand.Expr, ProductionRule.Constant);
+                          tmp.getChildren().add((Node)c);
+                          RESULT = tmp;
+                        :}
 						| LValue:lv
+						{:  Node tmp = new Node(LeftHand.Expr, ProductionRule.LValue);
+                          tmp.getChildren().add((Node)lv);
+                          RESULT = tmp;
+                        :}
 						| THIS
+    					{:  Node tmp = new Node(LeftHand.Expr, ProductionRule.THIS);
+                        // todo
+                         RESULT = tmp;
+                        :}
 						| Call:c
+						{:  Node tmp = new Node(LeftHand.Expr, ProductionRule.Call);
+                        tmp.getChildren().add((Node)c);
+                        RESULT = tmp;
+                        :}
 						| OPENPARENTHESIS Expr:e CLOSEPARENTHESIS
+						{:  Node tmp = new Node(LeftHand.Expr, ProductionRule.OPENPARENTHESIS_Expr_CLOSEPARENTHESIS);
+                        tmp.getChildren().add((Node)e);
+                        RESULT = tmp;
+                        :}
 						| Expr:e1 PLUS Expr:e2
+						{:  Node tmp = new Node(LeftHand.Expr, ProductionRule.Expr_PLUS_Expr);
+                        tmp.getChildren().add((Node)e1);
+                        tmp.getChildren().add((Node)e2);
+                        RESULT = tmp;
+                        :}
 						| Expr:e1 MINUS Expr:e2
+						{:  Node tmp = new Node(LeftHand.Expr, ProductionRule.Expr_MINUS_Expr);
+                        tmp.getChildren().add((Node)e1);
+                        tmp.getChildren().add((Node)e2);
+                        RESULT = tmp;
+                        :}
 						| Expr:e1 MULTIPLY Expr:e2
+						{:  Node tmp = new Node(LeftHand.Expr, ProductionRule.Expr_MULTIPLY_Expr);
+                        tmp.getChildren().add((Node)e1);
+                        tmp.getChildren().add((Node)e2);
+                        RESULT = tmp;
+                        :}
 						| Expr:e1 DIVIDE Expr:e2
+						{:  Node tmp = new Node(LeftHand.Expr, ProductionRule.Expr_DIVIDE_Expr);
+                        tmp.getChildren().add((Node)e1);
+                        tmp.getChildren().add((Node)e2);
+                        RESULT = tmp;
+                        :}
 						| Expr:e1 MOD Expr:e2
-						| MINUS Expr:e %prec UMINUS
+						{:  Node tmp = new Node(LeftHand.Expr, ProductionRule.Expr_MOD_Expr);
+                        tmp.getChildren().add((Node)e1);
+                        tmp.getChildren().add((Node)e2);
+                        RESULT = tmp;
+                        :}
+						| MINUS Expr:e
+                        {:  Node tmp = new Node(LeftHand.Expr, ProductionRule.MINUS_Expr);
+                        tmp.getChildren().add((Node)e);
+                        RESULT = tmp;
+                        :}
+                        %prec UMINUS
                         | Expr:e1 LESS Expr:e2
+                        {:  Node tmp = new Node(LeftHand.Expr, ProductionRule.Expr_LESS_Expr);
+                        tmp.getChildren().add((Node)e1);
+                        tmp.getChildren().add((Node)e2);
+                        RESULT = tmp;
+                        :}
 						| Expr:e1 LESSEQUAL Expr:e2
+						{:  Node tmp = new Node(LeftHand.Expr, ProductionRule.Expr_LESSEQUAL_Expr);
+                        tmp.getChildren().add((Node)e1);
+                        tmp.getChildren().add((Node)e2);
+                        RESULT = tmp;
+                        :}
 						| Expr:e1 GREATER Expr:e2
+						{:  Node tmp = new Node(LeftHand.Expr, ProductionRule.Expr_GREATER_Expr);
+                        tmp.getChildren().add((Node)e1);
+                        tmp.getChildren().add((Node)e2);
+                        RESULT = tmp;
+                        :}
 						| Expr:e1 GREATEREQUAL Expr:e2
+						{:  Node tmp = new Node(LeftHand.Expr, ProductionRule.Expr_GREATEREQUAL_Expr);
+                        tmp.getChildren().add((Node)e1);
+                        tmp.getChildren().add((Node)e2);
+                        RESULT = tmp;
+                        :}
 						| Expr:e1 EQUAL Expr:e2
+						{:  Node tmp = new Node(LeftHand.Expr, ProductionRule.Expr_EQUAL_Expr);
+                        tmp.getChildren().add((Node) e1);
+                        tmp.getChildren().add((Node) e2);
+                        RESULT = tmp;
+                        :}
 						| Expr:e1 NOTEQUAL Expr:e2
+						{:  Node tmp = new Node(LeftHand.Expr, ProductionRule.Expr_NOTEQUAL_Expr);
+                        tmp.getChildren().add((Node) e1);
+                        tmp.getChildren().add((Node) e2);
+                        RESULT = tmp;
+                        :}
 						| Expr:e1 AND Expr:e2
+						{:  Node tmp = new Node(LeftHand.Expr, ProductionRule.Expr_AND_Expr);
+                        tmp.getChildren().add((Node) e1);
+                        tmp.getChildren().add((Node) e2);
+                        RESULT = tmp;
+                        :}
 						| Expr:e1 OR Expr:e2
+						{:  Node tmp = new Node(LeftHand.Expr, ProductionRule.Expr_OR_Expr);
+                        tmp.getChildren().add((Node) e1);
+                        tmp.getChildren().add((Node) e2);
+                        RESULT = tmp;
+                        :}
 						| NOT Expr:e
+                        {:  Node tmp = new Node(LeftHand.Expr, ProductionRule.NOT_Expr);
+                        tmp.getChildren().add((Node) e);
+                        RESULT = tmp;
+                        :}
 						| READINTEGER OPENPARENTHESIS CLOSEPARENTHESIS
+						{:  Node tmp = new Node(LeftHand.Expr, ProductionRule.READINTEGER_OPENPARENTHESIS_CLOSEPARENTHESIS);
+                        RESULT = tmp;
+                        :}
 						| READLINE OPENPARENTHESIS CLOSEPARENTHESIS
-						| NEW IDENTIFIER
+						{:  Node tmp = new Node(LeftHand.Expr, ProductionRule.READLINE_OPENPARENTHESIS_CLOSEPARENTHESIS);
+                        RESULT = tmp;
+                        :}
+						| NEW IDENTIFIER:id
+						{:  Node tmp = new Node(LeftHand.Expr, ProductionRule.NEW_IDENTIFIER);
+                        Node idNode = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
+                        idNode.setValue(id);
+                        tmp.getChildren().add(idNode);
+                        RESULT = tmp;
+                        :}
 						| NEWARRAY OPENPARENTHESIS Expr:e COMMA Type:t CLOSEPARENTHESIS
+                        {:  Node tmp = new Node(LeftHand.Expr, ProductionRule.NEWARRAY_OPENPARENTHESIS_Expr_COMMA_Type_CLOSEPARENTHESIS);
+                        tmp.getChildren().add((Node)e);
+                        tmp.getChildren().add((Node)t);
+                        RESULT = tmp;
+                        :}
 						| ITOD OPENPARENTHESIS Expr:e CLOSEPARENTHESIS
+						{:  Node tmp = new Node(LeftHand.Expr, ProductionRule.ITOD_OPENPARENTHESIS_Expr_CLOSEPARENTHESIS);
+                        tmp.getChildren().add((Node)e);
+                        RESULT = tmp;
+                        :}
 						| DTOI OPENPARENTHESIS Expr:e CLOSEPARENTHESIS
+						{:  Node tmp = new Node(LeftHand.Expr, ProductionRule.DTOI_OPENPARENTHESIS_Expr_CLOSEPARENTHESIS);
+                        tmp.getChildren().add((Node)e);
+                        RESULT = tmp;
+                        :}
 						| ITOB OPENPARENTHESIS Expr:e CLOSEPARENTHESIS
-						| BTOI OPENPARENTHESIS Expr:e CLOSEPARENTHESIS
-						;
+                        {:  Node tmp = new Node(LeftHand.Expr, ProductionRule.ITOB_OPENPARENTHESIS_Expr_CLOSEPARENTHESIS);
+                        tmp.getChildren().add((Node)e);
+                        RESULT = tmp;
+                        :}
+                        | BTOI OPENPARENTHESIS Expr:e CLOSEPARENTHESIS
+                        {:  Node tmp = new Node(LeftHand.Expr, ProductionRule.BTOI_OPENPARENTHESIS_Expr_CLOSEPARENTHESIS);
+                        tmp.getChildren().add((Node)e);
+                        RESULT = tmp;
+                        :};
 
 LValue ::=              IDENTIFIER:id
 						{:  Node tmp = new Node(LeftHand.LValue, ProductionRule.IDENTIFIER);
