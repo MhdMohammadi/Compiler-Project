@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class CodeGenerator {
     public void readLine(){
         System.out.println("li $v0, 5");
@@ -10,5 +12,11 @@ public class CodeGenerator {
         System.out.println("la $a0, buffer");
         System.out.println("li $a1, 1000");
         System.out.println("syscall");
+    }
+
+    public void print(ArrayList<Node> nodes){
+        for (int i = 0; i < nodes.size(); i++){
+            
+        }
     }
 }
