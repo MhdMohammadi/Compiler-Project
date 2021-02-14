@@ -231,16 +231,39 @@ LValue ::=              IDENTIFIER:id
 						| Expr:e1 OPENBRACKET Expr:e2 CLOSEBRACKET
 						;
 
-Call ::=                IDENTIFIER:functionID OPENPARENTHESIS Actuals CLOSEPARENTHESIS
+Call ::=                IDENTIFIER:functionID OPENPARENTHESIS Actuals:a CLOSEPARENTHESIS
+						{:  Node tmp = new Node(LeftHand.Call, ProductionRule.IDENTIFIER_OPENPARENTHESIS_Actuals_CLOSEPARENTHESIS);
+                         Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
+                         id.setValue(functionID);
+                         tmp.getChildren().add(id);
+                         tmp.getChildren().add((Node)a);
+                         RESULT = tmp;
+                        :}
 						| Expr:e DOT IDENTIFIER:id OPENPARENTHESIS Actuals CLOSEPARENTHESIS
 						;
 
 Actuals ::=             Expr:e ActualsCommaExpr
+                        {:  Node tmp = new Node(LeftHand.Actuals, ProductionRule.Expr_ActualsCommaExpr);
+                          tmp.getChildren().add((Node)e);
+                          RESULT = tmp;
+                          //todo
+                        :}
 						| /*epsilon*/
+						{:  Node tmp = new Node(LeftHand.Actuals, ProductionRule.Expr_ActualsCommaExpr);
+                            RESULT = tmp;
+                        :}
 						;
 
 ActualsCommaExpr ::=    COMMA Expr:e ActualsCommaExpr
+						{:  Node tmp = new Node(LeftHand.ActualsCommaExpr, ProductionRule.Expr_ActualsCommaExpr);
+                          tmp.getChildren().add((Node)e);
+                          RESULT = tmp;
+                          //todo
+                        :}
 						| /*epsilon*/
+						{:  Node tmp = new Node(LeftHand.ActualsCommaExpr, ProductionRule.EPSILON);
+                            RESULT = tmp;
+                        :}
 						;
 
 Constant ::=            DECIMAL:d
@@ -258,15 +281,15 @@ Constant ::=            DECIMAL:d
                              RESULT = tmp;
                         :}
 						| BOOLEANLITERAL:b
-						{:  Node tmp = new Node(LeftHand.Constant, ProductionRule.BOOLEAN_LITERAL);
-                          Node id = new Node(LeftHand.BOOLEAN_LITERAL, ProductionRule.TERMINAL);
+						{:  Node tmp = new Node(LeftHand.Constant, ProductionRule.BOOLEANLITERAL);
+                          Node id = new Node(LeftHand.BOOLEANLITERAL, ProductionRule.TERMINAL);
                           id.setValue(b);
                           tmp.getChildren().add(id);
                           RESULT = tmp;
                         :}
 						| STRINGLITERAL:s
-						{:  Node tmp = new Node(LeftHand.Constant, ProductionRule.STRING_LITERAL);
-                         Node id = new Node(LeftHand.STRING_LITERAL, ProductionRule.TERMINAL);
+						{:  Node tmp = new Node(LeftHand.Constant, ProductionRule.STRINGLITERAL);
+                         Node id = new Node(LeftHand.STRINGLITERAL, ProductionRule.TERMINAL);
                          id.setValue(s);
                          tmp.getChildren().add(id);
                          RESULT = tmp;
