@@ -437,6 +437,8 @@ InsideStmtBlock ::=     VariableDecl:v InsideStmtBlock:i
 {: Node tmp = new Node(LeftHand.InsideStmtBlock, ProductionRule.VariableDecl_InsideStmtBlock);
 tmp.getChildren().add((Node) v);
 tmp.getChildren().add((Node) i);
+tmp.getDefinedVariables().addAll(((Node)v).getDefinedVariables());
+tmp.getDefinedVariables().addAll((((Node)i)).getDefinedVariables());
 RESULT = tmp;:}
 						| StmtStar:s
 						{: Node tmp = new Node(LeftHand.InsideStmtBlock, ProductionRule.StmtStar);
