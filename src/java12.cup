@@ -76,58 +76,255 @@ precedence left     OPENPARENTHESIS;
 
 start with Program;
 
-Program ::=             Decl DeclStar;
+Program ::=             Decl:d1 DeclStar:d2{:
+    Node tmp = new Node(LeftHand.Program, ProductionRule.Decl_DeclStar);
+    tmp.getChildren().add((Node) d1);
+    tmp.getChildren().add((Node) d2);
+    tmp.getDefinedVariables().addAll(((Node)d1).getDefinedVariables());
+    tmp.getDefinedVariables().addAll(((Node)d2).getDefinedVariables());
+    RESULT = tmp; root = tmp;
+:};
 
-DeclStar ::=            Decl DeclStar
-						| /*epsilon*/
-						;
+DeclStar ::=            Decl:d1 DeclStar:d2{:
+    Node tmp = new Node(LeftHand.DeclStar, ProductionRule.Decl_DeclStar);
+    tmp.getChildren().add((Node)d1);
+    tmp.getChildren().add((Node)d2);
+    tmp.getDefinedVariables().addAll(((Node)d1).getDefinedVariables());
+    tmp.getDefinedVariables().addAll(((Node)d2).getDefinedVariables());
+    RESULT = tmp;
+:}
+						| {:
+    Node tmp = new Node(LeftHand.DeclStar, ProductionRule.EPSILON);
+    RESULT = tmp;
+:}/*epsilon*/
+;
 
-Decl ::=                VariableDecl
-						| FunctionDecl
-						| ClassDecl
-						| InterfaceDecl
-						;
-
-VariableDecl ::=        Variable SEMICOLON;
-
-Variable ::=            Type:type IDENTIFIER:id
-						;
-
-Type ::=                INT
-						| DOUBLE
-						| BOOL
-						| STRING
-                        | IDENTIFIER:e
-						| Type:t OPENCLOSEBRACKET
-						;
-
-FunctionDecl ::=        Type:t IDENTIFIER:name OPENPARENTHESIS Formals CLOSEPARENTHESIS StmtBlock
-						| VOID IDENTIFIER:name OPENPARENTHESIS Formals CLOSEPARENTHESIS StmtBlock
-						;
-
-Formals ::=             Variable:v CommaVariables
-						| /*epsilon*/
-						;
-CommaVariables ::=      COMMA Variable CommaVariables
-						| /*epsilon*/
-						;
-
-ClassDecl ::=           CLASS IDENTIFIER ClassDeclExtends ClassDeclImplements OPENCURLYBRACES FieldStar CLOSECURLYBRACES;
-ClassDeclExtends ::=    EXTENDS IDENTIFIER
-						| /*epsilon*/
-						;
-ClassDeclImplements ::= IMPLEMENTS IDENTIFIER CommaIdentifiers
-						| /*epsilon*/
-						;
-CommaIdentifiers ::=    COMMA IDENTIFIER CommaIdentifiers
-						| /*epsilon*/
-						;
-FieldStar ::=           Field FieldStar
-						| /*epsilon*/
+Decl ::=                VariableDecl:v{:
+    Node tmp = new Node(LeftHand.Decl, ProductionRule.VariableDecl);
+    tmp.getChildren().add((Node)v);
+    tmp.getDefinedVariables().addAll(((Node)v).getDefinedVariables());
+    RESULT = tmp;
+:}
+						| FunctionDecl:f{:
+    Node tmp = new Node(LeftHand.Decl, ProductionRule.FunctionDecl);
+    tmp.getChildren().add((Node)f);
+    RESULT = tmp;
+:}
+						| ClassDecl:c{:
+    Node tmp = new Node(LeftHand.Decl, ProductionRule.ClassDecl);
+    tmp.getChildren().add((Node)c);
+    RESULT = tmp;
+						:}
+						| InterfaceDecl:i{:
+    Node tmp = new Node(LeftHand.Decl, ProductionRule.InterfaceDecl);
+    tmp.getChildren().add((Node)i);
+    RESULT = tmp;
+						:}
 						;
 
-Field ::=               AccessMode VariableDecl
-						| AccessMode FunctionDecl
+VariableDecl ::=        Variable:v SEMICOLON{:
+    Node tmp = new Node(LeftHand.VariableDecl, ProductionRule.Variable_SEMICOLON);
+    tmp.getChildren().add((Node)v);
+    RESULT = tmp;
+:};
+
+Variable ::=            Type:t IDENTIFIER:i{:
+    Node tmp = new Node(LeftHand.Variable, ProductionRule.Type_IDENTIFIER);
+    tmp.getChildren().add((Node) t);
+    Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
+    id.setValue(i);
+    tmp.getChildren().add(id);
+    Variable variable = new Variable();
+    variable.setName(i);
+    tmp.getDefinedVariables().add(variable);
+    RESULT = tmp;
+:}
+						;
+
+Type ::=                INT:i{:
+     Node tmp = new Node(LeftHand.Type, ProductionRule.INT);
+     Node in = new Node(LeftHand.INT, ProductionRule.TERMINAL);
+     in.setValue(i);
+     tmp.getChildren().add(in);
+     tmp.setTypeName("int");
+     RESULT = tmp;
+:}
+						| DOUBLE:d{:
+     Node tmp = new Node(LeftHand.Type, ProductionRule.DOUBLE);
+     Node doub = new Node(LeftHand.DOUBLE, ProductionRule.TERMINAL);
+     doub.setValue(d);
+     tmp.getChildren().add(doub);
+     tmp.setTypeName("double");
+     RESULT = tmp;
+:}
+						| BOOL:b{:
+     Node tmp = new Node(LeftHand.Type, ProductionRule.BOOL);
+     Node bo = new Node(LeftHand.BOOL, ProductionRule.TERMINAL);
+     bo.setValue(b);
+     tmp.getChildren().add(bo);
+     tmp.setTypeName("boolean");
+     RESULT = tmp;
+:}
+						| STRING:s{:
+     Node tmp = new Node(LeftHand.Type, ProductionRule.STRING);
+     Node str = new Node(LeftHand.STRING, ProductionRule.TERMINAL);
+     str.setValue(s);
+     tmp.getChildren().add(str);
+     tmp.setTypeName("string");
+     RESULT = tmp;
+:}
+                        | IDENTIFIER:i{:
+    Node tmp = new Node(LeftHand.Type, ProductionRule.IDENTIFIER);
+    Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
+    id.setValue(i);
+    tmp.getChildren().add(id);
+    tmp.setTypeName(i);
+    RESULT = tmp;
+:}
+						| Type:t OPENCLOSEBRACKET{:
+    Node tmp = new Node(LeftHand.Type, ProductionRule.Type_OPENCLOSEBRACKET);
+    tmp.getChildren().add((Node)t);
+    tmp.setTypeName(((Node)t).getTypeName());
+    tmp.setArrayDegree(((Node)t).getArrayDegree() + 1);
+    RESULT = tmp;
+						:}
+						;
+
+FunctionDecl ::=        Type:t IDENTIFIER:i OPENPARENTHESIS Formals:f CLOSEPARENTHESIS StmtBlock:s{:
+    Node tmp = new Node(LeftHand.FunctionDecl, ProductionRule.Type_IDENTIFIER_OPENPARENTHESIS_Formals_CLOSEPARENTHESIS_StmtBlock);
+    tmp.getChildren().add((Node)t);
+    Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
+    id.setValue(i);
+    tmp.getChildren().add(id);
+    tmp.getChildren().add((Node) f);
+    tmp.getChildren().add((Node) s);
+    tmp.getDefinedVariables().addAll(((Node)f).getDefinedVariables());
+    tmp.getDefinedVariables().addAll(((Node)s).getDefinedVariables());
+    RESULT = tmp;
+:}
+						| VOID IDENTIFIER:i OPENPARENTHESIS Formals:f CLOSEPARENTHESIS StmtBlock:s{:
+    Node tmp = new Node(LeftHand.FunctionDecl, ProductionRule.VOID_IDENTIFIER_OPENPARENTHESIS_Formals_CLOSEPARENTHESIS_StmtBlock);
+    Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
+    id.setValue(i);
+    tmp.getChildren().add(id);
+    tmp.getChildren().add((Node)f);
+    tmp.getChildren().add((Node)s);
+    tmp.getDefinedVariables().addAll(((Node)f).getDefinedVariables());
+    tmp.getDefinedVariables().addAll(((Node)s).getDefinedVariables());
+    RESULT = tmp;
+:}
+						;
+
+Formals ::=             Variable:v CommaVariables:c{:
+    Node tmp = new Node(LeftHand.Formals, ProductionRule.Variable_CommaVariables);
+    tmp.getChildren().add((Node)v);
+    tmp.getChildren().add((Node)c);
+    tmp.getDefinedVariables().addAll(((Node)v).getDefinedVariables());
+    tmp.getDefinedVariables().addAll(((Node)c).getDefinedVariables());
+    RESULT = tmp;
+:}
+						| {:
+    Node tmp = new Node(LeftHand.Formals, ProductionRule.EPSILON);
+    RESULT = tmp;
+:}/*epsilon*/
+;
+CommaVariables ::=      COMMA Variable:v CommaVariables:c{:
+    Node tmp = new Node(LeftHand.CommaVariables, ProductionRule.COMMA_Variable_CommaVariables;
+    tmp.getChildren().add((Node)v);
+    tmp.getChildren().add((Node)c);
+    tmp.getDefinedVariables().addAll(((Node)v).getDefinedVariables());
+    tmp.getDefinedVariables().addAll(((Node)c).getDefinedVariables());
+    RESULT = tmp;
+:}
+						| /*epsilon*/{:
+    Node tmp = new Node(LeftHand.CommaVariables, ProductionRule.EPSILON);
+    RESULT = tmp;
+:}
+;
+
+ClassDecl ::=           CLASS IDENTIFIER:i ClassDeclExtends:c1 ClassDeclImplements:c2 OPENCURLYBRACES FieldStar:f CLOSECURLYBRACES{:
+    Node tmp = new Node(LeftHand.ClassDecl, ProductionRule.CLASS_IDENTIFIER_ClassDeclExtends_ClassDeclImplements_OPENCURLYBRACES_FieldStar_CLOSECURLYBRACES);
+    Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
+    id.setValue(i1);
+    tmp.getChildren().add(id);
+    tmp.getChildren().add((Node)c1);
+    tmp.getChildren().add((Node)c2);
+    tmp.getChildren().add((Node)f);
+    if(((Node)e).getValue() != null)
+        Type.createPreType(i1, (String)((Node)e).getValue());
+    else
+        Type.createPreType(i1, null);
+    tmp.getDefinedVariables().addAll(((Node)f).getDefinedVariables());
+    RESULT = tmp;
+:};
+ClassDeclExtends ::=    EXTENDS IDENTIFIER:i{:
+    Node tmp = new Node(LeftHand.ClassDeclExtends, ProductionRule.EXTENDS_IDENTIFIER);
+    Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
+    id.setValue(i);
+    tmp.getChildren().add(id);
+    tmp.setValue(i);
+    RESULT = tmp;
+:}
+						| {:
+    Node tmp = new Node(LeftHand.ClassDeclExtends, ProductionRule.EPSILON);
+    tmp.setValue(null);
+    RESULT = tmp;
+:}/*epsilon*/
+						;
+ClassDeclImplements ::= IMPLEMENTS IDENTIFIER:i CommaIdentifiers:c{:
+    Node tmp = new Node(LeftHand.ClassDeclImplements, ProductionRule.IMPLEMENTS_IDENTIFIER_CommaIdentifiers);
+    tmp.getChildren().add((Node)i);
+    tmp.getChildren().add((Node)c);
+    RESULT = tmp;
+:}
+						| {:
+    Node tmp = new Node(LeftHand.ClassDeclImplements, ProductionRule.EPSILON);
+    RESULT = tmp;
+:}/*epsilon*/
+						;
+CommaIdentifiers ::=    COMMA IDENTIFIER:i CommaIdentifiers:c{:
+    Node tmp = new Node(LeftHand.CommaIdentifiers, ProductionRule.COMMA_IDENTIFIER_CommaIdentifiers);
+    Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
+    id.setValue(i);
+    tmp.getChildren().add(id);
+    tmp.getChildren().add((Node)c);
+    RESULT = tmp;
+:}
+						|{:
+    Node tmp = new Node(LeftHand.CommaIdentifiers, ProductionRule.EPSILON);
+    RESULT = tmp;
+:} /*epsilon*/
+						;
+FieldStar ::=           Field:f1 FieldStar:f2{:
+    Node tmp = new Node(LeftHand.FieldStar, ProductionRule.Field_FieldStar);
+    tmp.getChildren().add((Node)f1);
+    tmp.getChildren().add((Node)f2);
+    tmp.getDefinedVariables().addAll(((Node)f1).getDefinedVariables());
+    tmp.getDefinedVariables().addAll(((Node)f2).getDefinedVariables());
+    RESULT = tmp;
+:}
+						| {:
+    Node tmp = new Node(LeftHand.FieldStar, ProductionRule.EPSILON);
+    RESULT = tmp;
+:} /*epsilon*/
+						;
+
+Field ::=               AccessMode:a VariableDecl:v{:
+    Node tmp = new Node(LeftHand.Field, ProductionRule.AccessMode_VariableDecl);
+    tmp.getChildren().add((Node)a);
+    tmp .getChildren().add((Node)v);
+    tmp.getDefinedVariables().addAll(((Node)v).getDefinedVariables());
+    for(Variable variable: ((Node)v).getDefinedVariables()){
+        variable.setAccessMode(((Node)a).getAccessMode());
+    }
+    RESULT = tmp;
+:}
+						| AccessMode:a FunctionDecl:f {:
+    Node tmp = new Node(LeftHand.Field, ProductionRule.AccessMode_FunctionDecl);
+    tmp.getChildren().add((Node)a);
+    tmp.getChildren().add((Node)f);
+    RESULT = tmp;
+:}
 						;
 
 AccessMode ::=          PRIVATE
