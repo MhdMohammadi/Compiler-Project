@@ -97,10 +97,10 @@ public class Compiler {
     }
 
     // age be terminal bere, type bayad moshakhas shode bashe
-    public void setAllNodesType(Node v) {
-        for (Node node : v.getChildren())
+    public void setAllNodesType(Node v){
+        for(Node node : v.getChildren())
             setVariablesType(node);
-        switch (v.getLeftHand()) {
+        switch (v.getLeftHand()){
             case Constant:
                 switch (v.getProductionRule()) {
                     case DECIMAL:
@@ -258,6 +258,21 @@ public class Compiler {
                 }
                 break;
         }
+    }
+
+    void checkIntegerIndices(Node v){
+        if(v.getProductionRule() == ProductionRule.NEWARRAY_OPENPARENTHESIS_Expr_COMMA_Type_CLOSEPARENTHESIS){
+            Type t = v.getChildren().get(0).getType();
+            if(t != Type.getTypeByName("int"))
+                semanticError();
+        }
+        if(v.getProductionRule() == ProductionRule.Expr_OPENBRACKET_Expr_CLOSEBRACKET){
+            Type t = v.getChildren().get(0).getType();
+            if(t != Type.getTypeByName("int"))
+                semanticError();
+        }
+        for(Node node : v.getChildren())
+            checkIntegerIndices(node);
     }
 
     public Node getRoot() {

@@ -6,6 +6,7 @@ public class Node {
     private ProductionRule productionRule;
     private ArrayList<Node> children = new ArrayList<Node>();
     private Object value;
+    private String Code;
 
     private String typeName;
     private int arrayDegree = 0;
@@ -114,5 +115,13 @@ public class Node {
 
     public void setDefinedFunctions(ArrayList<Function> definedFunctions) {
         this.definedFunctions = definedFunctions;
+    }
+
+    public String getCode() {
+        return Code;
+    }
+
+    public void setCode(String code) {
+        Code = code;
     }
 }
