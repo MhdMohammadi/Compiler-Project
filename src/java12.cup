@@ -289,7 +289,7 @@ ClassDecl ::=           CLASS IDENTIFIER:i ClassDeclExtends:c1 ClassDeclImplemen
         Type.createPreType(i1, null);
     tmp.getDefinedVariables().addAll(((Node)f).getDefinedVariables());
 
-    tmp.getDefinedFunctions().add(((Node)f).getDefinedFunctions());
+    tmp.getDefinedFunctions().addAll(((Node)f).getDefinedFunctions());
 
     Clazz clazz = new Clazz();
     clazz.setFunctions(tmp.getDefinedFunctions());

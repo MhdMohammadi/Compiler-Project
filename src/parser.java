@@ -1254,8 +1254,8 @@ class CUP$parser$actions {
     tmp.getChildren().add((Node)c1);
     tmp.getChildren().add((Node)c2);
     tmp.getChildren().add((Node)f);
-    if(((Node)e).getValue() != null)
-        Type.createPreType(i1, (String)((Node)e).getValue());
+    if(((Node)c1).getValue() != null)
+        Type.createPreType(i1, (String)((Node)c1).getValue());
     else
         Type.createPreType(i1, null);
     tmp.getDefinedVariables().addAll(((Node)f).getDefinedVariables());
