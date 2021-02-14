@@ -132,7 +132,7 @@ public class Compiler {
         switch (v.getLeftHand()){
             case Constant:
                 switch (v.getProductionRule()) {
-                    case DECIMAL:
+                    case INTLITERAL:
                         v.setType(Type.getTypeByName("int", 0));
                         break;
                     case DOUBLELITERAL:
