@@ -39,13 +39,12 @@ public enum LeftHand {
     ActualsCommaExpr,
     Constant,
     DECIMAL,
-    FLOATINGPOINT,
+    DOUBLE,
     BOOLEANLITERAL,
     STRINGLITERAL,
     NULL,
     IDENTIFIER,
     INT,
-    DOUBLE,
     STRING,
     BOOL
 }

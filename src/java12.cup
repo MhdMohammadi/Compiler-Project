@@ -33,7 +33,6 @@ terminal        String INT, DOUBLE, BOOL, STRING;
 
 // literals
 terminal        String DECIMAL;
-terminal        String FLOATINGPOINT;
 terminal        String BOOLEANLITERAL;
 terminal        String STRINGLITERAL;
 terminal        NULL;
@@ -95,6 +94,9 @@ DeclStar ::=            Decl:d1 DeclStar:d2{:
     tmp.getChildren().add((Node)d2);
     tmp.getDefinedVariables().addAll(((Node)d1).getDefinedVariables());
     tmp.getDefinedVariables().addAll(((Node)d2).getDefinedVariables());
+
+    tmp.getDefinedFunctions().addAll(((Node)d1).getDefinedFunctions());
+    tmp.getDefinedFunctions().addAll(((Node)d2).getDefinedFunctions());
 
     tmp.getDefinedFunctions().addAll(((Node)d1).getDefinedFunctions());
     tmp.getDefinedFunctions().addAll(((Node)d2).getDefinedFunctions());
@@ -283,13 +285,13 @@ ClassDecl ::=           CLASS IDENTIFIER:i ClassDeclExtends:c1 ClassDeclImplemen
     tmp.getChildren().add((Node)c1);
     tmp.getChildren().add((Node)c2);
     tmp.getChildren().add((Node)f);
-    if(((Node)e).getValue() != null)
-        Type.createPreType(i1, (String)((Node)e).getValue());
+    if(((Node)c1).getValue() != null)
+        Type.createPreType(i1, (String)((Node)c1).getValue());
     else
         Type.createPreType(i1, null);
     tmp.getDefinedVariables().addAll(((Node)f).getDefinedVariables());
 
-    tmp.getDefinedFunctions().add(((Node)f).getDefinedFunctions());
+    tmp.getDefinedFunctions().addAll(((Node)f).getDefinedFunctions());
 
     Clazz clazz = new Clazz();
     clazz.setFunctions(tmp.getDefinedFunctions());
@@ -793,9 +795,9 @@ Constant ::=            DECIMAL:d
                            tmp.getChildren().add(id);
                            RESULT = tmp;
                         :}
-						| FLOATINGPOINT:f
-						{:  Node tmp = new Node(LeftHand.Constant, ProductionRule.FLOATINGPOINT);
-                             Node id = new Node(LeftHand.FLOATINGPOINT, ProductionRule.TERMINAL);
+						| DOUBLE:f
+						{:  Node tmp = new Node(LeftHand.Constant, ProductionRule.DOUBLE);
+                             Node id = new Node(LeftHand.DOUBLE, ProductionRule.TERMINAL);
                              id.setValue(f);
                              tmp.getChildren().add(id);
                              RESULT = tmp;
