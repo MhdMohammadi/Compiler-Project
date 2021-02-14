@@ -64,7 +64,7 @@ public class Type {
             if(parentName == null) continue;
             if (parentName.equals("int") || parentName.equals("double") || parentName.equals("boolean") || parentName.equals("string"))
                 return false;
-            Type x = getTypeByName(parentName);
+            Type x = getTypeByName(parentName, 0);
             if (x == null)
                 return false;
             else
@@ -95,10 +95,10 @@ public class Type {
     public static boolean possible(Type t1, Type t2, Operator operator){
         if(t1 != t2) return false;
 
-        Type INT = getTypeByName("int");
-        Type DOUBLE = getTypeByName("double");
-        Type BOOLEAN = getTypeByName("boolean");
-        Type STRING = getTypeByName("string");
+        Type INT = getTypeByName("int", 0);
+        Type DOUBLE = getTypeByName("double", 0);
+        Type BOOLEAN = getTypeByName("boolean", 0);
+        Type STRING = getTypeByName("string", 0);
 
         if(operator == Operator.MOD && t1 != INT) return false;
         if((operator == Operator.MINUS || operator == Operator.DIV || operator == Operator.MULT)
@@ -112,9 +112,9 @@ public class Type {
     }
 
     public static boolean possible(Type t1, Operator operator){
-        Type INT = getTypeByName("int");
-        Type DOUBLE = getTypeByName("double");
-        Type BOOLEAN = getTypeByName("boolean");
+        Type INT = getTypeByName("int", 0);
+        Type DOUBLE = getTypeByName("double", 0);
+        Type BOOLEAN = getTypeByName("boolean", 0);
         if(operator == Operator.SINGLE_NOT && t1 == BOOLEAN) return true;
         if(operator == Operator.SINGLE_MINUS && (t1 == INT || t1 == DOUBLE)) return true;
         return false;
