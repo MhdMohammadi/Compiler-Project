@@ -1,47 +1,175 @@
 public enum ProductionRule{
-    DeclPlus,
-    Decl , Decl_DeclPlus,
-    VariableDecl , FunctionDecl , ClassDecl , InterfaceDecl,
-    Variable_SEMICOLON,
-    Type_IDENTIFIER,
-    Type_LBRACK_RBRACK , IDENTIFIER_MULT , INT , DOUBLE , STRING , BOOL,
-    Type_IDENTIFIER_LPAREN_Formals_RPAREN_StmtBlock , VOID_IDENTIFIER_LPAREN_Formals_RPAREN_StmtBlock,
-    Variable , Variable_COMMA_VariablePlus,
-    VariablePlus ,
-    EXTENDS_IDENTIFIER ,
-    IMPLEMENTS_IdentifierImplementsStmt,
-    IDENTIFIER_COMMA_IdentifierImplementsStmt , IDENTIFIER,
-    Field_FieldStar,
-    AccessMode_VariableDecl, AccessMode, AccessMode_FunctionDecl,
-    CLASS_IDENTIFIER_ExtendStmt_ImplementsStmt_LBRACE_FieldStar_RBRACE,
-    PRIVATE, PROTECTED, PUBLIC,
-    INTERFACE_IDENTIFIER_LBRACE_Prototype_star_RBRACE,
-    Prototype_Prototype_star,
-    Type_IDENTIFIER_LPAREN_Formals_RPAREN_SEMICOLON, VOID_IDENTIFIER_LPAREN_Formals_RPAREN_SEMICOLON,
-    LBRACE_VariableDecl_star_Stmt_star_RBRACE,
-    VariableDecl_VariableDecl_star_PLUS,
-    Stmt_Stmt_star,
-    Expr_Stmt_SEMICOLON, IfStmt, WhileStmt, ForStmt, BreakStmt, ContinueStmt, ReturnStmt, PrintStmt, StmtBlock,
-    Expr,
-    IF_LPAREN_Expr_RPAREN_Stmt_else_Stmt,
-    ELSE_Stmt,
-    WHILE_LPAREN_Expr_RPAREN_Stmt,
-    FOR_LPAREN_Expr_Stmt_SEMICOLON_Expr_SEMICOLON_Expr_Stmt_RPAREN_Stmt,
+    Program ::=             Decl_DeclStar;
 
-    RETURN_Expr_SEMICOLON , RETURN_SEMICOLON,
-    BREAK_SEMICOLON,
-    CONTINUE_SEMICOLON,
-    PRINT_LPAREN_Expr_plus_RPAREN_SEMICOLON,
-    Expr_COMMA_Expr_plus,
+    DeclStar ::=            Decl_DeclStar
+						| /*epsilon*/
+    ;
 
-    LValue_EQ_Expr, Constant, LValue, THIS, Call, LPAREN_Expr_RPAREN, Expr_PLUS_Expr,
-    Expr_MINUS_Expr, Expr_MULT_Expr, Expr_DIV_Expr, Expr_MOD_Expr, MINUS_Expr, Expr_LT_Expr, Expr_LTEQ_Expr,
-    Expr_GT_Expr, Expr_GTEQ_Expr, Expr_EQEQ_Expr, Expr_NOTEQ_Expr, Expr_ANDAND_Expr, Expr_OROR_Expr,
-    NOT_Expr, READINTEGER_LPAREN_RPAREN, READLINE_LPAREN_RPAREN, NEW_IDENTIFIER, NEWARRAY_LPAREN_Expr_COMMA_Type_RPAREN,
-    ITOD_LPAREN_Expr_RPAREN, DTOI_LPAREN_Expr_RPAREN, ITOB_LPAREN_Expr_RPAREN, BTOI_LPAREN_Expr_RPAREN,
-    Expr_DOT_IDENTIFIER, Expr_LBRACK_Expr_RBRACK,
-    IDENTIFIER_LPAREN_Actuals_RPAREN, Expr_DOT_IDENTIFIER_LPAREN_Actuals_RPAREN,
-    Expr_plus,
-    INTEGER_LITERAL , DOUBLE_LITERAL , BOOLEAN_LITERAL , STRING_LITERAL , NULL,
-    TERMINAL, NOTHING
+    Decl ::=                VariableDecl
+						| FunctionDecl
+						| ClassDecl
+						| InterfaceDecl
+    ;
+
+    VariableDecl ::=        Variable_SEMICOLON;
+
+    Variable ::=            Type_IDENTIFIER:
+    ;
+
+    Type ::=                INT
+						| DOUBLE
+						| BOOL
+						| STRING
+                        | IDENTIFIER
+						| Type_OPENCLOSEBRACKET
+            ;
+
+    FunctionDecl ::=        Type_IDENTIFIER_OPENPARENTHESIS_Formals_CLOSEPARENTHESIS_StmtBlock
+						| VOID_IDENTIFIER_OPENPARENTHESIS_Formals_CLOSEPARENTHESIS_StmtBlock
+    ;
+
+    Formals ::=             Variable_CommaVariables
+						| /*epsilon*/
+    ;
+    CommaVariables ::=      COMMA_Variable_CommaVariables
+						| /*epsilon*/
+    ;
+
+    ClassDecl ::=           CLASS_IDENTIFIER_ClassDeclExtends_ClassDeclImplements_OPENCURLYBRACES_FieldStar_CLOSECURLYBRACES;
+    ClassDeclExtends ::=    EXTENDS_IDENTIFIER
+						| /*epsilon*/
+    ;
+    ClassDeclImplements ::= IMPLEMENTS_IDENTIFIER_CommaIdentifiers
+						| /*epsilon*/
+    ;
+    CommaIdentifiers ::=    COMMA_IDENTIFIER_CommaIdentifiers
+						| /*epsilon*/
+    ;
+    FieldStar ::=           Field_FieldStar
+						| /*epsilon*/
+    ;
+
+    Field ::=               AccessMode_VariableDecl
+						| AccessMode_FunctionDecl
+            ;
+
+    AccessMode ::=          PRIVATE
+						| PROTECTED
+						| PUBLIC
+						| /*epsilon*/
+    ;
+
+    InterfaceDecl ::=       INTERFACE_IDENTIFIER_OPENCURLYBRACES_PrototypeStar_CLOSECURLYBRACES;
+    PrototypeStar ::=       Prototype_PrototypeStar
+						| /*epsilon*/
+    ;
+
+    Prototype ::=           Type_IDENTIFIER_OPENPARENTHESIS_Formals_CLOSEPARENTHESIS_SEMICOLON
+						| VOID_IDENTIFIER_OPENPARENTHESIS_Formals_CLOSEPARENTHESIS_SEMICOLON
+            ;
+
+    StmtBlock ::=           OPENCURLYBRACES_InsideStmtBlock_CLOSECURLYBRACES;
+    InsideStmtBlock ::=     VariableDecl_InsideStmtBlock
+						| StmtStar
+    ;
+    StmtStar ::=            Stmt_StmtStar
+						| /*epsilon*/
+    ;
+
+    Stmt ::=                ExprPrime_SEMICOLON
+						| IfStmt
+						| WhileStmt
+						| ForStmt
+						| BreakStmt
+						| ContinueStmt
+						| ReturnStmt
+						| PrintStmt
+						| StmtBlock
+    ;
+
+    ExprPrime ::=           Expr
+						| /*epsilon*/
+    ;
+
+    IfStmt ::=              IF_OPENPARENTHESIS_Expr_CLOSEPARENTHESIS_Stmt_ElsePrime
+            ;
+
+    ElsePrime ::=           ELSE_Stmt
+						| /*epsilon*/
+    ;
+
+
+    WhileStmt ::=           WHILE_OPENPARENTHESIS_Expr_CLOSEPARENTHESIS_Stmt
+
+    ForStmt ::=             FOR OPENPARENTHESIS_ExprPrime_SEMICOLON_Expr_SEMICOLON_ExprPrime_CLOSEPARENTHESIS_Stmt;
+
+    ReturnStmt ::=          RETURN ExprPrime_SEMICOLON
+            ;
+
+    BreakStmt ::=           BREAK_SEMICOLON;
+
+    ContinueStmt ::=        CONTINUE_SEMICOLON;
+
+    PrintStmt ::=           PRINT OPENPARENTHESIS_Expr_PrintCommaExpr_CLOSEPARENTHESIS_SEMICOLON
+            ;
+
+    PrintCommaExpr ::=      COMMA Expr_PrintCommaExpr
+						|
+    /*epsilon*/
+    ;
+
+    Expr ::=                LValue_ASSIGN_Expr
+						| Constant
+						| LValue
+						| THIS
+						| Call
+						| OPENPARENTHESIS_Expr_CLOSEPARENTHESIS
+						| Expr_PLUS_Expr
+						| Expr_MINUS_Expr
+						| Expr_MULTIPLY_Expr
+						| Expr_DIVIDE_Expr
+						| Expr_MOD_Expr
+						| MINUS_Expr
+                        | Expr_LESS_Expr
+						| Expr_LESSEQUAL_Expr
+						| Expr_GREATER_Expr
+						| Expr_GREATEREQUAL_Expr
+						| Expr_EQUAL_Expr
+						| Expr_NOTEQUAL_Expr
+						| Expr_AND_Expr
+						| Expr_OR Expr
+						| NOT_Expr
+						| READINTEGER_OPENPARENTHESIS_CLOSEPARENTHESIS
+						| READLINE_OPENPARENTHESIS_CLOSEPARENTHESIS
+						| NEW_IDENTIFIER
+						| NEWARRAY_OPENPARENTHESIS_Expr_COMMA_Type_CLOSEPARENTHESIS
+						| ITOD_OPENPARENTHESIS_Expr_CLOSEPARENTHESIS
+						| DTOI_OPENPARENTHESIS_Expr_CLOSEPARENTHESIS
+						| ITOB_OPENPARENTHESIS_Expr_CLOSEPARENTHESIS
+						| BTOI_OPENPARENTHESIS_Expr_CLOSEPARENTHESIS
+            ;
+
+    LValue ::=              IDENTIFIER
+						| Expr_DOT_IDENTIFIER
+						| Expr_OPENBRACKET_Expr_CLOSEBRACKET
+            ;
+
+    Call ::=                IDENTIFIER_OPENPARENTHESIS_Actuals_CLOSEPARENTHESIS
+						| Expr_DOT_IDENTIFIER_OPENPARENTHESIS_Actuals_CLOSEPARENTHESIS
+            ;
+
+    Actuals ::=             Expr_ActualsCommaExpr
+						| /*epsilon*/
+    ;
+
+    ActualsCommaExpr ::=    COMMA_Expr_ActualsCommaExpr
+						| /*epsilon*/
+    ;
+
+    Constant ::=            DECIMAL
+                        | FLOATINGPOINT
+						| BOOLEANLITERAL
+						| STRINGLITERAL
+						| NULL
+    ;
 }
