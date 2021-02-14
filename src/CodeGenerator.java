@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class CodeGenerator {
     public Code readLine() {
         Code code = new Code();
@@ -14,6 +16,14 @@ public class CodeGenerator {
         code.addCode("li $a1, 1000");
         code.addCode("syscall");
         return code;
+    }
+
+    public Code print(ArrayList<Node> nodes) {
+        Code code = new Code();
+        for (Node node: nodes) {
+            code.addCode(node.getCode());
+            if (node.getType())
+        }
     }
 
     public Code addExpr(Node node1, Node node2) {
