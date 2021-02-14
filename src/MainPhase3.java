@@ -52,6 +52,14 @@ public class MainPhase3 {
                 System.out.println(variable.getName() + " " + variable.getAccessMode() + " " + variable.getType().getName());
             }
         }
+        System.out.println("global functions:");
+        for (Function function : c.getRoot().getDefinedFunctions()){
+            System.out.println(function.getName() + " " + function.getAccessMode() + " " + function.getType().getName());
+        }
+        System.out.println("global variables");
+        for (Variable variable : c.getRoot().getDefinedVariables()){
+            System.out.println(variable.getName() + " " + variable.getAccessMode() + " " + variable.getType().getName());
+        }
 //        c.areAllVariablesUnique(c.getRoot());
 //        c.setAllNodesType(c.getRoot());
         /* try {

@@ -20,6 +20,10 @@ double go(int a, double b){
 
 }
 
+int ali;
+
+
+
 int main(){
 
 }
@@ -27,3 +31,5 @@ int main(){
 void fd(){
 
 }
+
+hi reza;
