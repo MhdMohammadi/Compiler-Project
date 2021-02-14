@@ -103,7 +103,7 @@ multiLineComment = \/\*~\*\/
 	"]"    {return token(sym.CLOSEBRACKET, yytext()); }
 //
 //
-	{INTLITERAL}               {return token(sym.INTLITERAL, yytext());}
+	{intLiteral}               {return token(sym.INTLITERAL, yytext());}
 	{doubleLiteralAll}      {return token(sym.DOUBLELITERAL, yytext());}
 	{hexadecimal}           {return token(sym.INTLITERAL, yytext()); }
 	{id}                    {return token(sym.IDENTIFIER, yytext());}
