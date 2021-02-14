@@ -244,8 +244,38 @@ ActualsCommaExpr ::=    COMMA Expr:e ActualsCommaExpr
 						;
 
 Constant ::=            DECIMAL:d
+						{: Node tmp = new Node(LeftHand.Constant, ProductionRule.DECIMAL);
+                           Node id = new Node(LeftHand.DECIMAL, ProductionRule.TERMINAL);
+                           id.setValue(d);
+                           tmp.getChildren().add(id);
+                           RESULT = tmp;
+                        :}
 						| FLOATINGPOINT:f
+						{:  Node tmp = new Node(LeftHand.Constant, ProductionRule.FLOATINGPOINT);
+                             Node id = new Node(LeftHand.FLOATINGPOINT, ProductionRule.TERMINAL);
+                             id.setValue(f);
+                             tmp.getChildren().add(id);
+                             RESULT = tmp;
+                        :}
 						| BOOLEANLITERAL:b
+						{:  Node tmp = new Node(LeftHand.Constant, ProductionRule.BOOLEAN_LITERAL);
+                          Node id = new Node(LeftHand.BOOLEAN_LITERAL, ProductionRule.TERMINAL);
+                          id.setValue(b);
+                          tmp.getChildren().add(id);
+                          RESULT = tmp;
+                        :}
 						| STRINGLITERAL:s
+						{:  Node tmp = new Node(LeftHand.Constant, ProductionRule.STRING_LITERAL);
+                         Node id = new Node(LeftHand.STRING_LITERAL, ProductionRule.TERMINAL);
+                         id.setValue(s);
+                         tmp.getChildren().add(id);
+                         RESULT = tmp;
+                        :}
 						| NULL:n
+						{:  Node tmp = new Node(LeftHand.Constant, ProductionRule.NULL);
+                          Node id = new Node(LeftHand.NULL, ProductionRule.TERMINAL);
+                          id.setValue(n);
+                          tmp.getChildren().add(id);
+                          RESULT = tmp;
+                        :}
 						;

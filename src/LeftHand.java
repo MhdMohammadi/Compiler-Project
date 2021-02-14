@@ -1,6 +1,5 @@
 public enum LeftHand {
     Program,
-
     DeclStar,
     Decl ,
     VariableDecl,
@@ -37,5 +36,10 @@ public enum LeftHand {
     Call,
     Actuals,
     ActualsCommaExpr,
-    Constant
+    Constant,
+    DECIMAL,
+    FLOATINGPOINT,
+    BOOLEANLITERAL,
+    STRINGLITERAL,
+    NULL
 }
