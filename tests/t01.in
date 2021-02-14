@@ -4,5 +4,4 @@ class hi{
 
 int main(){
     hi x;
-    a + 10;
 }

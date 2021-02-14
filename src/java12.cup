@@ -33,7 +33,6 @@ terminal        String INT, DOUBLE, BOOL, STRING;
 
 // literals
 terminal        String DECIMAL;
-terminal        String FLOATINGPOINT;
 terminal        String BOOLEANLITERAL;
 terminal        String STRINGLITERAL;
 terminal        NULL;
@@ -83,8 +82,8 @@ Program ::=             Decl:d1 DeclStar:d2{:
     tmp.getDefinedVariables().addAll(((Node)d1).getDefinedVariables());
     tmp.getDefinedVariables().addAll(((Node)d2).getDefinedVariables());
 
-    tmp.getDefinedFunctions().add(((Node)d1).getDefinedFunctions());
-    tmp.getDefinedFunctions().add(((Node)d2).getDefinedFunctions());
+    tmp.getDefinedFunctions().addAll(((Node)d1).getDefinedFunctions());
+    tmp.getDefinedFunctions().addAll(((Node)d2).getDefinedFunctions());
 
     RESULT = tmp; root = tmp;
 :};
@@ -96,8 +95,8 @@ DeclStar ::=            Decl:d1 DeclStar:d2{:
     tmp.getDefinedVariables().addAll(((Node)d1).getDefinedVariables());
     tmp.getDefinedVariables().addAll(((Node)d2).getDefinedVariables());
 
-    tmp.getDefinedFunctions().add(((Node)d1).getDefinedFunctions());
-    tmp.getDefinedFunctions().add(((Node)d2).getDefinedFunctions());
+    tmp.getDefinedFunctions().addAll(((Node)d1).getDefinedFunctions());
+    tmp.getDefinedFunctions().addAll(((Node)d2).getDefinedFunctions());
 
 
     RESULT = tmp;
@@ -118,7 +117,7 @@ Decl ::=                VariableDecl:v{:
     Node tmp = new Node(LeftHand.Decl, ProductionRule.FunctionDecl);
     tmp.getChildren().add((Node)f);
 
-    tmp.getDefinedFunctions().add(((Node)f).getDefinedFunctions());
+    tmp.getDefinedFunctions().addAll(((Node)f).getDefinedFunctions());
 
     RESULT = tmp;
 :}
@@ -263,7 +262,7 @@ Formals ::=             Variable:v CommaVariables:c{:
 :}/*epsilon*/
 ;
 CommaVariables ::=      COMMA Variable:v CommaVariables:c{:
-    Node tmp = new Node(LeftHand.CommaVariables, ProductionRule.COMMA_Variable_CommaVariables;
+    Node tmp = new Node(LeftHand.CommaVariables, ProductionRule.COMMA_Variable_CommaVariables);
     tmp.getChildren().add((Node)v);
     tmp.getChildren().add((Node)c);
     tmp.getDefinedVariables().addAll(((Node)v).getDefinedVariables());
@@ -284,8 +283,8 @@ ClassDecl ::=           CLASS IDENTIFIER:i ClassDeclExtends:c1 ClassDeclImplemen
     tmp.getChildren().add((Node)c1);
     tmp.getChildren().add((Node)c2);
     tmp.getChildren().add((Node)f);
-    if(((Node)e).getValue() != null)
-        Type.createPreType(i1, (String)((Node)e).getValue());
+    if(((Node)c1).getValue() != null)
+        Type.createPreType(i1, (String)((Node)c1).getValue());
     else
         Type.createPreType(i1, null);
     tmp.getDefinedVariables().addAll(((Node)f).getDefinedVariables());
@@ -794,9 +793,9 @@ Constant ::=            DECIMAL:d
                            tmp.getChildren().add(id);
                            RESULT = tmp;
                         :}
-						| FLOATINGPOINT:f
-						{:  Node tmp = new Node(LeftHand.Constant, ProductionRule.FLOATINGPOINT);
-                             Node id = new Node(LeftHand.FLOATINGPOINT, ProductionRule.TERMINAL);
+						| DOUBLE:f
+						{:  Node tmp = new Node(LeftHand.Constant, ProductionRule.DOUBLE);
+                             Node id = new Node(LeftHand.DOUBLE, ProductionRule.TERMINAL);
                              id.setValue(f);
                              tmp.getChildren().add(id);
                              RESULT = tmp;

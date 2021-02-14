@@ -17,6 +17,8 @@ import java.io.*;
   }
 %}
 
+
+
 %type Symbol
 %state STRING
 
@@ -29,9 +31,9 @@ endLine = \n|\r|\r\n
 decimal = ({digit})+
 hexadigit = {digit} | [a-fA-F]
 hexadecimal = 0[xX]({hexadigit})+
-floatingPoint = ({digit}+\.{digit}*)
-scientificFloat = {floatingPoint}[Ee][+-]?{decimal}
-floatingPointAll = {floatingPoint} | {scientificFloat}
+double = ({digit}+\.{digit}*)
+scientificDouble = {double}[Ee][+-]?{decimal}
+doubleAll = {double} | {scientificDouble}
 inputCharacter = [^\r\n]
 singleLineComment = \/\/{inputCharacter}*
 multiLineComment = \/\*~\*\/
@@ -102,7 +104,7 @@ multiLineComment = \/\*~\*\/
 //
 //
 	{decimal}               {return token(sym.DECIMAL, yytext());}
-	{floatingPointAll}      {return token(sym.FLOATINGPOINT, yytext());}
+	{doubleAll}      {return token(sym.DOUBLE, yytext());}
 	{hexadecimal}           {return token(sym.DECIMAL, yytext()); }
 	{id}                    {return token(sym.IDENTIFIER, yytext());}
 	{whiteSpace}            {;}
