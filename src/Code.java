@@ -5,6 +5,10 @@ public class Code {
         text = text + code + '\n';
     }
 
+    public void addCode(Code code){
+        text = text + code.text;
+    }
+
     public void setText(String text) {
         this.text = text;
     }
