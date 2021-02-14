@@ -227,8 +227,26 @@ Expr ::=                LValue:lv ASSIGN Expr:e
 						;
 
 LValue ::=              IDENTIFIER:id
-						| Expr DOT IDENTIFIER
+						{:  Node tmp = new Node(LeftHand.LValue, ProductionRule.IDENTIFIER);
+                         Node idNode = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
+                         idNode.setValue(id);
+                         tmp.getChildren().add(idNode);
+                         RESULT = tmp;
+                        :}
+						| Expr:e DOT IDENTIFIER:id
+                        {:  Node tmp = new Node(LeftHand.LValue, ProductionRule.Expr_DOT_IDENTIFIER);
+                          Node idNode = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
+                          idNode.setValue(id);
+                          tmp.getChildren().add((Node)e);
+                          tmp.getChildren().add(idNode);
+                          RESULT = tmp;
+                        :}
 						| Expr:e1 OPENBRACKET Expr:e2 CLOSEBRACKET
+                        {:  Node tmp = new Node(LeftHand.LValue, ProductionRule.Expr_OPENBRACKET_Expr_CLOSEBRACKET);
+                        tmp.getChildren().add((Node)e1);
+                        tmp.getChildren().add((Node)e2);
+                        RESULT = tmp;
+                        :}
 						;
 
 Call ::=                IDENTIFIER:functionID OPENPARENTHESIS Actuals:a CLOSEPARENTHESIS
@@ -239,7 +257,15 @@ Call ::=                IDENTIFIER:functionID OPENPARENTHESIS Actuals:a CLOSEPAR
                          tmp.getChildren().add((Node)a);
                          RESULT = tmp;
                         :}
-						| Expr:e DOT IDENTIFIER:id OPENPARENTHESIS Actuals CLOSEPARENTHESIS
+						| Expr:e DOT IDENTIFIER:id OPENPARENTHESIS Actuals:a CLOSEPARENTHESIS
+						{:  Node tmp = new Node(LeftHand.Call, ProductionRule.Expr_DOT_IDENTIFIER_OPENPARENTHESIS_Actuals_CLOSEPARENTHESIS);
+                         Node idNode = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
+                         idNode.setValue(id);
+                         tmp.getChildren().add((Node)e);
+                         tmp.getChildren().add(idNode);
+                         tmp.getChildren().add((Node)a);
+                         RESULT = tmp;
+                        :}
 						;
 
 Actuals ::=             Expr:e ActualsCommaExpr
