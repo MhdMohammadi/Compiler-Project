@@ -15,10 +15,14 @@ public class Node {
     private ArrayList<Function> definedFunctions = new ArrayList<>();
     private int index;
     private Node parent;
+
+
     public Node(LeftHand leftHand, ProductionRule productionRule){
         this.leftHand = leftHand;
         this.productionRule = productionRule;
     }
+
+
 
     public ProductionRule getProductionRule() {
         return productionRule;
