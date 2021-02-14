@@ -1,3 +1,8 @@
+class hi{
+
+}
+
 int main(){
-    a = b + c;
+    hi x;
+    a + 10;
 }

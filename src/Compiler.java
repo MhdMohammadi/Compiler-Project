@@ -24,11 +24,11 @@ public class Compiler {
         }
     }
 
-    public Variable findVariable(Node node){
+    public Variable findVariable(Node node, String name){
         Node node1 = node;
         while (true){
             for (Variable variable: node1.getDefinedVariables()){
-                if (variable.getName().equals((String)node.getValue())){
+                if (variable.getName().equals(name)){
                     if (variable.getNumber() < node.getIndex()) {
                         return variable;
                     }
@@ -63,7 +63,7 @@ public class Compiler {
 
     public void setVariablesType(Node v){
         if(v.getLeftHand() == LeftHand.Variable){
-            Type type = Type.getTypeByName((String)v.getChildren().get(0).getValue());
+            Type type = Type.getTypeByName((String)v.getChildren().get(0).getTypeName());
             if(type == null) Compiler.semanticError();
             v.getDefinedVariables().get(0).setType(type);
         }
@@ -92,6 +92,7 @@ public class Compiler {
             areAllVariablesUnique(node);
     }
 
+    // age be terminal bere, type bayad moshakhas shode bashe
     public void setAllNodesType(Node v){
         for(Node node : v.getChildren())
             setVariablesType(node);
@@ -129,7 +130,8 @@ public class Compiler {
             case LValue:
                 switch (v.getProductionRule()){
                     case IDENTIFIER:
-                        v.setType(v.getChildren().get(0).getType());
+                        Variable variable = findVariable(v, (String)v.getChildren().get(0).getValue());
+                        v.setType(variable.getType());
                         break;
                     case Expr_DOT_IDENTIFIER:
                         Type type = v.getChildren().get(0).getType();
