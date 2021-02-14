@@ -29,11 +29,11 @@ public class MainPhase1 {
             else
                 writer = new OutputStreamWriter(System.out);
 
-            Scanner scanner = new Scanner(reader);
+            MyScanner scanner = new MyScanner(reader);
 
             while (true) {
                 try {
-                    writer.write(scanner.yylex() + '\n');
+                 //   writer.write(scanner.yylex() + '\n');
                 } catch (Exception e) {
                     if(e.getMessage().equals("UNDEFINED_TOKEN"))
                         writer.write(e.getMessage() + '\n');

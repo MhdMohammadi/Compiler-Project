@@ -27,7 +27,7 @@ public class MainPhase2 {
             writer = new FileWriter("output/t08.out");
 
 
-        parser p = new parser(new Scanner(reader));
+        parser p = new parser(new MyScanner(reader));
         try {
             p.parse();
             writer.write("OK");

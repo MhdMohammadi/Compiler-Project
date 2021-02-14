@@ -29,7 +29,7 @@ public class MainPhase3 {
             writer = new FileWriter("output/t08.out");
 */
 
-        parser p = new parser(new Scanner(reader));
+        parser p = new parser(new MyScanner(reader));
         p.parse();
 //        Compiler c = new Compiler(parser.root);
 //        c.preProcess(c.getRoot());
