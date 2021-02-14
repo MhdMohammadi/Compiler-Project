@@ -1,209 +1,128 @@
+package compiler.Scanner;
+import compiler.Parser.sym;
 import java_cup.runtime.*;
-
+import java.io.*;
 %%
 
 %public
-%class Scanner
-%implements sym
-
-    %unicode
-
 %line
 %column
-
+%type Symbol
+%class MyScanner
+%unicode
 %cup
-%cupdebug
 
 %{
-  StringBuilder string = new StringBuilder();
-  
-  private Symbol symbol(int type) {
-    return new Symbol(type, yyline+1, yycolumn+1);
+  String string = "";
+
+  public Symbol token(int tokenType, String content) {
+      return new Symbol(tokenType, content) ;
   }
 
-  private Symbol symbol(int type, Object value) {
-    return new Symbol(type, yyline+1, yycolumn+1, value);
-  }
 
-  /**
-   * assumes correct representation of a long value for
-   * specified radix in scanner buffer from <code>start</code>
-   * to <code>end</code>
-   */
-
-  private long parseLong(int start, int end, int radix) {
-    long result = 0;
-    long digit;
-
-    for (int i = start; i < end; i++) {
-      digit  = Character.digit(yycharat(i),radix);
-      result*= radix;
-      result+= digit;
-    }
-
-    return result;
-  }
-
-  public String yylex() throws Exception {
-    java_cup.runtime.Symbol currentSymbol = next_token();
-    switch (currentSymbol.sym){
-      case BOOLEAN_LITERAL:
-        return "T_BOOLEANLITERAL " + yytext();
-      case INTEGER_LITERAL:
-        return "T_INTLITERAL " + yytext();
-      case STRING_LITERAL:
-        return "T_STRINGLITERAL \"" + currentSymbol.value.toString() + "\"";
-      case DOUBLE_LITERAL:
-        return "T_DOUBLELITERAL " + yytext();
-      case IDENTIFIER:
-        return "T_ID " + currentSymbol.value.toString();
-      case EOF:
-          throw new Exception("EOF");
-      case UNDEFINED_TOKEN:
-          throw new Exception("UNDEFINED_TOKEN");
-      default:
-            return yytext();
-    }
-  }
 
 %}
 
-/* main character classes */
-
-Identifier = [a-z|A-Z][a-z|A-Z|0-9|_]*
-
-LineTerminator = \r|\n|\r\n
-WhiteSpace     = {LineTerminator} | [ \t\f]
-
-TrueLiteral = "true"
-FalseLiteral = "false"
-
-DecIntegerLiteral = [0-9]+
-HexIntegerLiteral = 0[xX][0-9|a-f|A-F]+
-
-DoubleLiteral = [0-9]+\.[0-9]*
-DoubleScientificLiteral = [0-9]+\.[0-9]*[eE][-+]?[0-9]+
-
-InputCharacter = [^\r\n]
-TraditionalComment   = "/*" [^*] ~"*/" | "/*" "*"+ "/"
-EndOfLineComment     = "//" {InputCharacter}* {LineTerminator}?
-Comment = {TraditionalComment} | {EndOfLineComment}
-
-StringCharacter = [^\r\n\"\\]
-
+%type Symbol
 %state STRING
 
+alphabet = [A-Za-z]
+digit = [0-9]
+underLine = "_"
+whiteSpace = {endLine} | [ \t\f]
+id = {alphabet}({alphabet} | {digit} | {underLine})*
+endLine = \n|\r|\r\n
+decimal = ({digit})+
+hexadigit = {digit} | [a-fA-F]
+hexadecimal = 0[xX]({hexadigit})+
+floatingPoint = ({digit}+\.{digit}*)
+scientificFloat = {floatingPoint}[Ee][+-]?{decimal}
+floatingPointAll = {floatingPoint} | {scientificFloat}
+inputCharacter = [^\r\n]
+singleLineComment = \/\/{inputCharacter}*
+multiLineComment = \/\*~\*\/
 %%
 
 <YYINITIAL> {
 
-  "void"        { return symbol(VOID); }
-  "int"         { return symbol(INT); }
-  "double"      { return symbol(DOUBLE); }
-  "bool"        { return symbol(BOOL); }
-  "string"      { return symbol(STRING); }
-  "class"       { return symbol(CLASS); }
-  "interface"   { return symbol(INTERFACE); }
-  "null"        { return symbol(NULL); }
-  "this"        { return symbol(THIS); }
-  "extends"     { return symbol(EXTENDS); }
-  "implements"  { return symbol(IMPLEMENTS); }
-  "for"         { return symbol(FOR); }
-  "while"       { return symbol(WHILE); }
-  "if"          { return symbol(IF); }
-  "else"        { return symbol(ELSE); }
-  "return"      { return symbol(RETURN); }
-  "break"       { return symbol(BREAK); }
-  "continue"    { return symbol(CONTINUE); }
-  "new"         { return symbol(NEW); }
-  "NewArray"    { return symbol(NEWARRAY); }
-  "Print"       { return symbol(PRINT); }
-  "ReadInteger" { return symbol(READINTEGER); }
-  "ReadLine"    { return symbol(READLINE); }
-  "dtoi"        { return symbol(DTOI); }
-  "itod"        { return symbol(ITOD); }
-  "btoi"        { return symbol(BTOI); }
-  "itob"        { return symbol(ITOB); }
-  "private"     { return symbol(PRIVATE); }
-  "protected"   { return symbol(PROTECTED); }
-  "public"      { return symbol(PUBLIC); }
+	"void"          {return token(sym.VOID, yytext()); }
+	"int"           {return token(sym.INT, yytext()); }
+	"double"        {return token(sym.DOUBLE, yytext()); }
+	"bool"          {return token(sym.BOOL, yytext()); }
+	"string"        {return token(sym.STRING, yytext()); }
+	"class"         {return token(sym.CLASS, yytext()); }
+	"interface"     {return token(sym.INTERFACE, yytext()); }
+	"null"          {return token(sym.NULL, yytext()); }
+	"this"          {return token(sym.THIS, yytext()); }
+	"extends"       {return token(sym.EXTENDS, yytext()); }
+	"implements"    {return token(sym.IMPLEMENTS, yytext()); }
+	"for"           {return token(sym.FOR, yytext()); }
+	"while"         {return token(sym.WHILE, yytext()); }
+	"if"            {return token(sym.IF, yytext()); }
+	"else"          {return token(sym.ELSE, yytext()); }
+	"return"        {return token(sym.RETURN, yytext()); }
+	"break"         {return token(sym.BREAK, yytext()); }
+	"continue"      {return token(sym.CONTINUE, yytext()); }
+	"new"           {return token(sym.NEW, yytext()); }
+	"NewArray"      {return token(sym.NEWARRAY, yytext()); }
+	"Print"         {return token(sym.PRINT, yytext()); }
+	"ReadInteger"   {return token(sym.READINTEGER, yytext()); }
+	"ReadLine"      {return token(sym.READLINE, yytext()); }
+	"dtoi"          {return token(sym.DTOI, yytext()); }
+	"itod"          {return token(sym.ITOD, yytext()); }
+	"btoi"          {return token(sym.BTOI, yytext()); }
+	"itob"          {return token(sym.ITOB, yytext()); }
+	"private"       {return token(sym.PRIVATE, yytext()); }
+	"protected"     {return token(sym.PROTECTED, yytext()); }
+	"public"        {return token(sym.PUBLIC, yytext()); }
+	"true"          {return token(sym.BOOLEANLITERAL, yytext()); }
+	"false"         {return token(sym.BOOLEANLITERAL, yytext()); }
 
-  /* boolean literals */
-  "true"                         { return symbol(BOOLEAN_LITERAL, true); }
-  "false"                        { return symbol(BOOLEAN_LITERAL, false); }
-  
-  /* null literal */
-  //"null"                         { return symbol(NULL_LITERAL); }
-  
-  /* separators */
-  "("                            { return symbol(LPAREN); }
-  ")"                            { return symbol(RPAREN); }
-  "["                            { return symbol(LBRACK); }
-  "]"                            { return symbol(RBRACK); }
-  ";"                            { return symbol(SEMICOLON); }
-  ","                            { return symbol(COMMA); }
-  "."                            { return symbol(DOT); }
-  "{"                            { return symbol(LBRACE); }
-  "}"                            { return symbol(RBRACE); }
-  
-  /* operators */
-  "="                            { return symbol(EQ); }
-  ">"                            { return symbol(GT); }
-  "<"                            { return symbol(LT); }
-  "!"                            { return symbol(NOT); }
-  "=="                           { return symbol(EQEQ); }
-  "<="                           { return symbol(LTEQ); }
-  ">="                           { return symbol(GTEQ); }
-  "!="                           { return symbol(NOTEQ); }
-  "&&"                           { return symbol(ANDAND); }
-  "||"                           { return symbol(OROR); }
-  "+"                            { return symbol(PLUS); }
-  "-"                            { return symbol(MINUS); }
-  "*"                            { return symbol(MULT); }
-  "/"                            { return symbol(DIV); }
-  "%"                            { return symbol(MOD); }
 
-  /* string literal */
-  \"                             { yybegin(STRING); string.setLength(0); }
+	"+"     {return token(sym.PLUS, yytext()); }
+	"-"     {return token(sym.MINUS, yytext()); }
+	"*"     {return token(sym.MULTIPLY, yytext()); }
+	"/"     {return token(sym.DIVIDE, yytext()); }
+	"%"     {return token(sym.MOD, yytext()); }
+	"<"     {return token(sym.LESS, yytext()); }
+	"<="    {return token(sym.LESSEQUAL, yytext()); }
+	">"     {return token(sym.GREATER, yytext()); }
+	">="    {return token(sym.GREATEREQUAL, yytext()); }
+	"="     {return token(sym.ASSIGN, yytext()); }
+	"=="    {return token(sym.EQUAL, yytext()); }
+	"!="    {return token(sym.NOTEQUAL, yytext()); }
+	"&&"    {return token(sym.AND, yytext()); }
+	"||"    {return token(sym.OR, yytext()); }
+	"!"     {return token(sym.NOT, yytext()); }
+	";"     {return token(sym.SEMICOLON, yytext()); }
+	","     {return token(sym.COMMA, yytext()); }
+	"."     {return token(sym.DOT, yytext()); }
 
-  /* numeric literals */
-
-  /* This is matched together with the minus, because the number is too big to 
-     be represented by a positive integer. */
-
-  {DecIntegerLiteral}            { return symbol(INTEGER_LITERAL, Integer.valueOf(yytext())); }
-
-  {HexIntegerLiteral}            { return symbol(INTEGER_LITERAL, Integer.valueOf((int) parseLong(2, yylength(), 16))); }
-
-  {DoubleLiteral}                { return symbol(DOUBLE_LITERAL, new Double(yytext())); }
-  {DoubleScientificLiteral}      { return symbol(DOUBLE_LITERAL, new Double(yytext())); }
-  /* comments */
-  {Comment}                      { /* ignore */ }
-
-  /* whitespace */
-  {WhiteSpace}                   { /* ignore */ }
-
-  /* identifiers */
-  {Identifier}                   { return symbol(IDENTIFIER, yytext()); }
+	"{"    {return token(sym.OPENCURLYBRACES, yytext()); }
+	"}"    {return token(sym.CLOSECURLYBRACES, yytext()); }
+	"("    {return token(sym.OPENPARENTHESIS, yytext()); }
+	")"    {return token(sym.CLOSEPARENTHESIS, yytext()); }
+	"[]"   {return token(sym.OPENCLOSEBRACKET, yytext()); }
+	"["    {return token(sym.OPENBRACKET, yytext()); }
+	"]"    {return token(sym.CLOSEBRACKET, yytext()); }
+//
+//
+	{decimal}               {return token(sym.DECIMAL, yytext());}
+	{floatingPointAll}      {return token(sym.FLOATINGPOINT, yytext());}
+	{hexadecimal}           {return token(sym.DECIMAL, yytext()); }
+	{id}                    {return token(sym.IDENTIFIER, yytext());}
+	{whiteSpace}            {;}
+	{singleLineComment}     {;}
+	{multiLineComment}      {;}
+	"\""                    {yybegin(STRING); string = "" + yytext();}
 }
-
 <STRING> {
-  \"                             { yybegin(YYINITIAL); return symbol(STRING_LITERAL, string.toString()); }
-
-  {StringCharacter}+             { string.append( yytext() ); }
-  
-  /* escape sequences */
-  "\\t"                          { string.append( '\t' ); }
-  "\\f"                          { string.append( '\f' ); }
-  "\\b"                          { string.append( '\b' ); }
-  "\\r"                          { string.append( '\r' ); }
-  "\\'"                          { string.append( '\'' ); }
-  "\\\\"                         { string.append( '\\' ); }
-
-  /* error cases */
-  {LineTerminator}               { return symbol(UNDEFINED_TOKEN); }
+	"\""    {
+		yybegin(YYINITIAL);
+		return token(sym.STRINGLITERAL, string + yytext());
+		}
+	 .      {string = string + yytext();}
 }
 
-/* error fallback */
-[^]                              { return symbol(UNDEFINED_TOKEN); }
-<<EOF>>                          { return symbol(EOF); }
+
+//<<EOF>>             { tokenType == sym.EOF; }
