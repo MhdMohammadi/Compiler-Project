@@ -1,13 +1,25 @@
 import java_cup.runtime.*;
 
 
-parser code {:
-	private MyScanner scanner;
-	public parser (MyScanner scanner){
-		this.scanner = scanner;
-	}
-:}
-scan with {: return scanner.next_token(); :}
+parser code  {:
+    public static Node root;
+
+  public void report_error(String message, Object info) {
+    StringBuilder m = new StringBuilder("Error ");
+
+    if (info instanceof java_cup.runtime.Symbol)
+      m.append( "("+info.toString()+")" );
+
+    m.append(" : "+message);
+
+    System.out.println(m);
+  }
+
+  public void report_fatal_error(String message, Object info) {
+    report_error(message, info);
+    throw new RuntimeException("Fatal Syntax Error");
+  }
+:};
 // defining terminals here
 // arithmetic operators
 terminal        PLUS, MINUS, MULTIPLY, DIVIDE, MOD, UMINUS,
@@ -43,11 +55,11 @@ nonterminal     Program, DeclStar, Decl, VariableDecl, Variable, FunctionDecl, F
 				Stmt, ExprPrime, IfStmt, ElsePrime, WhileStmt, ForStmt, ReturnStmt, BreakStmt, ContinueStmt, PrintStmt,
 				PrintCommaExpr, ActualsCommaExpr, Actuals;
 // non-terminals with type
-nonterminal     Object Type;
-nonterminal     Descriptor LValue;
-nonterminal     Descriptor Expr;
-nonterminal     CompileTimeDescriptor Constant;
-nonterminal     Descriptor Call;
+nonterminal     Type;
+nonterminal     LValue;
+nonterminal     Expr;
+nonterminal     Constant;
+nonterminal     Call;
 
 // defining precedences
 precedence left     ELSE;
