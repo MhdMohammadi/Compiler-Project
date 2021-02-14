@@ -64,7 +64,7 @@ public class Compiler {
     public void setVariablesType(Node v) {
         //todo
         if (v.getLeftHand() == LeftHand.Variable) {
-            Type type = Type.getTypeByName((String) v.getChildren().get(0).getTypeName());
+            Type type = Type.getTypeByName((String) v.getChildren().get(0).getTypeName(), v.getChildren().get(0).getArrayDegree());
             if (type == null) Compiler.semanticError();
             v.getDefinedVariables().get(0).setType(type);
         }
@@ -77,7 +77,7 @@ public class Compiler {
         if (v.getLeftHand() == LeftHand.FunctionDecl) {
             Function function = v.getDefinedFunctions().get(0);
 
-            Type type = Type.getTypeByName(v.getTypeName());
+            Type type = Type.getTypeByName(v.getTypeName(), v.getArrayDegree());
             if (type == null) Compiler.semanticError();
             function.setType(type);
         }

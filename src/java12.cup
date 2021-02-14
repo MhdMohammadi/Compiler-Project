@@ -159,6 +159,7 @@ Type ::=                INT:i{:
      in.setValue(i);
      tmp.getChildren().add(in);
      tmp.setTypeName("int");
+     tmp.setArrayDegree(0);
      RESULT = tmp;
 :}
 						| DOUBLE:d{:
@@ -167,6 +168,7 @@ Type ::=                INT:i{:
      doub.setValue(d);
      tmp.getChildren().add(doub);
      tmp.setTypeName("double");
+     tmp.setArrayDegree(0);
      RESULT = tmp;
 :}
 						| BOOL:b{:
@@ -175,6 +177,7 @@ Type ::=                INT:i{:
      bo.setValue(b);
      tmp.getChildren().add(bo);
      tmp.setTypeName("boolean");
+     tmp.setArrayDegree(0);
      RESULT = tmp;
 :}
 						| STRING:s{:
@@ -183,6 +186,7 @@ Type ::=                INT:i{:
      str.setValue(s);
      tmp.getChildren().add(str);
      tmp.setTypeName("string");
+     tmp.setArrayDegree(0);
      RESULT = tmp;
 :}
                         | IDENTIFIER:i{:
@@ -191,6 +195,7 @@ Type ::=                INT:i{:
     id.setValue(i);
     tmp.getChildren().add(id);
     tmp.setTypeName(i);
+    tmp.setArrayDegree(0);
     RESULT = tmp;
 :}
 						| Type:t OPENCLOSEBRACKET{:
@@ -218,6 +223,7 @@ FunctionDecl ::=        Type:t IDENTIFIER:i OPENPARENTHESIS Formals:f CLOSEPAREN
     function.setParameter(((Node)f).getDefinedVariables());
     tmp.getDefinedFunctions().add(function);
     tmp.setTypeName(((Node)t).getTypeName());
+    tmp.setArrayDegree(((Node)t).getArrayDegree());
 
     RESULT = tmp;
 :}
@@ -236,6 +242,7 @@ FunctionDecl ::=        Type:t IDENTIFIER:i OPENPARENTHESIS Formals:f CLOSEPAREN
     function.setParameter(((Node)f).getDefinedVariables());
     tmp.getDefinedFunctions().add(function);
     tmp.setTypeName("void");
+    tmp.setArrayDegree(0);
 
     RESULT = tmp;
 :}
