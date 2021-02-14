@@ -4,37 +4,37 @@ public class Compiler {
     private Node root;
     private int cnt = 0;
 
-    public Compiler(Node root){
+    public Compiler(Node root) {
         this.root = root;
     }
 
-    public static void semanticError(){
+    public static void semanticError() {
         System.out.println("semantic error");
         System.exit(0);
     }
 
-    public void preProcess(Node v){
+    public void preProcess(Node v) {
         v.setIndex(cnt);
-        for(Variable variable : v.getDefinedVariables())
+        for (Variable variable : v.getDefinedVariables())
             variable.setNodeIndex(v.getIndex());
-        cnt ++;
-        for (Node node: v.getChildren()) {
+        cnt++;
+        for (Node node : v.getChildren()) {
             node.setParent(v);
             preProcess(node);
         }
     }
 
-    public Variable findVariable(Node node, String name){
+    public Variable findVariable(Node node, String name) {
         Node node1 = node;
-        while (true){
-            for (Variable variable: node1.getDefinedVariables()){
-                if (variable.getName().equals(name)){
+        while (true) {
+            for (Variable variable : node1.getDefinedVariables()) {
+                if (variable.getName().equals(name)) {
                     if (variable.getNumber() < node.getIndex()) {
                         return variable;
                     }
                 }
             }
-            if (node1.getParent() == null){
+            if (node1.getParent() == null) {
                 break;
             } else {
                 node1 = node1.getParent();
@@ -43,15 +43,15 @@ public class Compiler {
         return null;
     }
 
-    public Function findFunction(Node node){
+    public Function findFunction(Node node, String name) {
         Node node1 = node;
-        while (true){
-            for (Function function: node1.getDefinedFunctions()){
-                if (function.getName().equals((String)node.getValue())){
+        while (true) {
+            for (Function function : node1.getDefinedFunctions()) {
+                if (function.getName().equals(name)) {
                     return function;
                 }
             }
-            if (node1.getParent() == null){
+            if (node1.getParent() == null) {
                 break;
             } else {
                 node1 = node1.getParent();
@@ -61,44 +61,48 @@ public class Compiler {
     }
 
 
-    public void setVariablesType(Node v){
-        if(v.getLeftHand() == LeftHand.Variable){
-            Type type = Type.getTypeByName((String)v.getChildren().get(0).getTypeName());
-            if(type == null) Compiler.semanticError();
+    public void setVariablesType(Node v) {
+        //todo
+        if (v.getLeftHand() == LeftHand.Variable) {
+            Type type = Type.getTypeByName((String) v.getChildren().get(0).getTypeName());
+            if (type == null) Compiler.semanticError();
             v.getDefinedVariables().get(0).setType(type);
         }
-        for(Node node : v.getChildren())
+        for (Node node : v.getChildren())
             setVariablesType(node);
     }
 
-    public void setFunctionType(Node v){
-        if(v.getLeftHand() == LeftHand.FunctionDecl){
-            Type type = Type.getTypeByName((String)v.getChildren().get(0).getValue());
-            if(type == null) Compiler.semanticError();
-            v.getDefinedFunctions().get(0).setType(type);
+    public void setFunctionType(Node v) {
+        //todo
+        if (v.getLeftHand() == LeftHand.FunctionDecl) {
+            Function function = v.getDefinedFunctions().get(0);
+
+            Type type = Type.getTypeByName(v.getTypeName());
+            if (type == null) Compiler.semanticError();
+            function.setType(type);
         }
-        for(Node node : v.getChildren())
+        for (Node node : v.getChildren())
             setFunctionType(node);
     }
 
-    public void areAllVariablesUnique(Node v){
+    public void areAllVariablesUnique(Node v) {
         ArrayList<Variable> variables = v.getDefinedVariables();
-        for(int i = 0; i < variables.size(); i++)
-            for(int j = i + 1; j < variables.size(); j++) {
+        for (int i = 0; i < variables.size(); i++)
+            for (int j = i + 1; j < variables.size(); j++) {
                 if (variables.get(i).getName().equals(variables.get(j).getName()))
                     semanticError();
             }
-        for(Node node : v.getChildren())
+        for (Node node : v.getChildren())
             areAllVariablesUnique(node);
     }
 
     // age be terminal bere, type bayad moshakhas shode bashe
-    public void setAllNodesType(Node v){
-        for(Node node : v.getChildren())
+    public void setAllNodesType(Node v) {
+        for (Node node : v.getChildren())
             setVariablesType(node);
-        switch (v.getLeftHand()){
+        switch (v.getLeftHand()) {
             case Constant:
-                switch (v.getProductionRule()){
+                switch (v.getProductionRule()) {
                     case DECIMAL:
                         v.setType(Type.getTypeByName("int"));
                         break;
@@ -118,7 +122,7 @@ public class Compiler {
                 }
                 break;
             case Call:
-                switch (v.getProductionRule()){
+                switch (v.getProductionRule()) {
                     case IDENTIFIER_OPENPARENTHESIS_Actuals_CLOSEPARENTHESIS:
                         //todo
                         break;
@@ -128,9 +132,9 @@ public class Compiler {
                 }
                 break;
             case LValue:
-                switch (v.getProductionRule()){
+                switch (v.getProductionRule()) {
                     case IDENTIFIER:
-                        Variable variable = findVariable(v, (String)v.getChildren().get(0).getValue());
+                        Variable variable = findVariable(v, (String) v.getChildren().get(0).getValue());
                         v.setType(variable.getType());
                         break;
                     case Expr_DOT_IDENTIFIER:
@@ -143,9 +147,9 @@ public class Compiler {
                 }
                 break;
             case Expr:
-                switch (v.getProductionRule()){
+                switch (v.getProductionRule()) {
                     case LValue_ASSIGN_Expr:
-                        if(!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.EQ))
+                        if (!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.EQ))
                             semanticError();
                         v.setType(Type.getTypeByName("boolean"));
                         break;
@@ -165,77 +169,77 @@ public class Compiler {
                         v.setType(v.getChildren().get(0).getType());
                         break;
                     case Expr_PLUS_Expr:
-                        if(!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.PLUS))
+                        if (!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.PLUS))
                             semanticError();
                         v.setType(v.getChildren().get(0).getType());
                         break;
                     case Expr_MINUS_Expr:
-                        if(!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.MINUS))
+                        if (!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.MINUS))
                             semanticError();
                         v.setType(v.getChildren().get(0).getType());
                         break;
                     case Expr_MULTIPLY_Expr:
-                        if(!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.MULT))
+                        if (!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.MULT))
                             semanticError();
                         v.setType(v.getChildren().get(0).getType());
                         break;
                     case Expr_DIVIDE_Expr:
-                        if(!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.DIV))
+                        if (!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.DIV))
                             semanticError();
                         v.setType(v.getChildren().get(0).getType());
                         break;
                     case Expr_MOD_Expr:
-                        if(!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.MOD))
+                        if (!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.MOD))
                             semanticError();
                         v.setType(v.getChildren().get(0).getType());
                         break;
                     case MINUS_Expr:
-                        if(!Type.possible(v.getChildren().get(0).getType(), Operator.SINGLE_MINUS))
+                        if (!Type.possible(v.getChildren().get(0).getType(), Operator.SINGLE_MINUS))
                             semanticError();
                         v.setType(v.getChildren().get(0).getType());
                         break;
                     case Expr_LESS_Expr:
-                        if(!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.LT))
+                        if (!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.LT))
                             semanticError();
                         v.setType(Type.getTypeByName("boolean"));
                         break;
                     case Expr_LESSEQUAL_Expr:
-                        if(!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.LTEQ))
+                        if (!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.LTEQ))
                             semanticError();
                         v.setType(Type.getTypeByName("boolean"));
                         break;
                     case Expr_GREATER_Expr:
-                        if(!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.GT))
+                        if (!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.GT))
                             semanticError();
                         v.setType(Type.getTypeByName("boolean"));
                         break;
                     case Expr_GREATEREQUAL_Expr:
-                        if(!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.GTEQ))
+                        if (!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.GTEQ))
                             semanticError();
                         v.setType(Type.getTypeByName("boolean"));
                         break;
                     case Expr_EQUAL_Expr:
-                        if(!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.EQEQ))
+                        if (!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.EQEQ))
                             semanticError();
                         v.setType(Type.getTypeByName("boolean"));
                         break;
                     case Expr_NOTEQUAL_Expr:
-                        if(!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.NOTEQ))
+                        if (!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.NOTEQ))
                             semanticError();
                         v.setType(Type.getTypeByName("boolean"));
                         break;
                     case Expr_AND_Expr:
-                        if(!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.ANDAND))
+                        if (!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.ANDAND))
                             semanticError();
                         v.setType(Type.getTypeByName("boolean"));
                         break;
                     case Expr_OR_Expr:
-                        if(!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.OROR))
+                        if (!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.OROR))
                             semanticError();
                         v.setType(Type.getTypeByName("boolean"));
                         break;
                     case NOT_Expr:
-                        if(!Type.possible(v.getChildren().get(0).getType(), Operator.SINGLE_NOT))
+                        if (!Type.possible(v.getChildren().get(0).getType(), Operator.SINGLE_NOT))
                             semanticError();
                         v.setType(Type.getTypeByName("boolean"));
                         break;
