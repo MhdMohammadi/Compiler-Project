@@ -1,777 +1,239 @@
 import java_cup.runtime.*;
 
 
-/* August 1999 - modified by Gerwin Klein <lsf@jflex.de>
-                 to interface with JFlex scanners,
-                 allows empty semicolon in class decls.
-  
-  changed productions:
+parser code {:
+	private MyScanner scanner;
+	public parser (MyScanner scanner){
+		this.scanner = scanner;
+	}
+:}
+scan with {: return scanner.next_token(); :}
+// defining terminals here
+// arithmetic operators
+terminal        PLUS, MINUS, MULTIPLY, DIVIDE, MOD, UMINUS,
+				LESS, LESSEQUAL, GREATER, GREATEREQUAL, EQUAL, NOTEQUAL;
+// logical operators
+terminal	    AND, OR, NOT;
+// dot
+terminal        DOT;
+// types
+terminal        String INT, DOUBLE, BOOL, STRING;
 
-  class_member_declaration ::=
-	  	field_declaration
-  	|	method_declaration
-    [..]
-  	|	interface_declaration
-    | SEMICOLON
-  	;
+// literals
+terminal        String DECIMAL;
+terminal        String FLOATINGPOINT;
+terminal        String BOOLEANLITERAL;
+terminal        String STRINGLITERAL;
+terminal        NULL;
 
-  interface_member_declaration ::=
-  		constant_declaration
-	  |	abstract_method_declaration
-  	|	class_declaration
-  	|	interface_declaration
-    | SEMICOLON
-	  ;
+// signs
+terminal		OPENBRACKET, CLOSEBRACKET, OPENCLOSEBRACKET, WS, OPENPARENTHESIS,
+				CLOSEPARENTHESIS, OPENCURLYBRACES, CLOSECURLYBRACES;
+// keywords
+terminal        READINTEGER, READLINE, NEW, NEWARRAY, ITOD, DTOI, ITOB, BTOI,
+				VOID, CLASS, INTERFACE,
+				EXTENDS, IMPLEMENTS, COMMA, SEMICOLON, PRIVATE, PROTECTED, PUBLIC, IF, ELSE, WHILE, FOR, RETURN,
+				BREAK, CONTINUE, PRINT, ASSIGN, THIS;
+terminal        String IDENTIFIER;
 
-*/
+// defining nonterminals
+nonterminal     Program, DeclStar, Decl, VariableDecl, Variable, FunctionDecl, Formals, CommaVariables,
+				ClassDecl, ClassDeclExtends, ClassDeclImplements, CommaIdentifiers, FieldStar, Field,
+				AccessMode, InterfaceDecl, PrototypeStar, Prototype, StmtBlock, InsideStmtBlock, VariableDeclStar, StmtStar,
+				Stmt, ExprPrime, IfStmt, ElsePrime, WhileStmt, ForStmt, ReturnStmt, BreakStmt, ContinueStmt, PrintStmt,
+				PrintCommaExpr, ActualsCommaExpr, Actuals;
+// non-terminals with type
+nonterminal     Object Type;
+nonterminal     Descriptor LValue;
+nonterminal     Descriptor Expr;
+nonterminal     CompileTimeDescriptor Constant;
+nonterminal     Descriptor Call;
 
-
-/* Java 1.2 parser for CUP.  
- * Copyright (C) 1998 C. Scott Ananian <cananian@alumni.princeton.edu>
- * This program is released under the terms of the GPL; see the file
- * COPYING for more details.  There is NO WARRANTY on this code.
- */
-
-/*
-JDK 1.2 Features added:
-  strictfp modifier.
-  explicit_constructor_invocation ::= ...
-        | primary DOT THIS LPAREN argument_list_opt RPAREN SEMICOLON ;
-  field_access ::= ...
-        |       name DOT SUPER DOT IDENTIFIER ;
-  method_invocation ::= ...
-        |       name DOT SUPER DOT IDENTIFIER LPAREN argument_list_opt RPAREN ;
-*/
-
-parser code  {:
-    public static Node root;
-
-  public void report_error(String message, Object info) {
-    StringBuilder m = new StringBuilder("Error ");
-
-    if (info instanceof java_cup.runtime.Symbol)
-      m.append( "("+info.toString()+")" );
-
-    m.append(" : "+message);
-
-    System.out.println(m);
-  }
-
-  public void report_fatal_error(String message, Object info) {
-    report_error(message, info);
-    throw new RuntimeException("Fatal Syntax Error");
-  }
-:};
-
-terminal STRING, VOID, INT, DOUBLE, BOOL;
-terminal CLASS;
-terminal INTERFACE;
-terminal NULL;
-terminal THIS;
-terminal EXTENDS;
-terminal IMPLEMENTS;
-terminal FOR;
-terminal WHILE;
-terminal IF, ELSE;
-terminal RETURN;
-terminal BREAK;
-terminal CONTINUE;
-terminal NEW;
-terminal NEWARRAY;
-terminal PRINT;
-terminal READINTEGER;
-terminal READLINE;
-terminal DTOI;
-terminal ITOB;
-terminal ITOD;
-terminal BTOI;
-terminal PRIVATE, PUBLIC, PROTECTED;
-terminal TRUE, FALSE;
-terminal GT, LT, GTEQ, LTEQ;
-terminal QUESTION;
-terminal EQEQ, NOTEQ;
-terminal ANDAND;
-terminal OROR;
-terminal PLUSPLUS;
-terminal MINUSMINUS;
-terminal PLUS, MINUS, DIV, COMP, NOT, MOD;
-terminal DOT;
-terminal LBRACK, RBRACK;
-terminal LPAREN, RPAREN, LBRACE, RBRACE, COMMA, EQ, MULT, SEMICOLON, COLON;
-terminal UNDEFINED_TOKEN;
-
-
-terminal java.lang.Number INTEGER_LITERAL;
-terminal java.lang.Number DOUBLE_LITERAL;
-terminal java.lang.String STRING_LITERAL;
-terminal java.lang.String IDENTIFIER;
-terminal java.lang.Boolean BOOLEAN_LITERAL;
-
-
-//in ja benevisiiiiid
-nonterminal Program;
-nonterminal Decl;
-nonterminal VariableDecl;
-nonterminal Variable;
-nonterminal Type;
-nonterminal FunctionDecl;
-nonterminal Formals;
-nonterminal ClassDecl;
-nonterminal Field;
-
-
-nonterminal AccessMode;
-nonterminal InterfaceDecl;
-nonterminal Prototype;
-nonterminal StmtBlock;
-nonterminal Stmt;
-nonterminal IfStmt;
-nonterminal WhileStmt;
-nonterminal ForStmt;
-
-nonterminal ReturnStmt;
-nonterminal BreakStmt;
-nonterminal ContinueStmt;
-nonterminal PrintStmt;
-nonterminal Expr;
-nonterminal LValue;
-nonterminal Call;
-nonterminal Actuals;
-nonterminal Constant;
-
-nonterminal DeclPlus;
-nonterminal VariablePlus;
-nonterminal ExtendStmt;
-nonterminal ImplementsStmt;
-nonterminal IdentifierImplementsStmt;
-nonterminal FieldStar;
-nonterminal Prototype_star;
-nonterminal VariableDecl_star;
-nonterminal Stmt_star;
-nonterminal Expr_Stmt;
-nonterminal else_Stmt;
-nonterminal Expr_plus;
-nonterminal ExprAtomic;
-nonterminal Secondery;
-//nonterminal ExprAssign;
-//nonterminal ExprOr;
-//nonterminal ExprAnd;
-//nonterminal ExprEquality;
-//nonterminal ExprCompare;
-//nonterminal ExprAddSub;
-//nonterminal ExprMulDivMod;
-//nonterminal ExprNotNegative;
-
-
-precedence right EQ;
-precedence left OROR;
-precedence left ANDAND;
-precedence left EQEQ, NOTEQ;
-precedence left GT, GTEQ, LT, LTEQ;
-precedence left PLUS, MINUS;
-precedence left MULT, DIV, MOD;
-precedence left NOT;
-precedence left Constant;
-precedence left LBRACK, DOT;
-precedence left ELSE;
+// defining precedences
+precedence left     ELSE;
+precedence right    ASSIGN;
+precedence left     OR;
+precedence left     AND;
+precedence left     EQUAL, NOTEQUAL;
+precedence left     LESS, LESSEQUAL, GREATER, GREATEREQUAL;
+precedence left     PLUS, MINUS;
+precedence left     MULTIPLY, DIVIDE, MOD;
+precedence right    NOT, UMINUS;
+precedence left     DOT, OPENBRACKET;
+precedence left     OPENPARENTHESIS;
 
 start with Program;
 
-Program ::= DeclPlus:d {:
-    Node tmp = new Node(LeftHand.Program, ProductionRule.DeclPlus);
-    tmp.getChildren().add((Node) d);
-    tmp.getDefinedVariables().addAll(((Node)d).getDefinedVariables());
-    RESULT = tmp; root = tmp;
-:};
+Program ::=             Decl DeclStar;
 
-DeclPlus ::= Decl:d {:
-    Node tmp = new Node(LeftHand.DeclPlus, ProductionRule.Decl);
-    tmp.getChildren().add((Node)d);
-    tmp.getDefinedVariables().addAll(((Node)d).getDefinedVariables());
-    RESULT = tmp;
-:} |
-Decl:d1 DeclPlus:d2{:
-    Node tmp = new Node(LeftHand.DeclPlus, ProductionRule.Decl_DeclPlus);
-    tmp.getChildren().add((Node)d1);
-    tmp.getChildren().add((Node)d2);
-    tmp.getDefinedVariables().addAll(((Node)d1).getDefinedVariables());
-    RESULT = tmp;
-:};
+DeclStar ::=            Decl DeclStar
+						| /*epsilon*/
+						;
 
-Decl ::= VariableDecl:v{:
-    Node tmp = new Node(LeftHand.Dec, ProductionRule.VariableDecl);
-    tmp.getChildren().add((Node)v);
-    tmp.getDefinedVariables().addAll(((Node)v).getDefinedVariables());
-    RESULT = tmp;
-:} |
-FunctionDecl:f {:
-    Node tmp = new Node(LeftHand.Dec, ProductionRule.FunctionDecl);
-    tmp.getChildren().add((Node)f);
-    RESULT = tmp;
-:}|
-ClassDecl:c{:
-    Node tmp = new Node(LeftHand.Dec, ProductionRule.ClassDecl);
-    tmp.getChildren().add((Node)c);
+Decl ::=                VariableDecl
+						| FunctionDecl
+						| ClassDecl
+						| InterfaceDecl
+						;
 
-    RESULT = tmp;
-:} |
-InterfaceDecl:i {:
-    Node tmp = new Node(LeftHand.Dec, ProductionRule.InterfaceDecl);
-    tmp.getChildren().add((Node)i);
-    RESULT = tmp;
-:};
+VariableDecl ::=        Variable SEMICOLON;
 
-VariableDecl ::= Variable:v SEMICOLON {:
-    Node tmp = new Node(LeftHand.VariableDecl, ProductionRule.Variable);
-    tmp.getChildren().add((Node)v);
-    tmp.getDefinedVariables().addAll(((Node)v).getDefinedVariables());
-    RESULT = tmp;
-:};
+Variable ::=            Type:type IDENTIFIER:id
+						;
 
-Variable ::= Type:t IDENTIFIER:i{:
-    Node tmp = new Node(LeftHand.Variable, ProductionRule.Type_IDENTIFIER);
-    tmp.getChildren().add((Node) t);
-    Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
-    id.setValue(i);
-    tmp.getChildren().add(id);
-    Variable variable = new Variable();
-    variable.setName(i);
-    tmp.getDefinedVariables().add(variable);
-    RESULT = tmp;
-:};
+Type ::=                INT
+						| DOUBLE
+						| BOOL
+						| STRING
+                        | IDENTIFIER:e
+						| Type:t OPENCLOSEBRACKET
+						;
 
-Type ::= INT:i {:
-     Node tmp = new Node(LeftHand.Type, ProductionRule.INT);
-     Node in = new Node(LeftHand.INT, ProductionRule.TERMINAL);
-     in.setValue(i);
-     tmp.getChildren().add(in);
-     tmp.setTypeName("int");
-     RESULT = tmp;
-    :}|
-DOUBLE:d {:
-     Node tmp = new Node(LeftHand.Type, ProductionRule.DOUBLE);
-     Node doub = new Node(LeftHand.DOUBLE, ProductionRule.TERMINAL);
-     doub.setValue(d);
-     tmp.getChildren().add(doub);
-     tmp.setTypeName("double");
-     RESULT = tmp;
-    :} |
-STRING:s {:
-     Node tmp = new Node(LeftHand.Type, ProductionRule.STRING);
-     Node str = new Node(LeftHand.STRING, ProductionRule.TERMINAL);
-     str.setValue(s);
-     tmp.getChildren().add(str);
-     tmp.setTypeName("string");
-     RESULT = tmp;
-    :} |
-BOOL:b {:
-     Node tmp = new Node(LeftHand.Type, ProductionRule.BOOL);
-     Node bo = new Node(LeftHand.BOOL, ProductionRule.TERMINAL);
-     bo.setValue(b);
-     tmp.getChildren().add(bo);
-     tmp.setTypeName("boolean");
-     RESULT = tmp;
-:} |
-  IDENTIFIER:i {:
-      Node tmp = new Node(LeftHand.Type, ProductionRule.IDENTIFIER);
-      Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
-      id.setValue(i);
-      tmp.getChildren().add(id);
-      tmp.setTypeName(i);
-      RESULT = tmp;
-  :} |
-Type:t LBRACK RBRACK {:
-    //badan bara array dorost she
-    Node tmp = new Node(LeftHand.Type, ProductionRule.Type_LBRACK_RBRACK);
-    tmp.getChildren().add((Node)t);
-    tmp.setTypeName(((Node)t).getTypeName());
-    tmp.setArrayDegree(((Node)t).getArrayDegree() + 1);
-    RESULT = tmp;
-:};
+FunctionDecl ::=        Type:t IDENTIFIER:name OPENPARENTHESIS Formals CLOSEPARENTHESIS StmtBlock
+						| VOID IDENTIFIER:name OPENPARENTHESIS Formals CLOSEPARENTHESIS StmtBlock
+						;
 
-FunctionDecl ::= Type:t IDENTIFIER:i  LPAREN Formals:f RPAREN StmtBlock:s {:
-    Node tmp = new Node(LeftHand.FunctionDecl, ProductionRule.Type_IDENTIFIER_LPAREN_Formals_RPAREN_StmtBlock);
-    tmp.getChildren().add((Node)t);
-    Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
-    id.setValue(i);
-    tmp.getChildren().add(id);
-    tmp.getChildren().add((Node) f);
-    tmp.getChildren().add((Node) s);
-    tmp.getDefinedVariables().addAll(((Node)f).getDefinedVariables());
-    tmp.getDefinedVariables().addAll(((Node)s).getDefinedVariables());
-    RESULT = tmp;
-:} |
-VOID IDENTIFIER:i LPAREN Formals:f RPAREN StmtBlock:s {:
-    Node tmp = new Node(LeftHand.FunctionDecl, ProductionRule.VOID_IDENTIFIER_LPAREN_Formals_RPAREN_StmtBlock);
-    Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
-    id.setValue(i);
-    tmp.getChildren().add(id);
-    tmp.getChildren().add((Node)f);
-    tmp.getChildren().add((Node)s);
-    tmp.getDefinedVariables().addAll(((Node)f).getDefinedVariables());
-    tmp.getDefinedVariables().addAll(((Node)s).getDefinedVariables());
-    RESULT = tmp;
-:};
+Formals ::=             Variable:v CommaVariables
+						| /*epsilon*/
+						;
+CommaVariables ::=      COMMA Variable CommaVariables
+						| /*epsilon*/
+						;
 
-VariablePlus ::= Variable:v {:
-    Node tmp = new Node(LeftHand.VariablePlus, ProductionRule.Variable);
-    tmp.getChildren().add((Node)v);
-    tmp.getDefinedVariables().addAll(((Node)v).getDefinedVariables());
-    RESULT = tmp;
-:} |
-Variable:v COMMA VariablePlus:vp {:
-    Node tmp = new Node(LeftHand.VariablePlus, ProductionRule.Variable_COMMA_VariablePlus);
-    tmp.getChildren().add((Node)v);
-    tmp.getChildren().add((Node)vp);
-    tmp.getDefinedVariables().addAll(((Node)v).getDefinedVariables());
-    tmp.getDefinedVariables().addAll(((Node)vp).getDefinedVariables());
-    RESULT = tmp;
-:};
+ClassDecl ::=           CLASS IDENTIFIER ClassDeclExtends ClassDeclImplements OPENCURLYBRACES FieldStar CLOSECURLYBRACES;
+ClassDeclExtends ::=    EXTENDS IDENTIFIER
+						| /*epsilon*/
+						;
+ClassDeclImplements ::= IMPLEMENTS IDENTIFIER CommaIdentifiers
+						| /*epsilon*/
+						;
+CommaIdentifiers ::=    COMMA IDENTIFIER CommaIdentifiers
+						| /*epsilon*/
+						;
+FieldStar ::=           Field FieldStar
+						| /*epsilon*/
+						;
 
-Formals ::= VariablePlus:v {:
-    Node tmp = new Node(LeftHand.Formals, ProductionRule.VariablePlus);
-    tmp.getChildren().add((Node)v);
-    tmp.getDefinedVariables().addAll(((Node)v).getDefinedVariables());
-    RESULT = tmp;
-:} |
-{:
-    Node tmp = new Node(LeftHand.Formals, ProductionRule.NOTHING);
-    RESULT = tmp;
-:};
+Field ::=               AccessMode VariableDecl
+						| AccessMode FunctionDecl
+						;
 
-ExtendStmt ::= EXTENDS IDENTIFIER:i {:
-    Node tmp = new Node(LeftHand.ExtendStmt, ProductionRule.EXTENDS_IDENTIFIER);
-    Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
-    id.setValue(i);
-    tmp.getChildren().add(id);
-    tmp.setValue(i);
-    RESULT = tmp;
-:}|
-{:
-    Node tmp = new Node(LeftHand.ExtendStmt, ProductionRule.NOTHING);
-    tmp.setValue(null);
-    RESULT = tmp;
-:};
+AccessMode ::=          PRIVATE
+						| PROTECTED
+						| PUBLIC
+						| /*epsilon*/
+						;
 
-ImplementsStmt ::= IMPLEMENTS IdentifierImplementsStmt:i {:
-    Node tmp = new Node(LeftHand.ImplementsStmt, ProductionRule.IMPLEMENTS_IdentifierImplementsStmt);
-    tmp.getChildren().add((Node)i);
-    RESULT = tmp;
-:}|
-{:
-    Node tmp = new Node(LeftHand.ImplementsStmt, ProductionRule.NOTHING);
-    RESULT = tmp;
-:};
+InterfaceDecl ::=       INTERFACE IDENTIFIER OPENCURLYBRACES PrototypeStar CLOSECURLYBRACES;
+PrototypeStar ::=       Prototype PrototypeStar
+						| /*epsilon*/
+						;
 
-IdentifierImplementsStmt ::= IDENTIFIER:i1 COMMA IdentifierImplementsStmt:i2 {:
-    Node tmp = new Node(LeftHand.IdentifierImplementsStmt, ProductionRule.IDENTIFIER_COMMA_IdentifierImplementsStmt);
-    Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
-    id.setValue(i1);
-    tmp.getChildren().add(id);
-    tmp.getChildren().add((Node)i2);
-    RESULT = tmp;
-:}|
-IDENTIFIER:i {:
-    Node tmp = new Node(LeftHand.IdentifierImplementsStmt, ProductionRule.IDENTIFIER);
-    Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
-    id.setValue(i);
-    tmp.getChildren().add(id);
-    RESULT = tmp;
-:};
+Prototype ::=           Type IDENTIFIER OPENPARENTHESIS Formals CLOSEPARENTHESIS SEMICOLON
+						| VOID IDENTIFIER OPENPARENTHESIS Formals CLOSEPARENTHESIS SEMICOLON
+						;
 
-FieldStar ::= Field:f1 FieldStar:f2 {:
-    Node tmp = new Node(LeftHand.FieldStar, ProductionRule.Field_FieldStar);
-    tmp.getChildren().add((Node)f1);
-    tmp.getChildren().add((Node)f2);
-    tmp.getDefinedVariables().addAll(((Node)f1).getDefinedVariables());
-    tmp.getDefinedVariables().addAll(((Node)f2).getDefinedVariables());
-    RESULT = tmp;
-:}|
-{:
-    Node tmp = new Node(LeftHand.FieldStar, ProductionRule.NOTHING);
-    RESULT = tmp;
-:};
+StmtBlock ::=           OPENCURLYBRACES InsideStmtBlock CLOSECURLYBRACES;
+InsideStmtBlock ::=     VariableDecl InsideStmtBlock
+						| StmtStar
+						;
+StmtStar ::=            Stmt StmtStar
+						| /*epsilon*/
+						;
 
-Field ::= AccessMode:a VariableDecl:v {:
-    Node tmp = new Node(LeftHand.Field, ProductionRule.AccessMode_VariableDecl);
-    tmp.getChildren().add((Node)a);
-    tmp .getChildren().add((Node)v);
-    tmp.getDefinedVariables().addAll(((Node)v).getDefinedVariables());
-    for(Variable variable: ((Node)v).getDefinedVariables()){
-        variable.setAccessMode(((Node)a).getAccessMode());
-    }
-    RESULT = tmp;
-:} |
-AccessMode:a FunctionDecl:f {:
-    Node tmp = new Node(LeftHand.Field, ProductionRule.AccessMode_FunctionDecl);
-    tmp.getChildren().add((Node)a);
-    tmp.getChildren().add((Node)f);
-    RESULT = tmp;
-:};
+Stmt ::=                ExprPrime SEMICOLON
+						| IfStmt
+						| WhileStmt
+						| ForStmt
+						| BreakStmt
+						| ContinueStmt
+						| ReturnStmt
+						| PrintStmt
+						| StmtBlock
+						;
 
-ClassDecl ::= CLASS IDENTIFIER:i1 ExtendStmt:e ImplementsStmt:i2 LBRACE FieldStar:f RBRACE {:
-    Node tmp = new Node(LeftHand.ClassDecl, ProductionRule.CLASS_IDENTIFIER_ExtendStmt_ImplementsStmt_LBRACE_FieldStar_RBRACE);
-    Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
-    id.setValue(i1);
-    tmp.getChildren().add(id);
-    tmp.getChildren().add((Node)e);
-    tmp.getChildren().add((Node)i2);
-    tmp.getChildren().add((Node)f);
-    Type.createPreType(i1, (String)((Node)e).getValue());
-    tmp.getDefinedVariables().addAll(((Node)f).getDefinedVariables());
-    RESULT = tmp;
-:};
+ExprPrime ::=           Expr:e
+						| /*epsilon*/
+						;
 
-AccessMode ::= PRIVATE
-{: Node tmp = new Node(LeftHand.AccessMode, ProductionRule.PRIVATE);
-tmp.setAccessMode(AccessMode.PRIVATE);
-RESULT = tmp;:} |
-PROTECTED {: Node tmp = new Node(LeftHand.AccessMode, ProductionRule.PROTECTED);
-tmp.setAccessMode(AccessMode.PROTECTED);
-RESULT = tmp;:} |
-PUBLIC {: Node tmp = new Node(LeftHand.AccessMode, ProductionRule.PUBLIC);
-RESULT = tmp;:} |
-{: Node tmp = new Node(LeftHand.AccessMode, ProductionRule.NOTHING);
-tmp.setAccessMode(AccessMode.PUBLIC);
-RESULT = tmp;:} ;
+IfStmt ::=              IF OPENPARENTHESIS Expr:e CLOSEPARENTHESIS Stmt ElsePrime
+                        ;
 
-InterfaceDecl ::= INTERFACE IDENTIFIER:i LBRACE Prototype_star:ps RBRACE
-{: Node tmp = new Node(LeftHand.InterfaceDecl, ProductionRule.INTERFACE_IDENTIFIER_LBRACE_Prototype_star_RBRACE);
-Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
-id.setValue(i);
-tmp.getChildren().add(id);
-tmp.getChildren().add((Node) ps);
-RESULT = tmp;:};
+ElsePrime ::=           ELSE Stmt:s
+						| /*epsilon*/
+                        ;
 
-Prototype_star ::=  Prototype:p Prototype_star:ps
-{: Node tmp = new Node(LeftHand.Prototype_star, ProductionRule.Prototype_Prototype_star);
-tmp.getChildren().add((Node) p);
-tmp.getChildren().add((Node) ps);
-RESULT = tmp;:} |
-{: Node tmp = new Node(LeftHand.Prototype_star, ProductionRule.NOTHING);
-RESULT = tmp;:};
 
-Prototype ::= Type:t IDENTIFIER:i LPAREN Formals:f RPAREN SEMICOLON
-{: Node tmp = new Node(LeftHand.Prototype, ProductionRule.Type_IDENTIFIER_LPAREN_Formals_RPAREN_SEMICOLON);
-tmp.getChildren().add((Node) t);
-Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
-id.setValue(i);
-tmp.getChildren().add(id);
-tmp.getChildren().add((Node) f);
-RESULT = tmp;:} | VOID IDENTIFIER:i LPAREN Formals:f RPAREN SEMICOLON
-{: Node tmp = new Node(LeftHand.Prototype, ProductionRule.VOID_IDENTIFIER_LPAREN_Formals_RPAREN_SEMICOLON);
-Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
-id.setValue(i);
-tmp.getChildren().add(id);
-tmp.getChildren().add((Node) f);
-RESULT = tmp;:};
+WhileStmt ::=           WHILE OPENPARENTHESIS Expr:e CLOSEPARENTHESIS Stmt:s;
 
-StmtBlock ::= LBRACE VariableDecl_star Stmt_star :vs RBRACE;
-//{: Node tmp = new Node(LeftHand.StmtBlock, ProductionRule.LBRACE_VariableDecl_star_Stmt_star_RBRACE);
-//tmp.getChildren().add((Node) vs);
-//tmp.getChildren().add((Node) ss);
-//tmp.getDefinedVariables().addAll(((Node)vs).getDefinedVariables());
-//RESULT = tmp;:};
-//Secondery ::= VariableDecl_star Stmt_star;
-//{: Node tmp = new Node(LeftHand.StmtBlock, ProductionRule.LBRACE_VariableDecl_star_Stmt_star_RBRACE);
-//tmp.getChildren().add((Node) vs);
-//tmp.getChildren().add((Node) ss);
-//tmp.getDefinedVariables().addAll(((Node)vs).getDefinedVariables());
-//RESULT = tmp;:};
-VariableDecl_star ::= VariableDecl_star:v VariableDecl:vs
- {: Node tmp = new Node(LeftHand.VariableDecl_star, ProductionRule.VariableDecl_VariableDecl_star_PLUS);
- tmp.getChildren().add((Node) v);
- tmp.getChildren().add((Node) vs);
- tmp.getDefinedVariables().addAll(((Node)v).getDefinedVariables());
- tmp.getDefinedVariables().addAll(((Node)vs).getDefinedVariables());
- RESULT = tmp;:} |
-{:
-    Node tmp = new Node(LeftHand.VariableDecl_star, ProductionRule.NOTHING);
-    RESULT = tmp;
-:};
-Stmt_star ::= Stmt:s Stmt_star:ss
-{: Node tmp = new Node(LeftHand.Stmt_star, ProductionRule.Stmt_Stmt_star);
-tmp.getChildren().add((Node) s);
-tmp.getChildren().add((Node) ss);
-RESULT = tmp;:} |
-{: Node tmp = new Node(LeftHand.Stmt_star, ProductionRule.NOTHING);
-RESULT = tmp;:};
+ForStmt ::=             FOR OPENPARENTHESIS ExprPrime SEMICOLON Expr:e SEMICOLON ExprPrime CLOSEPARENTHESIS Stmt;
 
-Stmt ::=  Expr_Stmt:es  SEMICOLON
-{: Node tmp = new Node(LeftHand.Stmt, ProductionRule.Expr_Stmt_SEMICOLON);
-tmp.getChildren().add((Node) es);
-RESULT = tmp;:} | IfStmt:i
-{: Node tmp = new Node(LeftHand.Stmt, ProductionRule.IfStmt);
-tmp.getChildren().add((Node) i);
-RESULT = tmp;:}| WhileStmt:w
-{: Node tmp = new Node(LeftHand.Stmt, ProductionRule.WhileStmt);
-tmp.getChildren().add((Node) w);
-RESULT = tmp;:}| ForStmt:f
-{: Node tmp = new Node(LeftHand.Stmt, ProductionRule.ForStmt);
-tmp.getChildren().add((Node) f);
-RESULT = tmp;:}| BreakStmt:b
-{: Node tmp = new Node(LeftHand.Stmt, ProductionRule.BreakStmt);
-tmp.getChildren().add((Node) b);
-RESULT = tmp;:}| ContinueStmt:c
-{: Node tmp = new Node(LeftHand.Stmt, ProductionRule.ContinueStmt);
-tmp.getChildren().add((Node) c);
-RESULT = tmp;:}| ReturnStmt:r
-{: Node tmp = new Node(LeftHand.Stmt, ProductionRule.ReturnStmt);
-tmp.getChildren().add((Node) r);
-RESULT = tmp;:}| PrintStmt:p
-{: Node tmp = new Node(LeftHand.Stmt, ProductionRule.PrintStmt);
-tmp.getChildren().add((Node) p);
-RESULT = tmp;:}| StmtBlock:s
-{: Node tmp = new Node(LeftHand.Stmt, ProductionRule.StmtBlock);
-tmp.getChildren().add((Node) s);
-RESULT = tmp;:};
+ReturnStmt ::=          RETURN ExprPrime:e SEMICOLON
+						;
 
-Expr_Stmt ::= Expr:e
-{: Node tmp = new Node(LeftHand.Expr_Stmt, ProductionRule.Expr);
-tmp.getChildren().add((Node) e);
-RESULT = tmp;:} |
-{: Node tmp = new Node(LeftHand.Expr_Stmt, ProductionRule.NOTHING);
-RESULT = tmp;:};
+BreakStmt ::=           BREAK SEMICOLON;
 
-IfStmt ::= IF LPAREN Expr:e RPAREN Stmt:s else_Stmt:es
-{: Node tmp = new Node(LeftHand.IfStmt, ProductionRule.IF_LPAREN_Expr_RPAREN_Stmt_else_Stmt);
-tmp.getChildren().add((Node) e);
-tmp.getChildren().add((Node) s);
-tmp.getChildren().add((Node) es);
-RESULT = tmp;:};
-else_Stmt ::= ELSE Stmt:s
-{: Node tmp = new Node(LeftHand.else_Stmt, ProductionRule.ELSE_Stmt);
-tmp.getChildren().add((Node) s);
-RESULT = tmp;:}|
-{: Node tmp = new Node(LeftHand.else_Stmt, ProductionRule.NOTHING);
-RESULT = tmp;:};
+ContinueStmt ::=        CONTINUE SEMICOLON;
 
-WhileStmt ::= WHILE LPAREN Expr:e RPAREN Stmt:s
-{: Node tmp = new Node(LeftHand.WhileStmt, ProductionRule.WHILE_LPAREN_Expr_RPAREN_Stmt);
-tmp.getChildren().add((Node) e);
-tmp.getChildren().add((Node) s);
-RESULT = tmp;:};
+PrintStmt ::=           PRINT OPENPARENTHESIS Expr:e PrintCommaExpr CLOSEPARENTHESIS SEMICOLON
+						;
 
-ForStmt ::= FOR LPAREN  Expr_Stmt:es  SEMICOLON Expr:e SEMICOLON  Expr_Stmt:es1  RPAREN Stmt:s
-{: Node tmp = new Node(LeftHand.ForStmt, ProductionRule.FOR_LPAREN_Expr_Stmt_SEMICOLON_Expr_SEMICOLON_Expr_Stmt_RPAREN_Stmt);
-tmp.getChildren().add((Node) es);
-tmp.getChildren().add((Node) e);
-tmp.getChildren().add((Node) es1);
-tmp.getChildren().add((Node) s);
-RESULT = tmp;:};
+PrintCommaExpr ::=      COMMA Expr:e PrintCommaExpr
+						|
+						/*epsilon*/
+						;
 
-ReturnStmt ::= RETURN Expr_Stmt:e SEMICOLON
-{: Node tmp = new Node(LeftHand.ReturnStmt, ProductionRule.RETURN_Expr_SEMICOLON);
-tmp.getChildren().add((Node) e);
-RESULT = tmp;:}| RETURN SEMICOLON
-{: Node tmp = new Node(LeftHand.ReturnStmt, ProductionRule.RETURN_SEMICOLON);
-RESULT = tmp;:};
+Expr ::=                LValue:lv ASSIGN Expr:e
+						| Constant:c
+						| LValue:lv
+						| THIS
+						| Call:c
+						| OPENPARENTHESIS Expr:e CLOSEPARENTHESIS
+						| Expr:e1 PLUS Expr:e2
+						| Expr:e1 MINUS Expr:e2
+						| Expr:e1 MULTIPLY Expr:e2
+						| Expr:e1 DIVIDE Expr:e2
+						| Expr:e1 MOD Expr:e2
+						| MINUS Expr:e %prec UMINUS
+                        | Expr:e1 LESS Expr:e2
+						| Expr:e1 LESSEQUAL Expr:e2
+						| Expr:e1 GREATER Expr:e2
+						| Expr:e1 GREATEREQUAL Expr:e2
+						| Expr:e1 EQUAL Expr:e2
+						| Expr:e1 NOTEQUAL Expr:e2
+						| Expr:e1 AND Expr:e2
+						| Expr:e1 OR Expr:e2
+						| NOT Expr:e
+						| READINTEGER OPENPARENTHESIS CLOSEPARENTHESIS
+						| READLINE OPENPARENTHESIS CLOSEPARENTHESIS
+						| NEW IDENTIFIER
+						| NEWARRAY OPENPARENTHESIS Expr:e COMMA Type:t CLOSEPARENTHESIS
+						| ITOD OPENPARENTHESIS Expr:e CLOSEPARENTHESIS
+						| DTOI OPENPARENTHESIS Expr:e CLOSEPARENTHESIS
+						| ITOB OPENPARENTHESIS Expr:e CLOSEPARENTHESIS
+						| BTOI OPENPARENTHESIS Expr:e CLOSEPARENTHESIS
+						;
 
-BreakStmt ::= BREAK SEMICOLON
-{: Node tmp = new Node(LeftHand.BreakStmt, ProductionRule.BREAK_SEMICOLON);
-RESULT = tmp;:};
+LValue ::=              IDENTIFIER:id
+						| Expr DOT IDENTIFIER
+						| Expr:e1 OPENBRACKET Expr:e2 CLOSEBRACKET
+						;
 
-ContinueStmt ::= CONTINUE SEMICOLON
-{: Node tmp = new Node(LeftHand.ContinueStmt, ProductionRule.CONTINUE_SEMICOLON);
-RESULT = tmp;:};
+Call ::=                IDENTIFIER:functionID OPENPARENTHESIS Actuals CLOSEPARENTHESIS
+						| Expr:e DOT IDENTIFIER:id OPENPARENTHESIS Actuals CLOSEPARENTHESIS
+						;
 
-PrintStmt ::= PRINT LPAREN Expr_plus:ep RPAREN SEMICOLON
-{: Node tmp = new Node(LeftHand.PrintStmt, ProductionRule.PRINT_LPAREN_Expr_plus_RPAREN_SEMICOLON);
-tmp.getChildren().add((Node) ep);
-RESULT = tmp;:};
+Actuals ::=             Expr:e ActualsCommaExpr
+						| /*epsilon*/
+						;
 
-Expr_plus ::= Expr:e
-{: Node tmp = new Node(LeftHand.Expr_plus, ProductionRule.Expr);
-tmp.getChildren().add((Node) e);
-RESULT = tmp;:}| Expr:e COMMA Expr_plus:ep
-{: Node tmp = new Node(LeftHand.Expr_plus, ProductionRule.Expr_COMMA_Expr_plus);
-tmp.getChildren().add((Node) e);
-tmp.getChildren().add((Node) ep);
-RESULT = tmp;:};
+ActualsCommaExpr ::=    COMMA Expr:e ActualsCommaExpr
+						| /*epsilon*/
+						;
 
-Expr ::= LValue:l EQ Expr:e{:  Node tmp = new Node(LeftHand.Expr, ProductionRule.LValue_EQ_Expr);
-                                tmp.getChildren().add((Node) l);
-                                tmp.getChildren().add((Node) e);
-                                RESULT = tmp;
-:} %prec EQ
-| Expr:e1 OROR Expr:e2 {:  Node tmp = new Node(LeftHand.Expr, ProductionRule.Expr_OROR_Expr);
-                                 tmp.getChildren().add((Node)e1);
-                                 tmp.getChildren().add((Node)e2);
-                                 RESULT = tmp;
-:}%prec OROR
-| Expr:e1 ANDAND Expr:e2 {:  Node tmp = new Node(LeftHand.Expr, ProductionRule.Expr_ANDAND_Expr);
-                                  tmp.getChildren().add((Node)e1);
-                                  tmp.getChildren().add((Node)e2);
-                                  RESULT = tmp;
-:}%prec ANDAND| Expr:e1 EQEQ Expr:e2 {:  Node tmp = new Node(LeftHand.Expr, ProductionRule.Expr_EQEQ_Expr);
-                                tmp.getChildren().add((Node)e1);
-                                tmp.getChildren().add((Node)e2);
-                                RESULT = tmp;
-:}%prec EQEQ | Expr:e1 NOTEQ Expr:e2 {:  Node tmp = new Node(LeftHand.Expr, ProductionRule.Expr_NOTEQ_Expr);
-                             tmp.getChildren().add((Node)e1);
-                             tmp.getChildren().add((Node)e2);
-                             RESULT = tmp;
-:} %prec NOTEQ| Expr:e1 LT Expr:e2 {:  Node tmp = new Node(LeftHand.Expr, ProductionRule.Expr_LT_Expr);
-                                tmp.getChildren().add((Node)e1);
-                                tmp.getChildren().add((Node)e2);
-                                RESULT = tmp;
-:} %prec LT
-| Expr:e1 LTEQ Expr:e2 {:  Node tmp = new Node(LeftHand.Expr, ProductionRule.Expr_LTEQ_Expr);
-                                 tmp.getChildren().add((Node)e1);
-                                 tmp.getChildren().add((Node)e2);
-                                 RESULT = tmp;
-:} %prec LTEQ|
-Expr:e1 GT Expr:e2 {:  Node tmp = new Node(LeftHand.Expr, ProductionRule.Expr_GT_Expr);
-                      tmp.getChildren().add((Node)e1);
-                      tmp.getChildren().add((Node)e2);
-                      RESULT = tmp;
-:} %prec GT| Expr:e1 GTEQ Expr:e2 {:  Node tmp = new Node(LeftHand.Expr, ProductionRule.Expr_GTEQ_Expr);
-                             tmp.getChildren().add((Node)e1);
-                             tmp.getChildren().add((Node)e2);
-                             RESULT = tmp;
-:} %prec GT| Expr:e1 PLUS Expr:e2 {:  Node tmp = new Node(LeftHand.Expr, ProductionRule.LValue_EQ_Expr);
-                             tmp.getChildren().add((Node)e1);
-                             tmp.getChildren().add((Node)e2);
-                             RESULT = tmp;
-:} %prec PLUS| Expr:e1 MINUS Expr:e2 {:  Node tmp = new Node(LeftHand.Expr, ProductionRule.Expr_MINUS_Expr);
-                           tmp.getChildren().add((Node)e1);
-                           tmp.getChildren().add((Node)e2);
-                           RESULT = tmp;
-:} %prec MINUS| Expr:e1 MULT Expr:e2 {:  Node tmp = new Node(LeftHand.Expr, ProductionRule.Expr_MULT_Expr);
-                          tmp.getChildren().add((Node)e1);
-                          tmp.getChildren().add((Node)e2);
-                          RESULT = tmp;
-:} %prec MULT| Expr:e1 DIV Expr:e2 {:  Node tmp = new Node(LeftHand.Expr, ProductionRule.Expr_DIV_Expr);
-                           tmp.getChildren().add((Node)e1);
-                           tmp.getChildren().add((Node)e2);
-                           RESULT = tmp;
-:} %prec DIV| Expr:e1 MOD Expr:e2 {:  Node tmp = new Node(LeftHand.Expr, ProductionRule.Expr_MOD_Expr);
-                      tmp.getChildren().add((Node)e1);
-                      tmp.getChildren().add((Node)e2);
-                      RESULT = tmp;
-:} %prec MOD| MINUS Expr:e1 {:  Node tmp = new Node(LeftHand.Expr, ProductionRule.MINUS_Expr);
-                          tmp.getChildren().add((Node)e1);
-                          RESULT = tmp;
-:} %prec NOT| Expr:e1 LT Expr:e2 {:  Node tmp = new Node(LeftHand.Expr, ProductionRule.Expr_LT_Expr);
-                              tmp.getChildren().add((Node)e1);
-                              tmp.getChildren().add((Node)e2);
-                              RESULT = tmp;
-:} |NOT Expr:e {:  Node tmp = new Node(LeftHand.Expr, ProductionRule.NOT_Expr);
-                    tmp.getChildren().add((Node)e);
-                    RESULT = tmp;
-:} %prec NOT
-| ExprAtomic;
-ExprAtomic ::= Constant:c {:  Node tmp = new Node(LeftHand.Expr, ProductionRule.Constant);
-                    tmp.getChildren().add((Node)c);
-                    RESULT = tmp;
-:}%prec Constant | LValue:l {:  Node tmp = new Node(LeftHand.Expr, ProductionRule.LValue);
-                      tmp.getChildren().add((Node)l);
-                      RESULT = tmp;
-:}%prec Constant | Call:c {:  Node tmp = new Node(LeftHand.Expr, ProductionRule.Call);
-                   tmp.getChildren().add((Node)c);
-                   RESULT = tmp;
-:}%prec Constant| LPAREN Expr:e RPAREN {:  Node tmp = new Node(LeftHand.Expr, ProductionRule.LPAREN_Expr_RPAREN);
-                                   tmp.getChildren().add((Node)e);
-                                   RESULT = tmp;
-:}%prec Constant| THIS:t {:  Node tmp = new Node(LeftHand.Expr, ProductionRule.LValue_EQ_Expr);
-                 Node id = new Node(LeftHand.Expr, ProductionRule.THIS);
-                 id.setValue(t);
-                 tmp.getChildren().add((Node)t);
-                 RESULT = tmp;
- :}%prec Constant| READINTEGER LPAREN RPAREN {:  Node tmp = new Node(LeftHand.Expr, ProductionRule.READINTEGER_LPAREN_RPAREN);
-                                         RESULT = tmp;
-:}%prec Constant | READLINE LPAREN RPAREN {:  Node tmp = new Node(LeftHand.Expr, ProductionRule.READLINE_LPAREN_RPAREN);
-                                    RESULT = tmp;
-:} %prec Constant| NEW IDENTIFIER:i {:  Node tmp = new Node(LeftHand.Expr, ProductionRule.NEW_IDENTIFIER);
-                                 Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
-                                 id.setValue(i);
-                                 tmp.getChildren().add(id);
-                                 RESULT = tmp;
-:} %prec Constant | NEWARRAY LPAREN Expr:e COMMA Type:t RPAREN {:  Node tmp = new Node(LeftHand.Expr, ProductionRule.NEWARRAY_LPAREN_Expr_COMMA_Type_RPAREN);
-                                                           tmp.getChildren().add((Node)e);
-                                                           tmp.getChildren().add((Node)t);
-                                                           RESULT = tmp;
-:} %prec Constant |
-ITOD LPAREN Expr:e RPAREN {:  Node tmp = new Node(LeftHand.Expr, ProductionRule.ITOD_LPAREN_Expr_RPAREN);
-                            tmp.getChildren().add((Node)e);
-                            RESULT = tmp;
-:} %prec Constant| DTOI LPAREN Expr:e RPAREN {:  Node tmp = new Node(LeftHand.Expr, ProductionRule.DTOI_LPAREN_Expr_RPAREN);
-                                tmp.getChildren().add((Node)e);
-                                RESULT = tmp;
-:} %prec Constant| ITOB LPAREN Expr:e RPAREN  {:  Node tmp = new Node(LeftHand.Expr, ProductionRule.ITOB_LPAREN_Expr_RPAREN);
-                                tmp.getChildren().add((Node)e);
-                                RESULT = tmp;
-:} %prec Constant| BTOI LPAREN Expr:e RPAREN {:  Node tmp = new Node(LeftHand.Expr, ProductionRule.BTOI_LPAREN_Expr_RPAREN);
-                               tmp.getChildren().add((Node)e);
-                               RESULT = tmp;
-:};
-
-LValue ::= IDENTIFIER:i  {:  Node tmp = new Node(LeftHand.LValue, ProductionRule.IDENTIFIER);
-                             Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
-                             id.setValue(i);
-                             tmp.getChildren().add(id);
-                             RESULT = tmp;
-:} | ExprAtomic:e DOT IDENTIFIER:i {:  Node tmp = new Node(LeftHand.LValue, ProductionRule.Expr_DOT_IDENTIFIER);
-                              Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
-                              id.setValue(i);
-                              tmp.getChildren().add((Node)e);
-                              tmp.getChildren().add((id));
-                              RESULT = tmp;
- :} | ExprAtomic:e1 LBRACK Expr:e2 RBRACK{:  Node tmp = new Node(LeftHand.LValue, ProductionRule.Expr_LBRACK_Expr_RBRACK);
-                            Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
-                            tmp.getChildren().add((Node)e1);
-                            tmp.getChildren().add((Node)e2);
-                            RESULT = tmp;
-:};
-
-Call ::= IDENTIFIER:i LPAREN Actuals:a RPAREN {:  Node tmp = new Node(LeftHand.Call, ProductionRule.IDENTIFIER_LPAREN_Actuals_RPAREN);
-                                                 Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
-                                                 id.setValue(i);
-                                                 tmp.getChildren().add(id);
-                                                 tmp.getChildren().add((Node)a);
-                                                 RESULT = tmp;
-  :}| ExprAtomic:e DOT IDENTIFIER:i LPAREN Actuals:a RPAREN {:  Node tmp = new Node(LeftHand.Call, ProductionRule.Expr_DOT_IDENTIFIER_LPAREN_Actuals_RPAREN);
-                                                         Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
-                                                         id.setValue(i);
-                                                         tmp.getChildren().add((Node)e);
-                                                         tmp.getChildren().add(id);
-                                                         tmp.getChildren().add((Node)a);
-                                                         RESULT = tmp;
-  :};
-
-Actuals ::= Expr_plus:e{:  Node tmp = new Node(LeftHand.Actuals, ProductionRule.Expr_plus);
-                          tmp.getChildren().add((Node)e);
-                          RESULT = tmp;
-:} | {:  Node tmp = new Node(LeftHand.Constant, ProductionRule.NOTHING);
-        Node id = new Node(LeftHand.Actuals, ProductionRule.NOTHING);
-        RESULT = tmp;
-:};
-
-Constant ::= INTEGER_LITERAL:i {:  Node tmp = new Node(LeftHand.Constant, ProductionRule.INTEGER_LITERAL);
-                                   Node id = new Node(LeftHand.INTEGER_LITERAL, ProductionRule.TERMINAL);
-                                   id.setValue(i);
-                                   tmp.getChildren().add(id);
-                                   RESULT = tmp;
-:}|
- DOUBLE_LITERAL:d {:  Node tmp = new Node(LeftHand.Constant, ProductionRule.DOUBLE_LITERAL);
-                     Node id = new Node(LeftHand.DOUBLE_LITERAL, ProductionRule.TERMINAL);
-                     id.setValue(d);
-                     tmp.getChildren().add(id);
-                     RESULT = tmp;
-:} | BOOLEAN_LITERAL:b {:  Node tmp = new Node(LeftHand.Constant, ProductionRule.BOOLEAN_LITERAL);
-                          Node id = new Node(LeftHand.BOOLEAN_LITERAL, ProductionRule.TERMINAL);
-                          id.setValue(b);
-                          tmp.getChildren().add(id);
-                          RESULT = tmp;
-:} | STRING_LITERAL:s {:  Node tmp = new Node(LeftHand.Constant, ProductionRule.STRING_LITERAL);
-                         Node id = new Node(LeftHand.STRING_LITERAL, ProductionRule.TERMINAL);
-                         id.setValue(s);
-                         tmp.getChildren().add(id);
-                         RESULT = tmp;
-:} | NULL:n{:  Node tmp = new Node(LeftHand.Constant, ProductionRule.NULL);
-              Node id = new Node(LeftHand.NULL, ProductionRule.TERMINAL);
-              id.setValue(n);
-              tmp.getChildren().add(id);
-              RESULT = tmp;
-:};
-
+Constant ::=            DECIMAL:d
+						| FLOATINGPOINT:f
+						| BOOLEANLITERAL:b
+						| STRINGLITERAL:s
+						| NULL:n
+						;
