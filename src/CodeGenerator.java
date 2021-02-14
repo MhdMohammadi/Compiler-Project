@@ -107,7 +107,20 @@ public class CodeGenerator {
         code.addCode(node2.getCode());
         code.addCode("l.s $f1, 0($sp)");
         code.addCode("add $sp, $sp, 4");
-        code.addCode("add.s $f0, $f0, $f1");
+        switch (operator){
+            case PLUS:
+                code.addCode("add.s $f0, $f1, $f0");
+                break;
+            case MINUS:
+                code.addCode("sub.s $f0, $f1, $f0");
+                break;
+            case MULT:
+                code.addCode("mul.s $f0, $f1, $f0");
+                break;
+            case DIV:
+                code.addCode("div.s $f0, $f1, $f0");
+                break;
+        }
         return code;
     }
 }
