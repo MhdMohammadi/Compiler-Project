@@ -116,6 +116,7 @@ public class Compiler {
 
     public void areAllVariablesUnique(Node v) {
         ArrayList<Variable> variables = v.getDefinedVariables();
+        System.out.println(v.getIndex() + " " + v.getDefinedVariables().size());
         for (int i = 0; i < variables.size(); i++)
             for (int j = i + 1; j < variables.size(); j++) {
                 if (variables.get(i).getName().equals(variables.get(j).getName()))
