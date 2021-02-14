@@ -28,7 +28,7 @@ public class CodeGenerator {
                 code.addCode("syscall");
             } else if (Type.getTypeByName("double",0).equals(node.getType())){
                 code.addCode("li $v0, 3");
-                code.addCode("mov.d $f12, $f0");
+                code.addCode("mov.s $f12, $f0");
                 code.addCode("syscall");
             } else if (Type.getTypeByName("string",0).equals(node.getType())){
                 code.addCode("li $v0, 4");
