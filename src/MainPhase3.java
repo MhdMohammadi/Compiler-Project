@@ -37,15 +37,8 @@ public class MainPhase3 {
         parser p = new parser(new MyScanner(reader));
         p.parse();
         Compiler c = new Compiler(parser.root);
+        c.compile();
 
-        c.preProcess(c.getRoot()); // assign indices to parse tree
-        c.areAllVariablesUnique(c.getRoot()); // are there variables with the same name in a scope
-        Type.validate(); // create all types and construct tree of types
-        c.setArraysType(c.getRoot()); // create arrays and add them to types
-        c.setVariablesType(c.getRoot()); //
-        c.setFunctionType(c.getRoot());
-        c.setAllNodesType(c.getRoot());
-        c.checkIntegerIndices(c.getRoot());
 //        c.debug(c.getRoot());
 
 //        c.setClazzType();

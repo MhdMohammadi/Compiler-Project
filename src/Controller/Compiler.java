@@ -20,6 +20,17 @@ public class Compiler {
         System.exit(0);
     }
 
+    public void compile(){
+        preProcess(root); // assign indices to parse tree
+        areAllVariablesUnique(root); // are there variables with the same name in a scope
+        Type.validate(); // create all types and construct tree of types
+        setArraysType(root); // create arrays and add them to types
+        setVariablesType(root); //
+        setFunctionType(root);
+        setAllNodesType(root);
+        checkIntegerIndices(root);
+    }
+
     public void preProcess(Node v) {
         v.setIndex(cnt);
         for (Variable variable : v.getDefinedVariables())
