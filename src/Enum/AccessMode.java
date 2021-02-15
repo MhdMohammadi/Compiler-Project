@@ -1,5 +1,5 @@
 package Enum;
 
-enum AccessMode {
+public enum AccessMode {
     PROTECTED, PUBLIC, PRIVATE;
 }

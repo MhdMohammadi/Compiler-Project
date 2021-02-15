@@ -1,5 +1,6 @@
 package Model;
 
+import Enum.*;
 import Model.Type;
 
 public class Variable {

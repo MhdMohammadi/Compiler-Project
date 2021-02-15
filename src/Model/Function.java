@@ -1,5 +1,6 @@
 package Model;
 
+import Enum.*;
 import java.util.ArrayList;
 
 public class Function {

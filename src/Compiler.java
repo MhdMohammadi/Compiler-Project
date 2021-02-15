@@ -1,5 +1,7 @@
+import Model.Node;
 import Model.Type;
-import Model.Variable;
+import Model.*;
+import Enum.*;
 
 import java.util.ArrayList;
 
