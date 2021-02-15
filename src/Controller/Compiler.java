@@ -23,16 +23,12 @@ public class Compiler {
     public void compile(){
         preProcess(root); // assign indices to parse tree
         areAllVariablesUnique(root); // are there variables with the same name in a scope
-        Type.validate(); // create all types and construct tree of types
-        setArraysType(root); // create arrays and add them to types
-        setVariablesType(root); //
-        setFunctionType(root);
-        setAllNodesType(root);
-        checkIntegerIndices(root);
-
-        areAllFunctionsUnique(root);
-        setClazzType();
-        setAllClazzAttributesAndFunctions();
+        Type.createTypes(); // create all types and construct tree of types
+        createArrays(root); // create arrays and add them to types & set type of each Type node
+        setVariableType(root); // set the proper type for each variable
+        setFunctionType(root); // set the proper type for each function
+        setAllNodesType(root); // set the proper type for Constant, Call, Lvalue and Expr
+        checkIntegerIndices(root); // check type of indices and count in newArray
     }
 
     public void preProcess(Node v) {
@@ -93,7 +89,7 @@ public class Compiler {
             debug(node);
     }
 
-    public void setVariablesType(Node v) {
+    public void setVariableType(Node v) {
         //todo
         if (v.getLeftHand() == LeftHand.Variable) {
             Type type = Type.getTypeByName((String) v.getChildren().get(0).getTypeName(), v.getChildren().get(0).getArrayDegree());
@@ -101,12 +97,12 @@ public class Compiler {
             v.getDefinedVariables().get(0).setType(type);
         }
         for (Node node : v.getChildren())
-            setVariablesType(node);
+            setVariableType(node);
     }
 
-    public void setArraysType(Node v) {
+    public void createArrays(Node v) {
         for (Node node : v.getChildren())
-            setArraysType(node);
+            createArrays(node);
         if (v.getLeftHand() == LeftHand.Type && v.getProductionRule() != ProductionRule.Type_OPENCLOSEBRACKET) {
             v.setType(Type.getTypeByName(v.getTypeName(), 0));
         }
