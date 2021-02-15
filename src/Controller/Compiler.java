@@ -32,6 +32,8 @@ public class Compiler {
         checkIntegerIndices(root); // check type of indices and count in newArray
         setClazzType(); // set the proper type for each class
         setAllClazzAttributesAndFunctions();
+
+
    }
 
     public void preProcess(Node v) {
@@ -432,9 +434,9 @@ public class Compiler {
             checkIntegerIndices(node);
     }
 
-    public void setActualsTypes(Node v) {
+    public void checlFunctionCalls(Node v) {
         for (Node node : v.getChildren()){
-            setActualsTypes(node);
+            checlFunctionCalls(node);
             if(v.getLeftHand() == LeftHand.Actuals)
                 v.getActualsTypes().add(node.getType());
         }
