@@ -1,7 +1,7 @@
 import java_cup.runtime.*;
 
 
-Parser.parser code  {:
+parser code  {:
     public static Node root;
 
   public void report_error(String message, Object info) {
@@ -49,13 +49,13 @@ terminal        READINTEGER, READLINE, NEW, NEWARRAY, ITOD, DTOI, ITOB, BTOI,
 terminal        String IDENTIFIER;
 
 // defining nonterminals
-nonterminal     Program, DeclStar, Decl, VariableDecl, Model.Variable, FunctionDecl, Formals, CommaVariables,
+nonterminal     Program, DeclStar, Decl, VariableDecl, Variable, FunctionDecl, Formals, CommaVariables,
 				ClassDecl, ClassDeclExtends, ClassDeclImplements, CommaIdentifiers, FieldStar, Field,
 				AccessMode, InterfaceDecl, PrototypeStar, Prototype, StmtBlock, InsideStmtBlock, VariableDeclStar, StmtStar,
 				Stmt, ExprPrime, IfStmt, ElsePrime, WhileStmt, ForStmt, ReturnStmt, BreakStmt, ContinueStmt, PrintStmt,
 				PrintCommaExpr, ActualsCommaExpr, Actuals;
 // non-terminals with type
-nonterminal     Model.Type;
+nonterminal     Type;
 nonterminal     LValue;
 nonterminal     Expr;
 nonterminal     Constant;
@@ -133,14 +133,14 @@ Decl ::=                VariableDecl:v{:
 						:}
 						;
 
-VariableDecl ::=        Model.Variable:v SEMICOLON{:
+VariableDecl ::=        Variable:v SEMICOLON{:
     Node tmp = new Node(LeftHand.VariableDecl, ProductionRule.Variable_SEMICOLON);
     tmp.getChildren().add((Node)v);
     tmp.getDefinedVariables().addAll(((Node)v).getDefinedVariables());
     RESULT = tmp;
 :};
 
-Model.Variable ::=            Model.Type:t IDENTIFIER:i{:
+Variable ::=            Type:t IDENTIFIER:i{:
     Node tmp = new Node(LeftHand.Model.Variable, ProductionRule.Type_IDENTIFIER);
     tmp.getChildren().add((Node) t);
     Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
@@ -153,7 +153,7 @@ Model.Variable ::=            Model.Type:t IDENTIFIER:i{:
 :}
 						;
 
-Model.Type ::=                INT:i{:
+Type ::=                INT:i{:
      Node tmp = new Node(LeftHand.Model.Type, ProductionRule.INT);
      Node in = new Node(LeftHand.INT, ProductionRule.TERMINAL);
      in.setValue(i);
@@ -198,7 +198,7 @@ Model.Type ::=                INT:i{:
     tmp.setArrayDegree(0);
     RESULT = tmp;
 :}
-						| Model.Type:t OPENCLOSEBRACKET{:
+						| Type:t OPENCLOSEBRACKET{:
     Node tmp = new Node(LeftHand.Model.Type, ProductionRule.Type_OPENCLOSEBRACKET);
     tmp.getChildren().add((Node)t);
     tmp.setTypeName(((Node)t).getTypeName());
@@ -207,7 +207,7 @@ Model.Type ::=                INT:i{:
 						:}
 						;
 
-FunctionDecl ::=        Model.Type:t IDENTIFIER:i OPENPARENTHESIS Formals:f CLOSEPARENTHESIS StmtBlock:s{:
+FunctionDecl ::=        Type:t IDENTIFIER:i OPENPARENTHESIS Formals:f CLOSEPARENTHESIS StmtBlock:s{:
     Node tmp = new Node(LeftHand.FunctionDecl, ProductionRule.Type_IDENTIFIER_OPENPARENTHESIS_Formals_CLOSEPARENTHESIS_StmtBlock);
     tmp.getChildren().add((Node)t);
     Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
@@ -249,7 +249,7 @@ FunctionDecl ::=        Model.Type:t IDENTIFIER:i OPENPARENTHESIS Formals:f CLOS
 :}
 						;
 
-Formals ::=             Model.Variable:v CommaVariables:c{:
+Formals ::=             Variable:v CommaVariables:c{:
     Node tmp = new Node(LeftHand.Formals, ProductionRule.Variable_CommaVariables);
     tmp.getChildren().add((Node)v);
     tmp.getChildren().add((Node)c);
@@ -263,7 +263,7 @@ Formals ::=             Model.Variable:v CommaVariables:c{:
     RESULT = tmp;
 :}/*epsilon*/
 ;
-CommaVariables ::=      COMMA Model.Variable:v CommaVariables:c{:
+CommaVariables ::=      COMMA Variable:v CommaVariables:c{:
     Node tmp = new Node(LeftHand.CommaVariables, ProductionRule.COMMA_Variable_CommaVariables);
     tmp.getChildren().add((Node)v);
     tmp.getChildren().add((Node)c);
@@ -413,7 +413,7 @@ RESULT = tmp;:}
                         RESULT = tmp;:}
 						;
 
-Prototype ::=           Model.Type:t IDENTIFIER:i OPENPARENTHESIS Formals:f CLOSEPARENTHESIS SEMICOLON
+Prototype ::=           Type:t IDENTIFIER:i OPENPARENTHESIS Formals:f CLOSEPARENTHESIS SEMICOLON
 {: Node tmp = new Node(LeftHand.Prototype, ProductionRule.Type_IDENTIFIER_OPENPARENTHESIS_Formals_CLOSEPARENTHESIS_SEMICOLON);
 tmp.getChildren().add((Node) t);
 Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
@@ -702,7 +702,7 @@ Expr ::=                LValue:lv ASSIGN Expr:e
                         tmp.getChildren().add(idNode);
                         RESULT = tmp;
                         :}
-						| NEWARRAY OPENPARENTHESIS Expr:e COMMA Model.Type:t CLOSEPARENTHESIS
+						| NEWARRAY OPENPARENTHESIS Expr:e COMMA Type:t CLOSEPARENTHESIS
                         {:  Node tmp = new Node(LeftHand.Expr, ProductionRule.NEWARRAY_OPENPARENTHESIS_Expr_COMMA_Type_CLOSEPARENTHESIS);
                         tmp.getChildren().add((Node)e);
                         tmp.getChildren().add((Node)t);

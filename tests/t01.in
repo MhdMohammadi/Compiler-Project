@@ -3,7 +3,7 @@ int f(int a){
 }
 
 int main(int a, int b){
-    double b;
-    double c;
-    f(b + c);
+    int b;
+    int c;
+    f(b + c, 10.2);
 }
