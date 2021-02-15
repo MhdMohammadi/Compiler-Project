@@ -99,9 +99,6 @@ DeclStar ::=            Decl:d1 DeclStar:d2{:
     tmp.getDefinedFunctions().addAll(((Node)d1).getDefinedFunctions());
     tmp.getDefinedFunctions().addAll(((Node)d2).getDefinedFunctions());
 
-    tmp.getDefinedFunctions().addAll(((Node)d1).getDefinedFunctions());
-    tmp.getDefinedFunctions().addAll(((Node)d2).getDefinedFunctions());
-
     RESULT = tmp;
 :}
 						| {:
@@ -139,6 +136,7 @@ Decl ::=                VariableDecl:v{:
 VariableDecl ::=        Variable:v SEMICOLON{:
     Node tmp = new Node(LeftHand.VariableDecl, ProductionRule.Variable_SEMICOLON);
     tmp.getChildren().add((Node)v);
+    tmp.getDefinedVariables().addAll(((Node)v).getDefinedVariables());
     RESULT = tmp;
 :};
 
@@ -433,11 +431,15 @@ RESULT = tmp;:}
 StmtBlock ::=           OPENCURLYBRACES InsideStmtBlock:i CLOSECURLYBRACES
 {: Node tmp = new Node(LeftHand.StmtBlock, ProductionRule.OPENCURLYBRACES_InsideStmtBlock_CLOSECURLYBRACES);
 tmp.getChildren().add((Node) i);
+tmp.getDefinedVariables().addAll(((Node)i).getDefinedVariables());
 RESULT = tmp;:};
 InsideStmtBlock ::=     VariableDecl:v InsideStmtBlock:i
 {: Node tmp = new Node(LeftHand.InsideStmtBlock, ProductionRule.VariableDecl_InsideStmtBlock);
 tmp.getChildren().add((Node) v);
 tmp.getChildren().add((Node) i);
+tmp.getDefinedVariables().addAll(((Node)v).getDefinedVariables());
+tmp.getDefinedVariables().addAll(((Node)i).getDefinedVariables());
+
 RESULT = tmp;:}
 						| StmtStar:s
 						{: Node tmp = new Node(LeftHand.InsideStmtBlock, ProductionRule.StmtStar);

@@ -11,6 +11,8 @@ double go(int a, double b){
 }
 
 int main(){
+    int a;
+    int a;
 
 }
 
