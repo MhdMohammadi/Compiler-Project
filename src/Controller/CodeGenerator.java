@@ -146,9 +146,11 @@ public class CodeGenerator {
         return code;
     }
 
-    public Code whileLoop(){
+    public Code whileLoop(Node node){
         Code code = new Code();
-
+        code.addCode(node.getCode());
+        code.addCode("");
+        code.addCode("");
         return code;
     }
 
