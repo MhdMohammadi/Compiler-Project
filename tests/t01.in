@@ -1,13 +1,22 @@
-class base{
-    void f(){
+int a;
+
+class a{
+    int a;
+    void a(){
 
     }
-    int x;
+
 }
 
-class derived extends base{
-    void f(){
-    }
-    int x;
+void func(){
 
+}
+
+
+void func(double b, int a){
+
+}
+
+int main(int a, int b){
+    double a;
 }
