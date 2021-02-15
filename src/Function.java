@@ -5,6 +5,7 @@ public class Function {
     private Type type;
     private AccessMode accessMode = AccessMode.PUBLIC;
     private ArrayList<Variable> parameter = new ArrayList<Variable>();
+    private Node node;
 
     public Function(){
         this.accessMode = AccessMode.PUBLIC;
@@ -42,4 +43,11 @@ public class Function {
         this.accessMode = accessMode;
     }
 
+    public Node getNode() {
+        return node;
+    }
+
+    public void setNode(Node node) {
+        this.node = node;
+    }
 }
