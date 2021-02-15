@@ -443,12 +443,12 @@ public class Compiler {
         if(v.getLeftHand() == LeftHand.Actuals && v.getProductionRule() == ProductionRule.Expr_ActualsCommaExpr){
             v.getActualsTypes().add(v.getChildren().get(0).getType());
             v.getActualsTypes().addAll(v.getChildren().get(1).getActualsTypes());
-            System.out.println("+1");
+            //System.out.println("+1");
         }
         if(v.getLeftHand() == LeftHand.ActualsCommaExpr && v.getProductionRule() == ProductionRule.COMMA_Expr_ActualsCommaExpr){
             v.getActualsTypes().add(v.getChildren().get(0).getType());
             v.getActualsTypes().addAll(v.getChildren().get(1).getActualsTypes());
-            System.out.println("+1.1");
+            //System.out.println("+1.1");
         }
         if(v.getLeftHand() == LeftHand.Call){
             switch (v.getProductionRule()){

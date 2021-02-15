@@ -2626,7 +2626,7 @@ RESULT = tmp;
 		int aleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object a = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		  Node tmp = new Node(LeftHand.ActualsCommaExpr, ProductionRule.Expr_ActualsCommaExpr);
+		  Node tmp = new Node(LeftHand.ActualsCommaExpr, ProductionRule.COMMA_Expr_ActualsCommaExpr);
                           tmp.getChildren().add((Node)e);
                           tmp.getChildren().add((Node)a);
                           RESULT = tmp;
