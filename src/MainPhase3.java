@@ -37,10 +37,9 @@ public class MainPhase3 {
         c.areAllVariablesUnique(c.getRoot());
         c.setArraysType(c.getRoot());
         c.setVariablesType(c.getRoot());
+        c.setFunctionType(c.getRoot());
         c.setAllNodesType(c.getRoot());
-  //      c.setFunctionType(c.getRoot());
-  //      c.setAllNodesType(c.getRoot());
-
+        c.checkIntegerIndices(c.getRoot());
 //        c.debug(c.getRoot());
 
 //        c.setClazzType();
