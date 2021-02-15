@@ -1108,7 +1108,7 @@ class CUP$parser$actions {
     tmp.getChildren().add((Node) f);
     tmp.getChildren().add((Node) s);
     tmp.getDefinedVariables().addAll(((Node)f).getDefinedVariables());
-    tmp.getDefinedVariables().addAll(((Node)s).getDefinedVariables());
+    //tmp.getDefinedVariables().addAll(((Node)s).getDefinedVariables());
 
     Function function = new Function();
     function.setName(i);
@@ -1144,7 +1144,7 @@ class CUP$parser$actions {
     tmp.getChildren().add((Node)f);
     tmp.getChildren().add((Node)s);
     tmp.getDefinedVariables().addAll(((Node)f).getDefinedVariables());
-    tmp.getDefinedVariables().addAll(((Node)s).getDefinedVariables());
+    //tmp.getDefinedVariables().addAll(((Node)s).getDefinedVariables());
 
     Function function = new Function();
     function.setName(i);

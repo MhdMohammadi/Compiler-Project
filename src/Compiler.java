@@ -63,6 +63,14 @@ public class Compiler {
         return null;
     }
 
+    public void debug(Node v){
+        System.out.println(v.getLeftHand() + " " + v.getProductionRule());
+        Type type = v.getType();
+        if(type == null) System.out.println("NULL");
+        else System.out.println(type.getName() + " " + type.getParent());
+        for(Node node : v.getChildren())
+            debug(node);
+    }
 
     public void setVariablesType(Node v) {
         //todo
@@ -120,7 +128,6 @@ public class Compiler {
 
     public void areAllVariablesUnique(Node v) {
         ArrayList<Variable> variables = v.getDefinedVariables();
-        System.out.println(v.getIndex() + " " + v.getDefinedVariables().size());
         for (int i = 0; i < variables.size(); i++)
             for (int j = i + 1; j < variables.size(); j++) {
                 if (variables.get(i).getName().equals(variables.get(j).getName()))
@@ -135,6 +142,10 @@ public class Compiler {
         for(Node node : v.getChildren())
             setAllNodesType(node);
         switch (v.getLeftHand()){
+            case IDENTIFIER:
+                System.out.println(v.getValue());
+                v.setType(findVariable(v, (String)v.getValue()).getType());
+                break;
             case Constant:
                 switch (v.getProductionRule()) {
                     case INTLITERAL:

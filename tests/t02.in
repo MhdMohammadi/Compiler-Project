@@ -1,4 +1,9 @@
+void func(int b, int a){
+     int r;
+     int a;
+     a = b + 10;
+}
 
-void da_function(string, int r) { // this wont work :(
-    return i * 2;
+int main(int a, int b){
+
 }
