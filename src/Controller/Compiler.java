@@ -174,12 +174,12 @@ public class Compiler {
 
     public ArrayList<Function> mergeFunctions(ArrayList<Function> parFunctions, ArrayList<Function> functions) {
         ArrayList<Function> mergedFunctions = new ArrayList<>();
-        functions.addAll(parFunctions);
+        mergedFunctions.addAll(parFunctions);
 
         for (Function function : functions) {
             boolean find = false;
             int index = 0;
-            for (Function parFunction : mergedFunctions) {
+            for (Function parFunction : parFunctions) {
                 if (parFunction.getName().equals(function.getName())) {
                     find = true;
                     if (haveSameSignature(parFunction, function)) {
