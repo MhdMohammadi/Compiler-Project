@@ -1,3 +1,5 @@
+package Enum;
+
 public enum ProductionRule {
 	Decl_DeclStar,
 	EPSILON,

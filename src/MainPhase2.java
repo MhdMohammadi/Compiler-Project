@@ -1,3 +1,6 @@
+import Parser.parser;
+import Scanner.MyScanner;
+
 import java.io.*;
 
 public class MainPhase2 {
@@ -31,7 +34,7 @@ public class MainPhase2 {
         try {
             p.parse();
             writer.write("OK");
-      //      System.out.println(parser.root.getChildren().size());
+      //      System.out.println(Parser.parser.root.getChildren().size());
         } catch (Exception e) {
            // System.out.println();
              writer.write("Syntax Error");

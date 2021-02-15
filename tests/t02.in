@@ -1,6 +1,5 @@
 void func(double b, int a){
-    int[][] a;
-    a = NewArray(10, int);
+
 }
 
 int main(int a, int b){

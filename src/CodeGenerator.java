@@ -1,3 +1,6 @@
+import Model.Code;
+import Model.Type;
+
 import java.util.ArrayList;
 
 public class CodeGenerator {

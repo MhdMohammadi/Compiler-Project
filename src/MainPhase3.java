@@ -1,3 +1,7 @@
+import Model.Type;
+import Parser.parser;
+import Scanner.MyScanner;
+
 import java.io.FileReader;
 import java.io.Reader;
 
@@ -32,15 +36,15 @@ public class MainPhase3 {
         parser p = new parser(new MyScanner(reader));
         p.parse();
         Compiler c = new Compiler(parser.root);
-        c.preProcess(c.getRoot());
-        Type.validate();
-        c.areAllVariablesUnique(c.getRoot());
-        c.setArraysType(c.getRoot());
-        c.setVariablesType(c.getRoot());
-        c.setAllNodesType(c.getRoot());
-  //      c.setFunctionType(c.getRoot());
-  //      c.setAllNodesType(c.getRoot());
 
+        c.preProcess(c.getRoot()); // assign indices to parse tree
+        c.areAllVariablesUnique(c.getRoot()); // are there variables with the same name in a scope
+        Type.validate(); // create all types and construct tree of types
+        c.setArraysType(c.getRoot()); // create arrays and add them to types
+        c.setVariablesType(c.getRoot()); //
+        c.setFunctionType(c.getRoot());
+        c.setAllNodesType(c.getRoot());
+        c.checkIntegerIndices(c.getRoot());
 //        c.debug(c.getRoot());
 
 //        c.setClazzType();
@@ -54,7 +58,7 @@ public class MainPhase3 {
 //                System.out.println(function.getName() + " " + function.getAccessMode() + " " + function.getType().getName());
 //            }
 //            System.out.println("variables");
-//            for (Variable variable : clazz.getVariables()){
+//            for (Model.Variable variable : clazz.getVariables()){
 //                System.out.println(variable.getName() + " " + variable.getAccessMode() + " " + variable.getType().getName());
 //            }
 //        }
@@ -63,7 +67,7 @@ public class MainPhase3 {
 //            System.out.println(function.getName() + " " + function.getAccessMode() + " " + function.getType().getName());
 //        }
 //        System.out.println("global variables");
-//        for (Variable variable : c.getRoot().getDefinedVariables()){
+//        for (Model.Variable variable : c.getRoot().getDefinedVariables()){
 //            System.out.println(variable.getName() + " " + variable.getAccessMode() + " " + variable.getType().getName());
 //        }
 //        c.areAllVariablesUnique(c.getRoot());
@@ -77,7 +81,7 @@ public class MainPhase3 {
             p.parse();
   //          writer.write("OK");
             System.out.println("OK");
-            System.out.println(parser.root.getChildren().size());
+            System.out.println(Parser.parser.root.getChildren().size());
         } catch (Exception e) {
             System.out.println("Syntax Error");
     //        writer.write("Syntax Error");

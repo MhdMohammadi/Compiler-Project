@@ -1,4 +1,6 @@
-import java.sql.Struct;
+import Model.Type;
+import Model.Variable;
+
 import java.util.ArrayList;
 
 public class Compiler {
@@ -390,7 +392,7 @@ public class Compiler {
                 semanticError();
         }
         if(v.getProductionRule() == ProductionRule.Expr_OPENBRACKET_Expr_CLOSEBRACKET){
-            Type t = v.getChildren().get(0).getType();
+            Type t = v.getChildren().get(1).getType();
             if(t != Type.getTypeByName("int", 0))
                 semanticError();
         }
