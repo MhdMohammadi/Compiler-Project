@@ -139,6 +139,11 @@ public class CodeGenerator {
         return code;
     }
 
+    public Code whileLoop(){
+        Code code = new Code();
+
+        return code;
+    }
 
 
 }
