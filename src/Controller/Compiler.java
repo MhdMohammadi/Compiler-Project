@@ -29,6 +29,10 @@ public class Compiler {
         setFunctionType(root); // set the proper type for each function
         setAllNodesType(root); // set the proper type for Constant, Call, Lvalue and Expr
         checkIntegerIndices(root); // check type of indices and count in newArray
+
+        areAllFunctionsUnique(root);
+        setClazzType();
+        setAllClazzAttributesAndFunctions();
     }
 
     public void preProcess(Node v) {
