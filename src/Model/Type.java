@@ -47,7 +47,7 @@ public class Type {
         return allTypes;
     }
 
-    public static boolean validate(){
+    public static boolean createTypes(){
         allPreTypes.add(new PreType("void", null));
         allPreTypes.add(new PreType("int", null));
         allPreTypes.add(new PreType("double", null));

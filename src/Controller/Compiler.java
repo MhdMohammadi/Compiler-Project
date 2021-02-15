@@ -23,12 +23,16 @@ public class Compiler {
     public void compile(){
         preProcess(root); // assign indices to parse tree
         areAllVariablesUnique(root); // are there variables with the same name in a scope
-        Type.validate(); // create all types and construct tree of types
-        setArraysType(root); // create arrays and add them to types
-        setVariablesType(root); //
-        setFunctionType(root);
-        setAllNodesType(root);
-        checkIntegerIndices(root);
+        Type.createTypes(); // create all types and construct tree of types
+        createArrays(root); // create arrays and add them to types & set type of each Type node
+        setVariableType(root); // set the proper type for each variable
+        setFunctionType(root); // set the proper type for each function
+        setAllNodesType(root); // set the proper type for Constant, Call, Lvalue and Expr
+        checkIntegerIndices(root); // check type of indices and count in newArray
+
+        areAllFunctionsUnique(root);
+        setClazzType();
+        setAllClazzAttributesAndFunctions();
     }
 
     public void preProcess(Node v) {
@@ -89,7 +93,7 @@ public class Compiler {
             debug(node);
     }
 
-    public void setVariablesType(Node v) {
+    public void setVariableType(Node v) {
         //todo
         if (v.getLeftHand() == LeftHand.Variable) {
             Type type = Type.getTypeByName((String) v.getChildren().get(0).getTypeName(), v.getChildren().get(0).getArrayDegree());
@@ -97,12 +101,12 @@ public class Compiler {
             v.getDefinedVariables().get(0).setType(type);
         }
         for (Node node : v.getChildren())
-            setVariablesType(node);
+            setVariableType(node);
     }
 
-    public void setArraysType(Node v) {
+    public void createArrays(Node v) {
         for (Node node : v.getChildren())
-            setArraysType(node);
+            createArrays(node);
         if (v.getLeftHand() == LeftHand.Type && v.getProductionRule() != ProductionRule.Type_OPENCLOSEBRACKET) {
             v.setType(Type.getTypeByName(v.getTypeName(), 0));
         }
@@ -174,12 +178,12 @@ public class Compiler {
 
     public ArrayList<Function> mergeFunctions(ArrayList<Function> parFunctions, ArrayList<Function> functions) {
         ArrayList<Function> mergedFunctions = new ArrayList<>();
-        functions.addAll(parFunctions);
+        mergedFunctions.addAll(parFunctions);
 
         for (Function function : functions) {
             boolean find = false;
             int index = 0;
-            for (Function parFunction : mergedFunctions) {
+            for (Function parFunction : parFunctions) {
                 if (parFunction.getName().equals(function.getName())) {
                     find = true;
                     if (haveSameSignature(parFunction, function)) {
@@ -225,6 +229,24 @@ public class Compiler {
         for (int i = 0; i < variables.size(); i++) {
             for (int j = i + 1; j < variables.size(); j++) {
                 if (variables.get(i).getName().equals(variables.get(j).getName()))
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    public void areAllFunctionsUnique(Node v){
+        ArrayList<Function> functions = v.getDefinedFunctions();
+        if (areArrayListFunctionsUnique(functions) == false) semanticError();
+
+        for (Node node : v.getChildren())
+            areAllFunctionsUnique(node);
+    }
+
+    public boolean areArrayListFunctionsUnique(ArrayList<Function> functions){
+        for(int i = 0; i < functions.size(); i ++){
+            for(int j = i + 1; j < functions.size(); j ++){
+                if(functions.get(i).getName().equals(functions.get(j).getName()))
                     return false;
             }
         }

@@ -1,37 +1,13 @@
-class bye{
-    int hello(hi h){
+class base{
+    void f(){
 
     }
+    int x;
+}
 
-    hi good(){
-
+class derived extends base{
+    void f(){
     }
-
-    int g;
-
-    private double w;
-}
-
-class hi extends bye{
-    private bye t;  
-}
-
-double go(int a, double b){
+    int x;
 
 }
-
-int ali;
-
-
-
-int main(){
-    int a;
-    int a;
-
-}
-
-void fd(){
-
-}
-
-hi reza;
