@@ -134,37 +134,45 @@ public class Compiler {
         return true;
     }
 
+    public ArrayList<Function> mergeFunctions(ArrayList<Function> parFunctions, ArrayList<Function> functions){
+        ArrayList<Function> mergedFunctions = new ArrayList<>();
+        functions.addAll(parFunctions);
+
+        for (Function function : functions){
+            boolean find = false;
+            int index = 0;
+            for (Function parFunction : mergedFunctions){
+                if(parFunction.getName().equals(function.getName())){
+                    find = true;
+                    if(haveSameSignature(parFunction, function)){
+                        mergedFunctions.set(index, function);
+                    }
+                    else Compiler.semanticError();
+                }
+                index++;
+            }
+            if (find == false)mergedFunctions.add(function);
+        }
+        return mergedFunctions;
+    }
+
+    public ArrayList<Variable> mergeVariables(ArrayList<Variable> parVariables, ArrayList<Variable> variables){
+        ArrayList<Variable> mergedVariables = new ArrayList<>();
+        mergedVariables.addAll(parVariables);
+        mergedVariables.addAll(variables);
+        if (areArrayListVariablesUnique(mergedVariables) == false) semanticError();
+        return mergedVariables;
+    }
+
     public void setClazzAttributesAndFunctions(Clazz clazz){
         clazz.setSetAttributesAndFunctions(true);
         Clazz parentClazz = clazz.getParent();
         if(parentClazz == null)return;
         if(parentClazz.isSetAttributesAndFunctions() == false) setClazzAttributesAndFunctions(parentClazz);
 
-        ArrayList<Function> functions = new ArrayList<>();
-        functions.addAll(parentClazz.getFunctions());
 
-        for (Function function : clazz.getFunctions()){
-            boolean find = false;
-            int index = 0;
-            for (Function parFunction : functions){
-                if(parFunction.getName().equals(function.getName())){
-                    find = true;
-                    if(haveSameSignature(parFunction, function)){
-                        functions.set(index, function);
-                    }
-                    else Compiler.semanticError();
-                }
-                index++;
-            }
-            if (find == false)functions.add(function);
-        }
-        clazz.setFunctions(functions);
-
-        ArrayList<Variable> variables = new ArrayList<>();
-        variables.addAll(parentClazz.getVariables());
-
-        variables.addAll(clazz.getVariables());
-        clazz.setVariables(variables);
+        clazz.setFunctions(mergeFunctions(parentClazz.getFunctions(), clazz.getFunctions()));
+        clazz.setVariables(mergeVariables(parentClazz.getVariables(), clazz.getVariables()));
 
     }
 
