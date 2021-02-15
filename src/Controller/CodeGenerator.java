@@ -141,7 +141,9 @@ public class CodeGenerator {
 
     public Code elseCondition(Node node){
         Code code = new Code();
-        code.addCode();
+        Label label = new Label();
+        label.creatNewName();
+        code.addCode(label.getName() + ":");
         code.addCode(node.getCode());
         return code;
     }
@@ -149,10 +151,16 @@ public class CodeGenerator {
     public Code whileLoop(Node node){
         Code code = new Code();
         code.addCode(node.getCode());
-        code.addCode("");
-        code.addCode("");
+        Label label = new Label();
+        label.creatNewName();
+        code.addCode(label.getName() + ":");
+        code.addCode("beq $t0, 0," + exit());
+        code.addCode(node.getChildren().get(1).getCode());
+        code.addCode("j " + label.getName());
         return code;
     }
 
+    public Code exit(){
+    }
 
 }
