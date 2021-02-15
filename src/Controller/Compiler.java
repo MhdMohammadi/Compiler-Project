@@ -231,6 +231,24 @@ public class Compiler {
         return true;
     }
 
+    public void areAllFunctionsUnique(Node v){
+        ArrayList<Function> functions = v.getDefinedFunctions();
+        if (areArrayListFunctionsUnique(functions) == false) semanticError();
+
+        for (Node node : v.getChildren())
+            areAllFunctionsUnique(node);
+    }
+
+    public boolean areArrayListFunctionsUnique(ArrayList<Function> functions){
+        for(int i = 0; i < functions.size(); i ++){
+            for(int j = i + 1; j < functions.size(); j ++){
+                if(functions.get(i).getName().equals(functions.get(j).getName()))
+                    return false;
+            }
+        }
+        return true;
+    }
+
     // age be terminal bere, type bayad moshakhas shode bashe
     public void setAllNodesType(Node v) {
         for (Node node : v.getChildren())
