@@ -22,18 +22,17 @@ public class Compiler {
 
     public void compile(){
         preProcess(root); // assign indices to parse tree
-        areAllVariablesUnique(root); // are there variables with the same name in a scope
+        areAllVariablesUnique(root); // are there variables with the same name in a scope?
+        areAllFunctionsUnique(root); // are there variables with the same name in a class?
         Type.createTypes(); // create all types and construct tree of types
         createArrays(root); // create arrays and add them to types & set type of each Type node
         setVariableType(root); // set the proper type for each variable
         setFunctionType(root); // set the proper type for each function
         setAllNodesType(root); // set the proper type for Constant, Call, Lvalue and Expr
         checkIntegerIndices(root); // check type of indices and count in newArray
-
-        areAllFunctionsUnique(root);
-        setClazzType();
+        setClazzType(); // set the proper type for each class
         setAllClazzAttributesAndFunctions();
-    }
+   }
 
     public void preProcess(Node v) {
         v.setIndex(cnt);
@@ -299,7 +298,8 @@ public class Compiler {
                         //todo
                         break;
                     case Expr_OPENBRACKET_Expr_CLOSEBRACKET:
-                        v.setType(v.getChildren().get(0).getType());
+                        Type t1 = v.getChildren().get(0).getType();
+                        v.setType(Type.getTypeByName(t1.getName(), t1.getArrayDegree() - 1));
                         break;
                 }
                 break;

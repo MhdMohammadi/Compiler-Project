@@ -1,19 +1,18 @@
-class base{
-    int g(){
+class A{
+    int x;
+    void func(){
 
     }
 }
 
-class derived extends base{
+class B extends A{
+    void func(){
 
+    }
 }
 
-int f(){
-
-}
-
-int main(){
-    int a;
-    a = g() + 1;
-
+int main(int a, int b){
+    int[] a;
+    a = NewArray(10, int);
+    a[2] = 1;
 }
