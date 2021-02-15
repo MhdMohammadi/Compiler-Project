@@ -299,7 +299,8 @@ public class Compiler {
                         //todo
                         break;
                     case Expr_OPENBRACKET_Expr_CLOSEBRACKET:
-                        v.setType(v.getChildren().get(0).getType().getParent());
+                        Type t1 = v.getChildren().get(0).getType();
+                        v.setType(Type.getTypeByName(t1.getName(), t1.getArrayDegree() - 1));
                         break;
                 }
                 break;

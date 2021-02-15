@@ -14,5 +14,5 @@ class B extends A{
 int main(int a, int b){
     int[] a;
     a = NewArray(10, int);
-    a[2];
+    a[2] = 1;
 }
