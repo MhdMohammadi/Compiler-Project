@@ -94,6 +94,31 @@ public class CodeGenerator {
         return code;
     }
 
+    public Code calcDotExpr(Node node1, Node node2) {
+        Code code = new Code();
+        code.addCode(node1.getCode());
+        Clazz clazz = Clazz.getClazzByName(node1.getType().getName());
+        int offset = 0;
+        Type type = Type.getTypeByName("double", 0);
+        for (Variable variable : clazz.getVariables()){
+            if (variable.getName().equals(node2.getValue())){
+                type = variable.getType();
+                break;
+            }
+            offset+=4;
+          }
+        //todo offset ro ba chizi nabayad jam zad?
+        code.addCode("add $t0, $t0, " + offset);
+        if(!type.equals(Type.getTypeByName("double", 0))){
+            code.addCode("lw $t0, 0($t0)");
+        }
+        else {
+            code.addCode("l.s $f1, 0($t0)");
+        }
+        code.addCode("add $t0, $t0, " + offset);
+        return code;
+    }
+
     public Code readInteger() {
         Code code = new Code();
         code.addCode("li $v0, 8");
