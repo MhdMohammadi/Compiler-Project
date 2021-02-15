@@ -33,7 +33,7 @@ public class Compiler {
         setClazzType(); // set the proper type for each class
         setAllClazzAttributesAndFunctions();
 
-        checlFunctionCalls(root);
+        checkFunctionCalls(root);
 
    }
 
@@ -146,7 +146,7 @@ public class Compiler {
     }
 
     public boolean haveSameSignature(Function parFunction, Function function) {
-        if (!isConvertibleTo(parFunction.getType(), function.getType())) return false;
+        if (!isConvertibleTo(function.getType(), parFunction.getType())) return false;
         if (function.getParameter().size() != parFunction.getParameter().size()) return false;
         int index = 0;
         for (Variable variable : function.getParameter()) {
@@ -167,6 +167,7 @@ public class Compiler {
     }
 
     public boolean areFunctionCallParametersCorrect(Function function, ArrayList<Type> parametersTypes) {
+        System.out.println(function.getName() + " " + function.getParameter().size() + " " + parametersTypes.size());
         if (function.getParameter().size() != parametersTypes.size()) return false;
         int index = 0;
         for (Variable variable : function.getParameter()) {
@@ -435,16 +436,29 @@ public class Compiler {
             checkIntegerIndices(node);
     }
 
-    public void checlFunctionCalls(Node v) {
+    public void checkFunctionCalls(Node v) {
         for (Node node : v.getChildren()){
-            checlFunctionCalls(node);
-            if(v.getLeftHand() == LeftHand.Actuals)
-                v.getActualsTypes().add(node.getType());
+            checkFunctionCalls(node);
+        }
+        if(v.getLeftHand() == LeftHand.Actuals && v.getProductionRule() == ProductionRule.Expr_ActualsCommaExpr){
+            v.getActualsTypes().add(v.getChildren().get(0).getType());
+            v.getActualsTypes().addAll(v.getChildren().get(1).getActualsTypes());
+        }
+        if(v.getLeftHand() == LeftHand.ActualsCommaExpr && v.getProductionRule() == ProductionRule.COMMA_Expr_ActualsCommaExpr){
+            v.getActualsTypes().add(v.getChildren().get(0).getType());
+            v.getActualsTypes().addAll(v.getChildren().get(1).getActualsTypes());
         }
         if(v.getLeftHand() == LeftHand.Call){
+            switch (v.getProductionRule()){
+                case IDENTIFIER_OPENPARENTHESIS_Actuals_CLOSEPARENTHESIS:
+                    Function function = findFunction(v, (String)v.getChildren().get(0).getValue());
+                    if (areFunctionCallParametersCorrect(function, v.getChildren().get(1).getActualsTypes()) == false) semanticError();
+                    break;
+                case Expr_DOT_IDENTIFIER_OPENPARENTHESIS_Actuals_CLOSEPARENTHESIS:
+                    Function function1 = findFunction(v, (String)v.getChildren().get(1).getValue());
+                    if (areFunctionCallParametersCorrect(function1, v.getChildren().get(2).getActualsTypes()) == false) semanticError();
+            }
             //todo class
-            Function function = findFunction(v, (String)v.getChildren().get(0).getValue());
-            if (areFunctionCallParametersCorrect(function, v.getChildren().get(1).getActualsTypes()) == false) semanticError();
         }
     }
 

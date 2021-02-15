@@ -771,9 +771,10 @@ Call ::=                IDENTIFIER:functionID OPENPARENTHESIS Actuals:a CLOSEPAR
                         :}
 						;
 
-Actuals ::=             Expr:e ActualsCommaExpr
+Actuals ::=             Expr:e ActualsCommaExpr:a
                         {:  Node tmp = new Node(LeftHand.Actuals, ProductionRule.Expr_ActualsCommaExpr);
                           tmp.getChildren().add((Node)e);
+                          tmp.getChildren().add((Node)a);
                           RESULT = tmp;
                           //todo
                         :}
@@ -783,9 +784,10 @@ Actuals ::=             Expr:e ActualsCommaExpr
                         :}
 						;
 
-ActualsCommaExpr ::=    COMMA Expr:e ActualsCommaExpr
+ActualsCommaExpr ::=    COMMA Expr:e ActualsCommaExpr:a
 						{:  Node tmp = new Node(LeftHand.ActualsCommaExpr, ProductionRule.Expr_ActualsCommaExpr);
                           tmp.getChildren().add((Node)e);
+                          tmp.getChildren().add((Node)a);
                           RESULT = tmp;
                           //todo
                         :}
