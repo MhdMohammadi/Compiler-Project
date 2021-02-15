@@ -145,13 +145,13 @@ public class Compiler {
             setClazzAttributesAndFunctions(clazz);
     }
 
-    public boolean haveSameSignature(Function function1, Function function2) {
-        if (!function1.getType().equals(function2.getType())) return false;
-        if (function1.getParameter().size() != function2.getParameter().size()) return false;
+    public boolean haveSameSignature(Function parFunction, Function function) {
+        if (!isConvertibleTo(parFunction.getType(), function.getType())) return false;
+        if (function.getParameter().size() != parFunction.getParameter().size()) return false;
         int index = 0;
-        for (Variable variable1 : function1.getParameter()) {
-            Variable variable2 = function2.getParameter().get(index);
-            if (!variable1.getType().equals(variable2.getType())) return false;
+        for (Variable variable : function.getParameter()) {
+            Variable parVariable = parFunction.getParameter().get(index);
+            if (!isConvertibleTo(parVariable.getType(), variable.getType())) return false;
             index++;
         }
         return true;
