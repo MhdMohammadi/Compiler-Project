@@ -86,7 +86,25 @@ public class CodeGenerator {
         return code;
     }
 
+    public Code loadIntegerObjectVariable(int offset){
+        Code code = new Code();
+        code.addCode("add $t0, $t0, " + offset);
+        code.addCode("sub $sp, $sp, 4");
+        code.addCode("sw $t1, 0($sp)");
+        code.addCode("lw $t1, 0($t0)");
+        code.addCode("move $t0, $t1");
+        code.addCode("lw $t1, 0($sp)");
+        code.addCode("add $sp, $sp, 4");
+        return code;
+    }
 
+    public Code loadDoubleObjectVariable(int offset){
+        Code code = new Code();
+        code.addCode("add $t0, $t0, " + offset);
+        code.addCode("l.s $f1, 0($t0)");
+        code.addCode("sub $t0, $t0, " + offset);
+        return code;
+    }
 
     public Code readLine() {
         Code code = new Code();
