@@ -33,6 +33,7 @@ public class Compiler {
         setClazzType(); // set the proper type for each class
         setAllClazzAttributesAndFunctions();
 
+        checlFunctionCalls(root);
 
    }
 
@@ -443,8 +444,7 @@ public class Compiler {
         if(v.getLeftHand() == LeftHand.Call){
             //todo class
             Function function = findFunction(v, (String)v.getChildren().get(0).getValue());
-            areFunctionCallParametersCorrect(function, v.getChildren().get(1).getActualsTypes());
-
+            if (areFunctionCallParametersCorrect(function, v.getChildren().get(1).getActualsTypes()) == false) semanticError();
         }
     }
 

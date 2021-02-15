@@ -1,18 +1,8 @@
-class A{
-    int x;
-    void func(){
+int f(int a){
 
-    }
-}
-
-class B extends A{
-    void func(){
-
-    }
 }
 
 int main(int a, int b){
-    int[] a;
-    a = NewArray(10, int);
-    a[2] = 1;
+    int b;
+    f(b);
 }
