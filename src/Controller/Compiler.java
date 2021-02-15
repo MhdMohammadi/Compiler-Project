@@ -174,12 +174,12 @@ public class Compiler {
 
     public ArrayList<Function> mergeFunctions(ArrayList<Function> parFunctions, ArrayList<Function> functions) {
         ArrayList<Function> mergedFunctions = new ArrayList<>();
-        functions.addAll(parFunctions);
+        mergedFunctions.addAll(parFunctions);
 
         for (Function function : functions) {
             boolean find = false;
             int index = 0;
-            for (Function parFunction : mergedFunctions) {
+            for (Function parFunction : parFunctions) {
                 if (parFunction.getName().equals(function.getName())) {
                     find = true;
                     if (haveSameSignature(parFunction, function)) {
@@ -225,6 +225,24 @@ public class Compiler {
         for (int i = 0; i < variables.size(); i++) {
             for (int j = i + 1; j < variables.size(); j++) {
                 if (variables.get(i).getName().equals(variables.get(j).getName()))
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    public void areAllFunctionsUnique(Node v){
+        ArrayList<Function> functions = v.getDefinedFunctions();
+        if (areArrayListFunctionsUnique(functions) == false) semanticError();
+
+        for (Node node : v.getChildren())
+            areAllFunctionsUnique(node);
+    }
+
+    public boolean areArrayListFunctionsUnique(ArrayList<Function> functions){
+        for(int i = 0; i < functions.size(); i ++){
+            for(int j = i + 1; j < functions.size(); j ++){
+                if(functions.get(i).getName().equals(functions.get(j).getName()))
                     return false;
             }
         }

@@ -9,7 +9,7 @@ import java.io.Reader;
 public class MainPhase3 {
 
     public static void main(String[] args) throws Exception {
-        String inputFileName = "t02.in";
+        String inputFileName = "t01.in";
 //        String outputFileName = null;
 
 /*        if (args != null)
