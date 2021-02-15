@@ -1,3 +1,4 @@
+import java.sql.Struct;
 import java.util.ArrayList;
 
 public class Compiler {
@@ -124,33 +125,97 @@ public class Compiler {
             setClazzAttributesAndFunctions(clazz);
     }
 
+    public boolean haveSameSignature(Function function1, Function function2){
+        if (!function1.getType().equals(function2.getType())) return false;
+        if (function1.getParameter().size() != function2.getParameter().size()) return false;
+        int index = 0;
+        for(Variable variable1 : function1.getParameter()){
+            Variable variable2 = function2.getParameter().get(index);
+            if (!variable1.getType().equals(variable2.getType()))   return false;
+            index++;
+        }
+        return true;
+    }
+
+    public boolean isConvertibleTo(Variable convertVariable, Variable mainVariable){
+        Type type = convertVariable.getType();
+        if (mainVariable.getType().equals(type)) return true;
+        while (type.getParent() != null){
+            type = type.getParent();
+            if(type.equals(mainVariable.getType()))return true;
+        }
+        return false;
+    }
+
+    public boolean areFunctionCallParametersCorrect(Function function, ArrayList<Variable> parameters){
+        if (function.getParameter().size() != parameters.size())return false;
+        int index = 0;
+        for (Variable variable : function.getParameter()){
+            if (!isConvertibleTo(parameters.get(index), variable))
+                return false;
+            index++;
+        }
+        return true;
+    }
+
+    public ArrayList<Function> mergeFunctions(ArrayList<Function> parFunctions, ArrayList<Function> functions){
+        ArrayList<Function> mergedFunctions = new ArrayList<>();
+        functions.addAll(parFunctions);
+
+        for (Function function : functions){
+            boolean find = false;
+            int index = 0;
+            for (Function parFunction : mergedFunctions){
+                if(parFunction.getName().equals(function.getName())){
+                    find = true;
+                    if(haveSameSignature(parFunction, function)){
+                        mergedFunctions.set(index, function);
+                    }
+                    else Compiler.semanticError();
+                }
+                index++;
+            }
+            if (find == false)mergedFunctions.add(function);
+        }
+        return mergedFunctions;
+    }
+
+    public ArrayList<Variable> mergeVariables(ArrayList<Variable> parVariables, ArrayList<Variable> variables){
+        ArrayList<Variable> mergedVariables = new ArrayList<>();
+        mergedVariables.addAll(parVariables);
+        mergedVariables.addAll(variables);
+        if (areArrayListVariablesUnique(mergedVariables) == false) semanticError();
+        return mergedVariables;
+    }
+
     public void setClazzAttributesAndFunctions(Clazz clazz){
         clazz.setSetAttributesAndFunctions(true);
         Clazz parentClazz = clazz.getParent();
         if(parentClazz == null)return;
         if(parentClazz.isSetAttributesAndFunctions() == false) setClazzAttributesAndFunctions(parentClazz);
 
-        ArrayList<Function> functions = new ArrayList<>();
-        functions.addAll(parentClazz.getFunctions());
-        functions.addAll(clazz.getFunctions());
-        clazz.setFunctions(functions);
 
-        ArrayList<Variable> variables = new ArrayList<>();
-        variables.addAll(parentClazz.getVariables());
-        variables.addAll(clazz.getVariables());
-        clazz.setVariables(variables);
+        clazz.setFunctions(mergeFunctions(parentClazz.getFunctions(), clazz.getFunctions()));
+        clazz.setVariables(mergeVariables(parentClazz.getVariables(), clazz.getVariables()));
 
     }
 
     public void areAllVariablesUnique(Node v) {
         ArrayList<Variable> variables = v.getDefinedVariables();
-        for (int i = 0; i < variables.size(); i++)
-            for (int j = i + 1; j < variables.size(); j++) {
-                if (variables.get(i).getName().equals(variables.get(j).getName()))
-                    semanticError();
-            }
+        if (areArrayListVariablesUnique(variables) == false) semanticError();
+
         for (Node node : v.getChildren())
             areAllVariablesUnique(node);
+    }
+
+    public boolean areArrayListVariablesUnique(ArrayList<Variable> variables){
+        for (int i = 0; i < variables.size(); i ++){
+            for(int j = i + 1; j < variables.size(); j ++){
+                if (variables.get(i).getName().equals(variables.get(j).getName()))
+                    return false;
+            }
+        }
+        return true;
     }
 
     // age be terminal bere, type bayad moshakhas shode bashe
