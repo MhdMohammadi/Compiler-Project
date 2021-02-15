@@ -1,3 +1,4 @@
+import java.sql.Struct;
 import java.util.ArrayList;
 
 public class Compiler {
@@ -100,6 +101,39 @@ public class Compiler {
             setClazzAttributesAndFunctions(clazz);
     }
 
+    public boolean haveSameSignature(Function function1, Function function2){
+        if (!function1.getType().equals(function2.getType())) return false;
+        if (function1.getParameter().size() != function2.getParameter().size()) return false;
+        int index = 0;
+        for(Variable variable1 : function1.getParameter()){
+            Variable variable2 = function2.getParameter().get(index);
+            if (!variable1.getType().equals(variable2.getType()))   return false;
+            index++;
+        }
+        return true;
+    }
+
+    public boolean isConvertibleTo(Variable convertVariable, Variable mainVariable){
+        Type type = convertVariable.getType();
+        if (mainVariable.getType().equals(type)) return true;
+        while (type.getParent() != null){
+            type = type.getParent();
+            if(type.equals(mainVariable.getType()))return true;
+        }
+        return false;
+    }
+
+    public boolean areFunctionCallParametersCorrect(Function function, ArrayList<Variable> parameters){
+        if (function.getParameter().size() != parameters.size())return false;
+        int index = 0;
+        for (Variable variable : function.getParameter()){
+            if (!isConvertibleTo(parameters.get(index), variable))
+                return false;
+            index++;
+        }
+        return true;
+    }
+
     public void setClazzAttributesAndFunctions(Clazz clazz){
         clazz.setSetAttributesAndFunctions(true);
         Clazz parentClazz = clazz.getParent();
@@ -108,11 +142,27 @@ public class Compiler {
 
         ArrayList<Function> functions = new ArrayList<>();
         functions.addAll(parentClazz.getFunctions());
-        functions.addAll(clazz.getFunctions());
+
+        for (Function function : clazz.getFunctions()){
+            boolean find = false;
+            int index = 0;
+            for (Function parFunction : functions){
+                if(parFunction.getName().equals(function.getName())){
+                    find = true;
+                    if(haveSameSignature(parFunction, function)){
+                        functions.set(index, function);
+                    }
+                    else Compiler.semanticError();
+                }
+                index++;
+            }
+            if (find == false)functions.add(function);
+        }
         clazz.setFunctions(functions);
 
         ArrayList<Variable> variables = new ArrayList<>();
         variables.addAll(parentClazz.getVariables());
+
         variables.addAll(clazz.getVariables());
         clazz.setVariables(variables);
 
@@ -120,13 +170,20 @@ public class Compiler {
 
     public void areAllVariablesUnique(Node v) {
         ArrayList<Variable> variables = v.getDefinedVariables();
-        for (int i = 0; i < variables.size(); i++)
-            for (int j = i + 1; j < variables.size(); j++) {
-                if (variables.get(i).getName().equals(variables.get(j).getName()))
-                    semanticError();
-            }
+        if (areArrayListVariablesUnique(variables) == false) semanticError();
+
         for (Node node : v.getChildren())
             areAllVariablesUnique(node);
+    }
+
+    public boolean areArrayListVariablesUnique(ArrayList<Variable> variables){
+        for (int i = 0; i < variables.size(); i ++){
+            for(int j = i + 1; j < variables.size(); j ++){
+                if (variables.get(i).getName().equals(variables.get(j).getName()))
+                    return false;
+            }
+        }
+        return true;
     }
 
     // age be terminal bere, type bayad moshakhas shode bashe
