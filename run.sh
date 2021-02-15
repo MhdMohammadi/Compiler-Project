@@ -17,14 +17,14 @@ do
     echo "Running Test $filename -------------------------------------"
     javac ./src/Main.java
     if [ $? -eq 1 ]; then
-        echo "Code did not Compile"
+        echo "Model.Code did not Compile"
     else
-        echo "Code is compiled successfully"
+        echo "Model.Code is compiled successfully"
         echo $filelist
         echo $output_filename
         java ./src/Main -i $filelist -o $output_filename
         if [ $? -eq 0 ]; then
-            echo "Code Executed Successfully!"
+            echo "Model.Code Executed Successfully!"
             if command -v python3; then
                 python3 comp.py -a "$OUTPUT_DIRECTORY$output_filename" -b "$TEST_DIRECTORY$output_filename" -o "$REPORT_DIRECTORY$report_filename"
             else
@@ -39,7 +39,7 @@ do
             echo
             fi 
         else
-            echo "Code did not execute successfuly!"
+            echo "Model.Code did not execute successfuly!"
             ((NUMBER_OF_FAILED++))
         fi
     fi

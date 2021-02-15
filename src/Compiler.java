@@ -1,4 +1,6 @@
-import java.sql.Struct;
+import Model.Type;
+import Model.Variable;
+
 import java.util.ArrayList;
 
 public class Compiler {

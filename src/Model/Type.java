@@ -1,5 +1,5 @@
-import java.awt.*;
-import java.rmi.registry.LocateRegistry;
+package Model;
+
 import java.util.ArrayList;
 
 public class Type {

@@ -1,3 +1,5 @@
+import Scanner.MyScanner;
+
 import java.io.*;
 
 public class MainPhase1 {

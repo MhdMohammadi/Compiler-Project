@@ -26,7 +26,7 @@ import java_cup.runtime.*;
 */
 
 
-/* Java 1.2 parser for CUP.  
+/* Java 1.2 Parser.parser for CUP.
  * Copyright (C) 1998 C. Scott Ananian <cananian@alumni.princeton.edu>
  * This program is released under the terms of the GPL; see the file
  * COPYING for more details.  There is NO WARRANTY on this code.
@@ -43,7 +43,7 @@ JDK 1.2 Features added:
         |       name DOT SUPER DOT IDENTIFIER LPAREN argument_list_opt RPAREN ;
 */
 
-parser code  {:
+Parser.parser code  {:
     public static Node root;
 
   public void report_error(String message, Object info) {
@@ -112,8 +112,8 @@ terminal java.lang.Boolean BOOLEAN_LITERAL;
 nonterminal Program;
 nonterminal Decl;
 nonterminal VariableDecl;
-nonterminal Variable;
-nonterminal Type;
+nonterminal Model.Variable;
+nonterminal Model.Type;
 nonterminal FunctionDecl;
 nonterminal Formals;
 nonterminal ClassDecl;
@@ -204,60 +204,60 @@ InterfaceDecl:i {:
     tmp.getChildren().add((Node)i);
     RESULT = tmp;
 :};
-VariableDecl ::= Variable:v SEMICOLON {:
-    Node tmp = new Node(LeftHand.VariableDecl, ProductionRule.Variable);
+VariableDecl ::= Model.Variable:v SEMICOLON {:
+    Node tmp = new Node(LeftHand.VariableDecl, ProductionRule.Model.Variable);
     tmp.getChildren().add((Node)v);
     RESULT = tmp;
 :};
-Variable ::= Type:t IDENTIFIER:i{:
-    Node tmp = new Node(LeftHand.Variable, ProductionRule.Type_IDENTIFIER);
+Model.Variable ::= Model.Type:t IDENTIFIER:i{:
+    Node tmp = new Node(LeftHand.Model.Variable, ProductionRule.Type_IDENTIFIER);
     tmp.getChildren().add((Node) t);
     Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
     id.setValue(i);
     tmp.getChildren().add(id);
     RESULT = tmp;
 :};
-Type ::= Type:t LBRACK RBRACK {:
-    Node tmp = new Node(LeftHand.Type, ProductionRule.Type_LBRACK_RBRACK);
+Model.Type ::= Model.Type:t LBRACK RBRACK {:
+    Node tmp = new Node(LeftHand.Model.Type, ProductionRule.Type_LBRACK_RBRACK);
     tmp.getChildren().add((Node)t);
     RESULT = tmp;
 :} |
 IDENTIFIER:i {:
-    Node tmp = new Node(LeftHand.Type, ProductionRule.IDENTIFIER);
+    Node tmp = new Node(LeftHand.Model.Type, ProductionRule.IDENTIFIER);
     Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
     id.setValue(i);
     tmp.getChildren().add(id);
     RESULT = tmp;
 :} %prec MULT  |
 INT:i {:
-    Node tmp = new Node(LeftHand.Type, ProductionRule.INT);
+    Node tmp = new Node(LeftHand.Model.Type, ProductionRule.INT);
     Node in = new Node(LeftHand.INT, ProductionRule.TERMINAL);
     in.setValue(i);
     tmp.getChildren().add(in);
     RESULT = tmp;
 :}|
 DOUBLE:d {:
-    Node tmp = new Node(LeftHand.Type, ProductionRule.DOUBLE);
+    Node tmp = new Node(LeftHand.Model.Type, ProductionRule.DOUBLE);
     Node doub = new Node(LeftHand.DOUBLE, ProductionRule.TERMINAL);
     doub.setValue(d);
     tmp.getChildren().add(doub);
     RESULT = tmp;
 :} |
 STRING:s {:
-    Node tmp = new Node(LeftHand.Type, ProductionRule.STRING);
+    Node tmp = new Node(LeftHand.Model.Type, ProductionRule.STRING);
     Node str = new Node(LeftHand.STRING, ProductionRule.TERMINAL);
     str.setValue(s);
     tmp.getChildren().add(str);
     RESULT = tmp;
 :} |
 BOOL:b {:
-    Node tmp = new Node(LeftHand.Type, ProductionRule.BOOL);
+    Node tmp = new Node(LeftHand.Model.Type, ProductionRule.BOOL);
     Node bo = new Node(LeftHand.BOOL, ProductionRule.TERMINAL);
     bo.setValue(b);
     tmp.getChildren().add(bo);
     RESULT = tmp;
 :};
-FunctionDecl ::= Type:t IDENTIFIER:i  LPAREN Formals:f RPAREN StmtBlock:s {:
+FunctionDecl ::= Model.Type:t IDENTIFIER:i  LPAREN Formals:f RPAREN StmtBlock:s {:
     Node tmp = new Node(LeftHand.FunctionDecl, ProductionRule.Type_IDENTIFIER_LPAREN_Formals_RPAREN_StmtBlock);
     tmp.getChildren().add((Node)t);
     Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
@@ -276,12 +276,12 @@ VOID IDENTIFIER:i LPAREN Formals:f RPAREN StmtBlock:s {:
     tmp.getChildren().add((Node)s);
     RESULT = tmp;
 :};
-VariablePlus ::= Variable:v {:
-    Node tmp = new Node(LeftHand.VariablePlus, ProductionRule.Variable);
+VariablePlus ::= Model.Variable:v {:
+    Node tmp = new Node(LeftHand.VariablePlus, ProductionRule.Model.Variable);
     tmp.getChildren().add((Node)v);
     RESULT = tmp;
 :} |
-Variable:v COMMA VariablePlus:vp {:
+Model.Variable:v COMMA VariablePlus:vp {:
     Node tmp = new Node(LeftHand.VariablePlus, ProductionRule.Variable_COMMA_VariablePlus);
     tmp.getChildren().add((Node)v);
     tmp.getChildren().add((Node)vp);
@@ -364,7 +364,7 @@ ClassDecl ::= CLASS IDENTIFIER:i1 ExtendStmt:e ImplementsStmt:i2 LBRACE FieldSta
     tmp.getChildren().add((Node)e);
     tmp.getChildren().add((Node)i2);
     tmp.getChildren().add((Node)f);
-    Type.createPreType(i1, (String)((Node)e).getValue());
+    Model.Type.createPreType(i1, (String)((Node)e).getValue());
     RESULT = tmp;
 :};
 
@@ -391,7 +391,7 @@ tmp.getChildren().add((Node) ps);
 RESULT = tmp;:} |
 {: Node tmp = new Node(LeftHand.Prototype_star, ProductionRule.NOTHING);
 RESULT = tmp;:};
-Prototype ::= Type:t IDENTIFIER:i LPAREN Formals:f RPAREN SEMICOLON
+Prototype ::= Model.Type:t IDENTIFIER:i LPAREN Formals:f RPAREN SEMICOLON
 {: Node tmp = new Node(LeftHand.Prototype, ProductionRule.Type_IDENTIFIER_LPAREN_Formals_RPAREN_SEMICOLON);
 tmp.getChildren().add((Node) t);
 Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
@@ -599,7 +599,7 @@ NOT Expr:e {:  Node tmp = new Node(LeftHand.Expr, ProductionRule.NOT_Expr);
                           id.setValue(i);
                           tmp.getChildren().add(id);
                           RESULT = tmp;
-:} | NEWARRAY LPAREN Expr:e COMMA Type:t RPAREN {:  Node tmp = new Node(LeftHand.Expr, ProductionRule.NEWARRAY_LPAREN_Expr_COMMA_Type_RPAREN);
+:} | NEWARRAY LPAREN Expr:e COMMA Model.Type:t RPAREN {:  Node tmp = new Node(LeftHand.Expr, ProductionRule.NEWARRAY_LPAREN_Expr_COMMA_Type_RPAREN);
                                                     tmp.getChildren().add((Node)e);
                                                     tmp.getChildren().add((Node)t);
                                                     RESULT = tmp;

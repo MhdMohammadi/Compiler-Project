@@ -1,3 +1,6 @@
+package Model;
+
+import Model.Type;
 
 public class Variable {
     private String name;
