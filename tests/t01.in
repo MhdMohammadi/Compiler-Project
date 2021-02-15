@@ -1,22 +1,18 @@
-int a;
-
-class a{
-    int a;
-    void a(){
+class A{
+    int x;
+    void func(){
 
     }
-
 }
 
-void func(){
+class B extends A{
+    void func(){
 
-}
-
-
-void func(double b, int a){
-
+    }
 }
 
 int main(int a, int b){
-    double a;
+    int[] a;
+    a = NewArray(10, int);
+    a[2];
 }
