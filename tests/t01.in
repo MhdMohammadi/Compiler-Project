@@ -2,8 +2,20 @@ int f(int a){
 
 }
 
+class hi extends bye{
+    hi f(bye s, bye r){
+
+    }
+}
+
+class bye{
+    bye f(hi s, bye r){
+
+    }
+}
+
 int main(int a, int b){
-    double b;
-    double c;
-    f(b + c);
+    int b;
+    int c;
+    f(2);
 }
