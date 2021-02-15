@@ -1,1 +1,13 @@
+class base{
+    void f(){
 
+    }
+    int x;
+}
+
+class derived extends base{
+    void f(){
+    }
+    int x;
+
+}

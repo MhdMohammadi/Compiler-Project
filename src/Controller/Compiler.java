@@ -29,6 +29,10 @@ public class Compiler {
         setFunctionType(root);
         setAllNodesType(root);
         checkIntegerIndices(root);
+
+        areAllFunctionsUnique(root);
+        setClazzType();
+        setAllClazzAttributesAndFunctions();
     }
 
     public void preProcess(Node v) {
