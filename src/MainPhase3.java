@@ -1,3 +1,4 @@
+import Controller.Compiler;
 import Model.Type;
 import Parser.parser;
 import Scanner.MyScanner;
