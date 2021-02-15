@@ -54,6 +54,40 @@ public class CodeGenerator {
         return code;
     }
 
+    public Code loadIntegerLocalVariable(int offset){
+        Code code = new Code();
+        code.addCode("sub $fp, $fp," + offset);
+        code.addCode("sw $t0, 0($fp)");
+        code.addCode("add $fp, $fp, " + offset);
+        return code;
+    }
+
+    public Code loadDoubleLocalVariable(int offset){
+        Code code = new Code();
+        code.addCode("sub $fp, $fp, " + offset);
+        code.addCode("l.s $f1, 0($fp)");
+        code.addCode("add $fp, $fp, " + offset);
+        return code;
+    }
+
+    public Code storeIntegerLocalVariable(int offset){
+        Code code = new Code();
+        code.addCode("sub $fp, $fp, " + offset);
+        code.addCode("sw $t0, 0($fp)");
+        code.addCode("add $fp, $fp, " + offset);
+        return code;
+    }
+
+    public Code storeDoubleLocalVariable(int offset){
+        Code code = new Code();
+        code.addCode("sub $fp, $fp, " + offset);
+        code.addCode("s.s $f1, 0($fp)");
+        code.addCode("add $fp, $fp, " + offset);
+        return code;
+    }
+
+
+
     public Code readLine() {
         Code code = new Code();
         code.addCode("li $v0, 5");
