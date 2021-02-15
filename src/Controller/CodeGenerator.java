@@ -141,7 +141,7 @@ public class CodeGenerator {
 
     public Code elseCondition(Node node){
         Code code = new Code();
-        code.addCode("Else:");
+        code.addCode();
         code.addCode(node.getCode());
         return code;
     }
