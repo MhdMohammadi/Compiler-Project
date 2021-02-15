@@ -1,13 +1,19 @@
 class base{
-    void f(){
+    int g(){
 
     }
-    int x;
 }
 
 class derived extends base{
-    void f(){
-    }
-    int x;
+
+}
+
+int f(){
+
+}
+
+int main(){
+    int a;
+    a = g() + 1;
 
 }

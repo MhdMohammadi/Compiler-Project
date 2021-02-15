@@ -20,6 +20,7 @@ public class Node {
     private int index;
     private Node parent;
 
+    private ArrayList<Type> actualsTypes = new ArrayList<Type>();
 
     public Node(LeftHand leftHand, ProductionRule productionRule){
         this.leftHand = leftHand;
@@ -126,5 +127,13 @@ public class Node {
 
     public void setCode(Code code) {
         this.code = code;
+    }
+
+    public ArrayList<Type> getActualsTypes() {
+        return actualsTypes;
+    }
+
+    public void setActualsTypes(ArrayList<Type> actualsTypes) {
+        this.actualsTypes = actualsTypes;
     }
 }

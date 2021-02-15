@@ -155,21 +155,20 @@ public class Compiler {
         return true;
     }
 
-    public boolean isConvertibleTo(Variable convertVariable, Variable mainVariable) {
-        Type type = convertVariable.getType();
-        if (mainVariable.getType().equals(type)) return true;
-        while (type.getParent() != null) {
-            type = type.getParent();
-            if (type.equals(mainVariable.getType())) return true;
+    public boolean isConvertibleTo(Type convertType, Type mainType) {
+        if (mainType.equals(convertType)) return true;
+        while (convertType.getParent() != null) {
+            convertType = convertType.getParent();
+            if (convertType.equals(mainType)) return true;
         }
         return false;
     }
 
-    public boolean areFunctionCallParametersCorrect(Function function, ArrayList<Variable> parameters) {
-        if (function.getParameter().size() != parameters.size()) return false;
+    public boolean areFunctionCallParametersCorrect(Function function, ArrayList<Type> parametersTypes) {
+        if (function.getParameter().size() != parametersTypes.size()) return false;
         int index = 0;
         for (Variable variable : function.getParameter()) {
-            if (!isConvertibleTo(parameters.get(index), variable))
+            if (!isConvertibleTo(parametersTypes.get(index), variable.getType()))
                 return false;
             index++;
         }
@@ -433,9 +432,26 @@ public class Compiler {
             checkIntegerIndices(node);
     }
 
+    public void setActualsTypes(Node v) {
+        for (Node node : v.getChildren()){
+            setActualsTypes(node);
+            if(v.getLeftHand() == LeftHand.Actuals)
+                v.getActualsTypes().add(node.getType());
+        }
+        if(v.getLeftHand() == LeftHand.Call){
+            //todo class
+            Function function = findFunction(v, (String)v.getChildren().get(0).getValue());
+            areFunctionCallParametersCorrect(function, v.getChildren().get(1).getActualsTypes());
+
+        }
+    }
+
+
+
     public Node getRoot() {
         return root;
     }
+
 
     public void setRoot(Node root) {
         this.root = root;
