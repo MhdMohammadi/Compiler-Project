@@ -4,7 +4,7 @@ import java.io.Reader;
 public class MainPhase3 {
 
     public static void main(String[] args) throws Exception {
-        String inputFileName = "t01.in";
+        String inputFileName = "t02.in";
 //        String outputFileName = null;
 
 /*        if (args != null)
@@ -34,32 +34,43 @@ public class MainPhase3 {
         Compiler c = new Compiler(parser.root);
         c.preProcess(c.getRoot());
         Type.validate();
+        c.areAllVariablesUnique(c.getRoot());
+        c.setArraysType(c.getRoot());
         c.setVariablesType(c.getRoot());
+        c.setAllNodesType(c.getRoot());
+  //      c.setFunctionType(c.getRoot());
+  //      c.setAllNodesType(c.getRoot());
 
-        c.setFunctionType(c.getRoot());
-        c.setClazzType();
-        c.setAllClazzAttributesAndFunctions();
-        for (Clazz clazz : Clazz.getClazzes()){
-            System.out.println("class name:");;
-            System.out.println(clazz.getName() + " " + clazz.getType().getName());
-            if(clazz.getParent() != null) System.out.println(clazz.getParent().getName());
-            System.out.println("functions:");
-            for (Function function : clazz.getFunctions()){
-                System.out.println(function.getName() + " " + function.getAccessMode() + " " + function.getType().getName());
-            }
-            System.out.println("variables");
-            for (Variable variable : clazz.getVariables()){
-                System.out.println(variable.getName() + " " + variable.getAccessMode() + " " + variable.getType().getName());
-            }
-        }
-        System.out.println("global functions:");
-        for (Function function : c.getRoot().getDefinedFunctions()){
-            System.out.println(function.getName() + " " + function.getAccessMode() + " " + function.getType().getName());
-        }
-        System.out.println("global variables");
-        for (Variable variable : c.getRoot().getDefinedVariables()){
-            System.out.println(variable.getName() + " " + variable.getAccessMode() + " " + variable.getType().getName());
-        }
+//        c.debug(c.getRoot());
+
+//        c.setClazzType();
+//        c.setAllClazzAttributesAndFunctions();
+//        for (Clazz clazz : Clazz.getClazzes()){
+//            System.out.println("class name:");;
+//            System.out.println(clazz.getName() + " " + clazz.getType().getName());
+//            if(clazz.getParent() != null) System.out.println(clazz.getParent().getName());
+//            System.out.println("functions:");
+//            for (Function function : clazz.getFunctions()){
+//                System.out.println(function.getName() + " " + function.getAccessMode() + " " + function.getType().getName());
+//            }
+//            System.out.println("variables");
+//            for (Variable variable : clazz.getVariables()){
+//                System.out.println(variable.getName() + " " + variable.getAccessMode() + " " + variable.getType().getName());
+//            }
+//        }
+//        System.out.println("global functions:");
+//        for (Function function : c.getRoot().getDefinedFunctions()){
+//            System.out.println(function.getName() + " " + function.getAccessMode() + " " + function.getType().getName());
+//        }
+//        System.out.println("global variables");
+//        for (Variable variable : c.getRoot().getDefinedVariables()){
+//            System.out.println(variable.getName() + " " + variable.getAccessMode() + " " + variable.getType().getName());
+//        }
+//        c.areAllVariablesUnique(c.getRoot());
+//        c.setFunctionType(c.getRoot());
+//        for (Function function: c.getRoot().getDefinedFunctions()){
+//            System.out.println(function.getName() + " " + function.getType().getName() + " " + function.getAccessMode().toString());
+//        }
 //        c.areAllVariablesUnique(c.getRoot());
 //        c.setAllNodesType(c.getRoot());
         /* try {

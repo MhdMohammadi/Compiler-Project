@@ -1,4 +1,8 @@
+void func(double b, int a){
+    int[][] a;
+    a = NewArray(10, int);
+}
 
-void da_function(string, int r) { // this wont work :(
-    return i * 2;
+int main(int a, int b){
+
 }

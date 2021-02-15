@@ -216,11 +216,11 @@ FunctionDecl ::=        Type:t IDENTIFIER:i OPENPARENTHESIS Formals:f CLOSEPAREN
     tmp.getChildren().add((Node) f);
     tmp.getChildren().add((Node) s);
     tmp.getDefinedVariables().addAll(((Node)f).getDefinedVariables());
-    tmp.getDefinedVariables().addAll(((Node)s).getDefinedVariables());
 
     Function function = new Function();
     function.setName(i);
     function.setParameter(((Node)f).getDefinedVariables());
+    function.setNode(tmp);
     tmp.getDefinedFunctions().add(function);
     tmp.setTypeName(((Node)t).getTypeName());
     tmp.setArrayDegree(((Node)t).getArrayDegree());
@@ -235,11 +235,12 @@ FunctionDecl ::=        Type:t IDENTIFIER:i OPENPARENTHESIS Formals:f CLOSEPAREN
     tmp.getChildren().add((Node)f);
     tmp.getChildren().add((Node)s);
     tmp.getDefinedVariables().addAll(((Node)f).getDefinedVariables());
-    tmp.getDefinedVariables().addAll(((Node)s).getDefinedVariables());
+    //tmp.getDefinedVariables().addAll(((Node)s).getDefinedVariables());
 
     Function function = new Function();
     function.setName(i);
     function.setParameter(((Node)f).getDefinedVariables());
+    function.setNode(tmp);
     tmp.getDefinedFunctions().add(function);
     tmp.setTypeName("void");
     tmp.setArrayDegree(0);
@@ -432,13 +433,15 @@ RESULT = tmp;:}
 StmtBlock ::=           OPENCURLYBRACES InsideStmtBlock:i CLOSECURLYBRACES
 {: Node tmp = new Node(LeftHand.StmtBlock, ProductionRule.OPENCURLYBRACES_InsideStmtBlock_CLOSECURLYBRACES);
 tmp.getChildren().add((Node) i);
+tmp.getDefinedVariables().addAll(((Node)i).getDefinedVariables());
 RESULT = tmp;:};
 InsideStmtBlock ::=     VariableDecl:v InsideStmtBlock:i
 {: Node tmp = new Node(LeftHand.InsideStmtBlock, ProductionRule.VariableDecl_InsideStmtBlock);
 tmp.getChildren().add((Node) v);
 tmp.getChildren().add((Node) i);
 tmp.getDefinedVariables().addAll(((Node)v).getDefinedVariables());
-tmp.getDefinedVariables().addAll((((Node)i)).getDefinedVariables());
+tmp.getDefinedVariables().addAll(((Node)i).getDefinedVariables());
+
 RESULT = tmp;:}
 						| StmtStar:s
 						{: Node tmp = new Node(LeftHand.InsideStmtBlock, ProductionRule.StmtStar);

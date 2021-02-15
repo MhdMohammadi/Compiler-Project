@@ -13,7 +13,7 @@ class bye{
 }
 
 class hi extends bye{
-    private bye t;
+    private bye t;  
 }
 
 double go(int a, double b){
@@ -25,6 +25,8 @@ int ali;
 
 
 int main(){
+    int a;
+    int a;
 
 }
 

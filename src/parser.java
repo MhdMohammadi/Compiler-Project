@@ -1108,7 +1108,7 @@ class CUP$parser$actions {
     tmp.getChildren().add((Node) f);
     tmp.getChildren().add((Node) s);
     tmp.getDefinedVariables().addAll(((Node)f).getDefinedVariables());
-    tmp.getDefinedVariables().addAll(((Node)s).getDefinedVariables());
+    //tmp.getDefinedVariables().addAll(((Node)s).getDefinedVariables());
 
     Function function = new Function();
     function.setName(i);
@@ -1144,7 +1144,7 @@ class CUP$parser$actions {
     tmp.getChildren().add((Node)f);
     tmp.getChildren().add((Node)s);
     tmp.getDefinedVariables().addAll(((Node)f).getDefinedVariables());
-    tmp.getDefinedVariables().addAll(((Node)s).getDefinedVariables());
+    //tmp.getDefinedVariables().addAll(((Node)s).getDefinedVariables());
 
     Function function = new Function();
     function.setName(i);
@@ -1603,6 +1603,7 @@ RESULT = tmp;
 		Object i = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		 Node tmp = new Node(LeftHand.StmtBlock, ProductionRule.OPENCURLYBRACES_InsideStmtBlock_CLOSECURLYBRACES);
 tmp.getChildren().add((Node) i);
+tmp.getDefinedVariables().addAll(((Node)i).getDefinedVariables());
 RESULT = tmp;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("StmtBlock",18, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1621,6 +1622,9 @@ RESULT = tmp;
 		 Node tmp = new Node(LeftHand.InsideStmtBlock, ProductionRule.VariableDecl_InsideStmtBlock);
 tmp.getChildren().add((Node) v);
 tmp.getChildren().add((Node) i);
+tmp.getDefinedVariables().addAll(((Node)v).getDefinedVariables());
+tmp.getDefinedVariables().addAll(((Node)i).getDefinedVariables());
+
 RESULT = tmp;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("InsideStmtBlock",19, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
