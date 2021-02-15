@@ -220,6 +220,7 @@ FunctionDecl ::=        Type:t IDENTIFIER:i OPENPARENTHESIS Formals:f CLOSEPAREN
     Function function = new Function();
     function.setName(i);
     function.setParameter(((Node)f).getDefinedVariables());
+    function.setNode(tmp);
     tmp.getDefinedFunctions().add(function);
     tmp.setTypeName(((Node)t).getTypeName());
     tmp.setArrayDegree(((Node)t).getArrayDegree());
@@ -239,6 +240,7 @@ FunctionDecl ::=        Type:t IDENTIFIER:i OPENPARENTHESIS Formals:f CLOSEPAREN
     Function function = new Function();
     function.setName(i);
     function.setParameter(((Node)f).getDefinedVariables());
+    function.setNode(tmp);
     tmp.getDefinedFunctions().add(function);
     tmp.setTypeName("void");
     tmp.setArrayDegree(0);
