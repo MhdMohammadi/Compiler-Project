@@ -35,11 +35,14 @@ public class MainPhase3 {
         c.preProcess(c.getRoot());
         Type.validate();
         c.areAllVariablesUnique(c.getRoot());
+        c.setArraysType(c.getRoot());
         c.setVariablesType(c.getRoot());
         c.setAllNodesType(c.getRoot());
-        c.debug(c.getRoot());
+  //      c.setFunctionType(c.getRoot());
+  //      c.setAllNodesType(c.getRoot());
 
-        //        c.setFunctionType(c.getRoot());
+//        c.debug(c.getRoot());
+
 //        c.setClazzType();
 //        c.setAllClazzAttributesAndFunctions();
 //        for (Clazz clazz : Clazz.getClazzes()){

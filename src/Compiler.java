@@ -43,6 +43,7 @@ public class Compiler {
                 node1 = node1.getParent();
             }
         }
+        semanticError();
         return null;
     }
 
@@ -60,6 +61,7 @@ public class Compiler {
                 node1 = node1.getParent();
             }
         }
+        semanticError();
         return null;
     }
 
@@ -81,6 +83,20 @@ public class Compiler {
         }
         for (Node node : v.getChildren())
             setVariablesType(node);
+    }
+
+    public void setArraysType(Node v){
+        for(Node node : v.getChildren())
+            setArraysType(node);
+        if(v.getLeftHand() == LeftHand.Type && v.getProductionRule() != ProductionRule.Type_OPENCLOSEBRACKET){
+            v.setType(Type.getTypeByName(v.getTypeName(), 0));
+        }
+        if(v.getLeftHand() == LeftHand.Type && v.getProductionRule() == ProductionRule.Type_OPENCLOSEBRACKET) {
+            if(v.getArrayDegree() == 1)
+                v.setType(Type.createArrayType(Type.getTypeByName(v.getTypeName(), 0)));
+            else
+                v.setType(Type.createArrayType(v.getChildren().get(0).getType()));
+        }
     }
 
     public void setFunctionType(Node v) {
@@ -142,10 +158,6 @@ public class Compiler {
         for(Node node : v.getChildren())
             setAllNodesType(node);
         switch (v.getLeftHand()){
-            case IDENTIFIER:
-                System.out.println(v.getValue());
-                v.setType(findVariable(v, (String)v.getValue()).getType());
-                break;
             case Constant:
                 switch (v.getProductionRule()) {
                     case INTLITERAL:
@@ -169,7 +181,8 @@ public class Compiler {
             case Call:
                 switch (v.getProductionRule()) {
                     case IDENTIFIER_OPENPARENTHESIS_Actuals_CLOSEPARENTHESIS:
-                        //todo
+                        Function function = findFunction(v, (String)v.getChildren().get(0).getValue());
+                        v.setType(function.getType());
                         break;
                     case Expr_DOT_IDENTIFIER_OPENPARENTHESIS_Actuals_CLOSEPARENTHESIS:
                         //todo
@@ -196,7 +209,7 @@ public class Compiler {
                     case LValue_ASSIGN_Expr:
                         if (!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.EQ))
                             semanticError();
-                        v.setType(Type.getTypeByName("boolean", 0));
+                        v.setType(v.getChildren().get(0).getType());
                         break;
                     case Constant:
                         v.setType(v.getChildren().get(0).getType());

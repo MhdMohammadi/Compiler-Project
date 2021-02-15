@@ -1,7 +1,6 @@
-void func(int b, int a){
-     int r;
-     int a;
-     a = b + 10;
+void func(double b, int a){
+    int[][] a;
+    a = NewArray(10, int);
 }
 
 int main(int a, int b){
