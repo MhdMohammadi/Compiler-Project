@@ -161,6 +161,8 @@ public class CodeGenerator {
     }
 
     public Code exit(){
+        Code code = new Code();
+        return code;
     }
 
 }
