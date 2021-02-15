@@ -123,4 +123,22 @@ public class CodeGenerator {
         }
         return code;
     }
+
+    public Code ifCondition(Node node){
+        Code code = new Code();
+        code.addCode(node.getCode());
+        code.addCode("beq $t0, 0," + elseCondition(node.getChildren().get(2)));
+        code.addCode(node.getChildren().get(1).getCode());
+        return code;
+    }
+
+    public Code elseCondition(Node node){
+        Code code = new Code();
+        code.addCode("Else:");
+        code.addCode(node.getCode());
+        return code;
+    }
+
+
+
 }
