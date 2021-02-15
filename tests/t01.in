@@ -5,5 +5,5 @@ int f(int a){
 int main(int a, int b){
     int b;
     int c;
-    f(b + c, 10.2);
+    f(b + c, b, a);
 }

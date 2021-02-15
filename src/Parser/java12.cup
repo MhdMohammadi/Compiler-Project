@@ -1,4 +1,6 @@
+import Enum.*;
 import java_cup.runtime.*;
+
 
 
 parser code  {:
@@ -779,7 +781,7 @@ Actuals ::=             Expr:e ActualsCommaExpr:a
                           //todo
                         :}
 						| /*epsilon*/
-						{:  Node tmp = new Node(LeftHand.Actuals, ProductionRule.Expr_ActualsCommaExpr);
+						{:  Node tmp = new Node(LeftHand.Actuals, Enum.ProductionRule.EPSILON);
                             RESULT = tmp;
                         :}
 						;
