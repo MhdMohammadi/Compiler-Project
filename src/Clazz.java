@@ -31,6 +31,11 @@ public class Clazz{
         return variables;
     }
 
+    public Clazz getParent(){
+        if(this.getType().getParent() == null)return null;
+        return Clazz.getClazzByName(this.getType().getParent().getName());
+    }
+
     public void setVariables(ArrayList<Variable> variables) {
         this.variables = variables;
     }

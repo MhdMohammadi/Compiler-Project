@@ -81,6 +81,7 @@ public class Compiler {
             Function function = v.getDefinedFunctions().get(0);
 
             Type type = Type.getTypeByName(v.getTypeName(), v.getArrayDegree());
+        //    System.out.println(v.getTypeName() + " " + v.getArrayDegree());
             if (type == null) Compiler.semanticError();
             function.setType(type);
         }
@@ -94,12 +95,15 @@ public class Compiler {
         }
     }
 
+    public void setAllClazzAttributesAndFunctions(){
+        for (Clazz clazz : Clazz.getClazzes())
+            setClazzAttributesAndFunctions(clazz);
+    }
+
     public void setClazzAttributesAndFunctions(Clazz clazz){
         clazz.setSetAttributesAndFunctions(true);
-        Type clazzType = clazz.getType();
-        Type parentType = clazzType.getParent();
-        if(parentType == null)return;
-        Clazz parentClazz = Clazz.getClazzByName(parentType.getName());
+        Clazz parentClazz = clazz.getParent();
+        if(parentClazz == null)return;
         if(parentClazz.isSetAttributesAndFunctions() == false) setClazzAttributesAndFunctions(parentClazz);
 
         ArrayList<Function> functions = new ArrayList<>();

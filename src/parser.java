@@ -1426,7 +1426,8 @@ class CUP$parser$actions {
     tmp .getChildren().add((Node)v);
     tmp.getDefinedVariables().addAll(((Node)v).getDefinedVariables());
     for(Variable variable: ((Node)v).getDefinedVariables()){
-        variable.setAccessMode(((Node)a).getAccessMode());
+        if(((Node)a).getAccessMode() != null)
+            variable.setAccessMode(((Node)a).getAccessMode());
     }
     RESULT = tmp;
 
@@ -1448,8 +1449,8 @@ class CUP$parser$actions {
     Node tmp = new Node(LeftHand.Field, ProductionRule.AccessMode_FunctionDecl);
     tmp.getChildren().add((Node)a);
     tmp.getChildren().add((Node)f);
-
-    ((Node)f).getDefinedFunctions().get(0).setAccessMode(((Node)a).getAccessMode());
+    if(((Node)a).getAccessMode() != null)
+        ((Node)f).getDefinedFunctions().get(0).setAccessMode(((Node)a).getAccessMode());
     tmp.getDefinedFunctions().addAll(((Node)f).getDefinedFunctions());
 
     RESULT = tmp;

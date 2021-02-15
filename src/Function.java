@@ -3,9 +3,13 @@ import java.util.ArrayList;
 public class Function {
     private String name;
     private Type type;
-    private AccessMode accessMode;
+    private AccessMode accessMode = AccessMode.PUBLIC;
     private ArrayList<Variable> parameter = new ArrayList<Variable>();
-    
+
+    public Function(){
+        this.accessMode = AccessMode.PUBLIC;
+    }
+
     public String getName() {
         return name;
     }

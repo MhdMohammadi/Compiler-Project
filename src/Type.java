@@ -41,7 +41,12 @@ public class Type {
     }
 
     //todo age circular bashe mitereke
+    public static ArrayList<Type> getAllTypes(){
+        return allTypes;
+    }
+
     public static boolean validate(){
+        allPreTypes.add(new PreType("void", null));
         allPreTypes.add(new PreType("int", null));
         allPreTypes.add(new PreType("double", null));
         allPreTypes.add(new PreType("boolean", null));
@@ -121,6 +126,10 @@ public class Type {
         if(operator == Operator.SINGLE_NOT && t1 == BOOLEAN) return true;
         if(operator == Operator.SINGLE_MINUS && (t1 == INT || t1 == DOUBLE)) return true;
         return false;
+    }
+
+    public int getArrayDegree(){
+        return this.arrayDegree;
     }
 
     public Type getParent() {
