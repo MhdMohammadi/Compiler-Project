@@ -276,5 +276,122 @@ public class CodeGenerator {
         return code;
     }
 
+    public Code newArray(Node node){
+        Code code = new Code();
+        code.addCode(node.getChildren().get(0).getCode());
+        //todo age t0 positive nabood chi
+        code.addCode("add $t0, $t0, 1");
+        code.addCode("move $a0, $t0");
+        code.addCode("mul $a0, $a0, 4");
+        code.addCode("li $v0, 9");
+        code.addCode("syscall");
+        code.addCode("sub $t0, $t0, 1");
+        code.addCode("sw $t0, 0($v0)");
+        code.addCode("move $t0, $v0");
+        return code;
+    }
 
+    public Code ExprOpenBracketExprCloseBracket(Node node){
+        Code code = new Code();
+        code.addCode(node.getChildren().get(0).getCode());
+        code.addCode("sub $sp, $sp, 4");
+        code.addCode("lw $t0, 0($sp)");
+        code.addCode(node.getChildren().get(1).getCode());
+        code.addCode("lw $t1, 0($sp)");
+        code.addCode("add $sp, $sp, 4");
+        code.addCode("add $t0, $t0, $t1");
+        if(node.getChildren().get(0).getType() == Type.getTypeByName("double", 1))
+            code.addCode("s.s $f0, 0($t0)");
+        else
+            code.addCode("sw $f0, 0($t0)");
+        //todo inam index check nashoe ...
+        return code;
+    }
+
+    public Code arrayPlusArray(Node node, int size){
+        Code code = new Code();
+        code.addCode(node.getChildren().get(0).getCode());
+        code.addCode("sub $sp, $sp, 4");
+        code.addCode("sw $t0, 0($sp)");
+        code.addCode(node.getChildren().get(1).getCode());
+        code.addCode("lw $t1, 0($sp)");
+        code.addCode("add $sp, $sp, 4");
+
+        code.addCode("lw $t2, 0($t0)");
+        code.addCode("lw $t3, 0($t1)");
+
+        code.addCode("add $t2, $t2, $t3");
+        code.addCode("add $t2, $t2, 1");
+        code.addCode("move $a0, $t2");
+        code.addCode("mul $a0, $a0, " + size);
+        code.addCode("li $v0, 9");
+        code.addCode("syscall");
+
+        code.addCode("move $t4, $v0");
+        code.addCode("move $t5, $t4");
+        code.addCode("sub $t2, $t2, 1");
+        code.addCode("sw $t2, 0($t4)");
+        code.addCode("lw $t2, 0($t0)");
+        code.addCode("add $t4, $t4, " + size);
+        Label L1 = new Label(); L1.creatNewName();
+        Label L2 = new Label(); L2.creatNewName();
+        Label L3 = new Label(); L3.creatNewName();
+        code.addCode(L1.getName() + ":");
+        code.addCode("beq $t3, 0, " + L2.getName());
+        code.addCode("add $t1, $t1, " + size);
+        code.addCode("lw $t6, 0($t1)");
+        code.addCode("sw $t6, 0($t4)");
+        code.addCode("add $t4, $t4, " + size);
+        code.addCode("sub $t3, $t3, 1");
+        code.addCode("j " + L1.getName());
+        code.addCode(L2.getName() + ":");
+        code.addCode("beq $t2, 0, " + L2.getName());
+        code.addCode("add $t0, $t0, + " + size);
+        code.addCode("lw $t6, 0($t0)");
+        code.addCode("sw $t6, 0($t4)");
+        code.addCode("add $t4, $t4, " + size);
+        code.addCode("sub $t2, $t2, 1");
+        code.addCode("j " + L2.getName());
+        code.addCode(L3.getName() + ":");
+        code.addCode("move $t0, $t5");
+        return code;
+    }
+
+
+    public Code compareString(Node node){
+        Code code = new Code();
+        code.addCode(node.getChildren().get(0).getCode());
+        code.addCode("sub $sp, $sp, 4");
+        code.addCode("sw $t0, 0($sp)");
+
+        code.addCode(node.getChildren().get(1).getCode());
+        code.addCode("lw $t1, 0($sp)");
+        code.addCode("add $sp, $sp, 4");
+
+        code.addCode("lw $t2, 0($t0)");
+        code.addCode("lw $t3, 0($t1)");
+
+        Label L1 = new Label(); L1.creatNewName();
+        Label L2 = new Label(); L2.creatNewName();
+        Label L3 = new Label(); L3.creatNewName();
+        Label L4 = new Label(); L4.creatNewName();
+        code.addCode("bne $t2, $t3, " + L1.getName());
+        code.addCode("add $t0, $t0, 4");
+        code.addCode("add $t1, $t1, 4");
+        code.addCode(" :");
+        code.addCode("beq $t2, 0, " + L3.getName());
+        code.addCode("lb $t4, 0($t0)");
+        code.addCode("lb $t5, 0($t1)");
+        code.addCode("bne $t4, $t5, " + L1.getName());
+        code.addCode("sub $t2, $t2, 1");
+        code.addCode("j " + L2.getName());
+        code.addCode("L3:");
+        code.addCode("li $t0, 1");
+        code.addCode("li $t0, 1");
+        code.addCode("j " + L4.getName());
+        code.addCode(L1.getName() + " :");
+        code.addCode("$t0, 0");
+        code.addCode(L4.getName() + " :");
+        return code;
+    }
 }
