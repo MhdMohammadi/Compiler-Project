@@ -731,6 +731,12 @@ public class Compiler {
                 }
                 break;
             case Expr_DOT_IDENTIFIER_OPENPARENTHESIS_Actuals_CLOSEPARENTHESIS:
+                //todo
+                Node exprNode = node.getChildren().get(0);
+                Node identifierNode = node.getChildren().get(1);
+                Node actualNode = node.getChildren().get(2);
+                generateCode(exprNode);
+
         }
     }
 
