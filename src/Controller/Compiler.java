@@ -438,8 +438,9 @@ public class Compiler {
                         v.setType(v.getChildren().get(0).getType());
                         break;
                     case Expr_LESS_Expr:
-                        if (!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.LT))
+                        if (!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.LT)) {
                             semanticError();
+                        }
                         v.setType(Type.getTypeByName("boolean", 0));
                         break;
                     case Expr_LESSEQUAL_Expr:
@@ -489,7 +490,7 @@ public class Compiler {
                         v.setType(Type.getTypeByName("string", 0));
                         break;
                     case NEW_IDENTIFIER:
-                        v.setType(v.getChildren().get(0).getType());
+                        v.setType(Type.getTypeByName((String)v.getChildren().get(0).getValue(), 0));
                         break;
                     case NEWARRAY_OPENPARENTHESIS_Expr_COMMA_Type_CLOSEPARENTHESIS:
                         v.setType(Type.createArrayType(v.getChildren().get(1).getType()));

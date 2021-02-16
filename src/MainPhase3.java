@@ -24,7 +24,7 @@ public class MainPhase3 {
 //        Writer writer;
 
         if (inputFileName != null)
-            reader = new FileReader("tests/" + inputFileName);
+            reader = new FileReader("Tests/" + inputFileName);
         else
             reader = new FileReader("tests/t02.in");
 
