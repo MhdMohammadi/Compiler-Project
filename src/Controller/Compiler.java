@@ -6,7 +6,6 @@ import Model.*;
 import Enum.*;
 
 import java.util.ArrayList;
-import java.util.concurrent.LinkedBlockingDeque;
 
 public class Compiler {
     private Node root;
@@ -604,29 +603,69 @@ public class Compiler {
             case IfStmt:
                 break;
             case WhileStmt:
-
+                node.setCode(codeGenerator.whileLoop(node));
                 break;
             case ForStmt:
-
+                node.setCode(codeGenerator.forLoop(node));
                 break;
             case BreakStmt:
-
+                generateBreakCode(node);
                 break;
             case ContinueStmt:
-
+                generateContinueCode(node);
                 break;
             case ReturnStmt:
-
+                generateReturnCode(node);
                 break;
             case PrintStmt:
-
+            case PrintCommaExpr:
+                generatePrintCode(node);
                 break;
             case LValue:
                 generateLValueCode(node);
                 break;
             case Expr:
                 generateExprCode(node);
+                break;
+            case Call:
+                generateCallCode(node);
+                break;
+            case Constant:
+                generateConstantCode(node);
         }
+    }
+
+    private void generateConstantCode(Node node) {
+    }
+
+    private void generateCallCode(Node node) {
+        
+    }
+
+    public void generatePrintCode(Node node) {
+        Code code = new Code();
+        if(node.getChildren().size() > 0) {
+            Node child = node.getChildren().get(0);
+            generateCode(child);
+            code.addCode(child.getCode());
+            if (Type.getTypeByName("int", 0).equals(node.getType())) {
+                code.addCode("li $v0, 1");
+                code.addCode("move $a0, $t0");
+                code.addCode("syscall");
+            } else if (Type.getTypeByName("double", 0).equals(node.getType())) {
+                code.addCode("li $v0, 3");
+                code.addCode("mov.s $f12, $f0");
+                code.addCode("syscall");
+            } else if (Type.getTypeByName("string", 0).equals(node.getType())) {
+                code.addCode("li $v0, 4");
+                code.addCode("move $a0, $t0");
+                code.addCode("syscall");
+            }
+            generateCode(node.getChildren().get(1));
+            code.addCode(node.getChildren().get(1).getCode());
+        }
+        node.setCode(code);
+        return;
     }
 
     private void generateExprPrimeCode(Node node) {
