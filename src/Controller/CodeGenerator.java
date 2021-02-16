@@ -409,7 +409,7 @@ public class CodeGenerator {
         code.addCode("bne $t2, $t3, " + L1.getName());
         code.addCode("add $t0, $t0, 4");
         code.addCode("add $t1, $t1, 4");
-        code.addCode(" :");
+        code.addCode(L2.getName() + " :");
         code.addCode("beq $t2, 0, " + L3.getName());
         code.addCode("lb $t4, 0($t0)");
         code.addCode("lb $t5, 0($t1)");
