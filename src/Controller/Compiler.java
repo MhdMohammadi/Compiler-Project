@@ -636,13 +636,14 @@ public class Compiler {
     }
 
     private void generateReturnCode(Node node) {
-
     }
 
     private void generateContinueCode(Node node) {
+        codeGenerator.Continue(node);
     }
 
     private void generateBreakCode(Node node) {
+        codeGenerator.Break(node);
     }
 
     private void generateConstantCode(Node node) {
