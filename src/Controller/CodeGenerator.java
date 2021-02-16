@@ -20,61 +20,21 @@ public class CodeGenerator {
         return code;
     }
 
-    public Code loadIntegerGlobalVariable (Variable variable){
+    public Code getGlobalVariableAddress(Variable variable){
         Code code = new Code();
-        code.addCode("lw $t0, " + variable.getName());
+        code.addCode("la $t0, " + variable.getName());
         return code;
     }
 
-    public Code loadDoubleGlobalVariable (Variable variable){
+    public Code storeIntegerVariable(){
         Code code = new Code();
-        code.addCode("l.s $f1, " + variable.getName());
+        code.addCode("lw $t0, 0($t0)");
         return code;
     }
 
-    public Code storeIntegerGlobalVariable(Variable variable){
+    public Code storeDoubleVariable(){
         Code code = new Code();
-        code.addCode("la $t1, " + variable.getName());
-        code.addCode("sw $t0, 0($t1)");
-        return code;
-    }
-
-    public Code storeDoubleGlobalVariable(Variable variable){
-        Code code = new Code();
-        code.addCode("la $t1, " + variable.getName());
-        code.addCode("s.s $f1, 0($t1)");
-        return code;
-    }
-
-    public Code loadIntegerLocalVariable(int offset){
-        Code code = new Code();
-        code.addCode("sub $fp, $fp," + offset);
-        code.addCode("lw $t0, 0($fp)");
-        code.addCode("add $fp, $fp, " + offset);
-        return code;
-    }
-
-    public Code loadDoubleLocalVariable(int offset){
-        Code code = new Code();
-        code.addCode("sub $fp, $fp, " + offset);
-        code.addCode("l.s $f1, 0($fp)");
-        code.addCode("add $fp, $fp, " + offset);
-        return code;
-    }
-
-    public Code storeIntegerLocalVariable(int offset){
-        Code code = new Code();
-        code.addCode("sub $fp, $fp, " + offset);
-        code.addCode("sw $t0, 0($fp)");
-        code.addCode("add $fp, $fp, " + offset);
-        return code;
-    }
-
-    public Code storeDoubleLocalVariable(int offset){
-        Code code = new Code();
-        code.addCode("sub $fp, $fp, " + offset);
-        code.addCode("s.s $f1, 0($fp)");
-        code.addCode("add $fp, $fp, " + offset);
+        code.addCode("l.s $f0, 0($t0)");
         return code;
     }
 
@@ -83,6 +43,19 @@ public class CodeGenerator {
         code.addCode("li $v0, 5");
         code.addCode("syscall");
         code.addCode("move $t0, $v0");
+        return code;
+    }
+
+    public Code getLocalVariableAddress(int offset){
+        Code code = new Code();
+        code.addCode("sub $t0, $fp, " + offset);
+        return code;
+    }
+
+    public Code getClassVariableAddress(int offset){
+        Code code = new Code();
+        code.addCode("lw $t0, 0($fp)");
+        code.addCode("add $t0, $t0, " + offset);
         return code;
     }
 

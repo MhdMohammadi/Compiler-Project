@@ -10,6 +10,7 @@ import java.util.ArrayList;
 public class Compiler {
     private Node root;
     private int cnt = 0;
+    CodeGenerator codeGenerator = new CodeGenerator();
 
     public Compiler(Node root) {
         this.root = root;
@@ -35,7 +36,6 @@ public class Compiler {
 
         checkFunctionCalls(root);
 
-        CodeGenerator codeGenerator = new CodeGenerator();
    }
 
     public void preProcess(Node v) {
@@ -476,29 +476,64 @@ public class Compiler {
         this.root = root;
     }
 
+    public int getAttributeOffset(Clazz clazz, String name){
+        int offset = 0;
+        for (Variable variable : clazz.getVariables()){
+            if (variable.getName().equals(name))break;
+            offset += 4;
+        }
+        return offset;
+    }
+
     public Code generateLvalueIdentifierCode(Node node){
         String idName = (String)node.getChildren().get(0).getValue();
         Node findNode = node;
+        Code code = new Code();
         while (true) {
             for (Variable variable : findNode.getDefinedVariables()) {
                 if (variable.getName().equals(idName)) {
-                    if (node.getLeftHand() == LeftHand.Program){
-
+                    if (findNode.getLeftHand() == LeftHand.Program){
+                        code.addCode(codeGenerator.getGlobalVariableAddress(variable));
+                        return code;
                     }
-                    else if(node.getLeftHand() == LeftHand.ClassDecl){
-
+                    else if(findNode.getLeftHand() == LeftHand.ClassDecl){
+                        String className = (String) findNode.getChildren().get(0).getValue();
+                        Clazz clazz = Clazz.getClazzByName(className);
+                        if (clazz == null){
+                            System.out.println("WTF!");
+                            semanticError();
+                        }
+                        else{
+                            int offset = getAttributeOffset(clazz, idName);
+                            codeGenerator.getClassVariableAddress(offset);
+                        }
+                        return code;
                     }
-                    else if(node.)
+                    else if(variable.getNumber() < node.getIndex()){
+                        Node tempNode = findNode;
+                        int offset = 8;
+                        while(tempNode.getLeftHand() != LeftHand.FunctionDecl){
+                            tempNode = tempNode.getParent();
+                            if (tempNode.getLeftHand() == LeftHand.StmtBlock || tempNode.getLeftHand() == LeftHand.FunctionDecl){
+                                offset += 4 * (tempNode.getDefinedVariables().size());
+                            }
+                        }
+                        code.addCode(codeGenerator.getLocalVariableAddress(offset));
+                        return code;
+                    }
                 }
             }
             if (findNode.getParent() == null) {
+                System.out.println("WTF!");
                 break;
             } else {
                 findNode = findNode.getParent();
             }
         }
-        return null;
+        return code;
     }
+
+
 
     public void generateLValueCode(Node node){
         switch (node.getProductionRule()){
@@ -512,11 +547,28 @@ public class Compiler {
         }
     }
 
+    public void generateExprCode(Node node){
+        Code code = new Code();
+        switch (node.getProductionRule()){
+            case LValue:
+                generateCode(node.getChildren().get(0));
+                code.addCode(node.getChildren().get(0).getCode());
+                if (node.getType().equals(Type.getTypeByName("double", 0))){
+
+                }
+                else{
+
+                }
+        }
+    }
+
     public void generateCode(Node node){
         switch (node.getLeftHand()){
             case LValue:
                 generateLValueCode(node);
                 break;
+            case Expr:
+                generateExprCode(node);
         }
     }
 
