@@ -392,6 +392,8 @@ public class CodeGenerator {
         code.addCode(L1.getName() + " :");
         code.addCode("$t0, 0");
         code.addCode(L4.getName() + " :");
+        if(node.getProductionRule() == ProductionRule.Expr_EQUAL_Expr)
+            code.addCode("$t0, $t0, 1");
         return code;
     }
 }
