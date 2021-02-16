@@ -10,6 +10,8 @@ public class Node {
     private ArrayList<Node> children = new ArrayList<Node>();
     private Object value;
     private Code code;
+    private Label breakLabel = new Label();
+    private Label continueLabel = new Label();
 
     private String typeName;
     private int arrayDegree = 0;
@@ -28,7 +30,21 @@ public class Node {
     }
 
 
+    public Label getBreakLabel() {
+        return breakLabel;
+    }
 
+    public void setBreakLabel(Label breakLabel) {
+        this.breakLabel = breakLabel;
+    }
+
+    public Label getContinueLabel() {
+        return continueLabel;
+    }
+
+    public void setContinueLabel(Label continueLabel) {
+        this.continueLabel = continueLabel;
+    }
     public ProductionRule getProductionRule() {
         return productionRule;
     }
