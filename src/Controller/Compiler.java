@@ -474,4 +474,17 @@ public class Compiler {
     public void setRoot(Node root) {
         this.root = root;
     }
+
+    public void generateLValueCode(Node node){
+
+    }
+
+    public void generateCode(Node node){
+        switch (node.getLeftHand()){
+            case LValue:
+                generateLValueCode(node);
+                break;
+        }
+    }
+
 }
