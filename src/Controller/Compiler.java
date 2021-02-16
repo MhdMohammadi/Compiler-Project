@@ -533,10 +533,8 @@ public class Compiler {
                 findNode = findNode.getParent();
             }
         }
-        return;
+        return ;
     }
-
-
 
     public void generateLValueCode(Node node){
         switch (node.getProductionRule()){
@@ -576,5 +574,4 @@ public class Compiler {
                 generateExprCode(node);
         }
     }
-
 }
