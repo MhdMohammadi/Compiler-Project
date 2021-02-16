@@ -455,7 +455,7 @@ StmtStar ::=            Stmt:s StmtStar:ss
 tmp.getChildren().add((Node) s);
 tmp.getChildren().add((Node) ss);
 RESULT = tmp;:}
-						| /*epsilon*/
+                | /*epsilon*/
 						{: Node tmp = new Node(LeftHand.StmtStar, ProductionRule.EPSILON);
                         RESULT = tmp;:}
 						;

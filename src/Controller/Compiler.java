@@ -6,6 +6,7 @@ import Model.*;
 import Enum.*;
 
 import java.util.ArrayList;
+import java.util.concurrent.LinkedBlockingDeque;
 
 public class Compiler {
     private Node root;
@@ -576,11 +577,131 @@ public class Compiler {
 
     public void generateCode(Node node){
         switch (node.getLeftHand()){
+            case Program:
+                generateProgramCode(node);
+                break;
+            case FunctionDecl:
+                generateFunctionDeclCode(node);
+                break;
+            case ClassDecl:
+                generateClassDeclCode(node);
+                break;
+            case StmtBlock:
+                generateStmtBlockCode(node);
+                break;
+            case InsideStmtBlock:
+                generateInsideStmtBlockCode(node);
+                break;
+            case StmtStar:
+                generateStmtStarCode(node);
+                break;
+            case Stmt:
+                generateStmtCode(node);
+                break;
+            case ExprPrime:
+                generateExprPrimeCode(node);
+                break;
+            case IfStmt:
+                break;
+            case WhileStmt:
+
+                break;
+            case ForStmt:
+
+                break;
+            case BreakStmt:
+
+                break;
+            case ContinueStmt:
+
+                break;
+            case ReturnStmt:
+
+                break;
+            case PrintStmt:
+
+                break;
             case LValue:
                 generateLValueCode(node);
                 break;
             case Expr:
                 generateExprCode(node);
         }
+    }
+
+    private void generateExprPrimeCode(Node node) {
+        Code code = new Code();
+        if(node.getProductionRule() != ProductionRule.EPSILON){
+            generateCode(node.getChildren().get(0));
+            code.addCode(node.getChildren().get(0).getCode());
+        }
+        node.setCode(code);
+    }
+
+    private void generateStmtCode(Node node) {
+        generateCode(node.getChildren().get(0));
+        node.setCode(node.getChildren().get(0).getCode());
+   }
+
+    private void generateStmtStarCode(Node node) {
+        Code code = new Code();
+        if (node.getProductionRule() != ProductionRule.EPSILON){
+            generateCode(node.getChildren().get(0));
+            generateCode(node.getChildren().get(1));
+            code.addCode(node.getChildren().get(0).getCode());
+            code.addCode(node.getChildren().get(1).getCode());
+        }
+        node.setCode(code);
+    }
+
+    private void generateInsideStmtBlockCode(Node node) {
+        if(node.getProductionRule() == ProductionRule.StmtStar){
+            generateCode(node.getChildren().get(0));
+            node.setCode(node.getChildren().get(0).getCode());
+        }
+        if(node.getProductionRule() == ProductionRule.VariableDecl_InsideStmtBlock){
+            generateCode(node.getChildren().get(1));
+            node.setCode(node.getChildren().get(1).getCode());
+        }
+    }
+
+    private void generateStmtBlockCode(Node node) {
+        Code code = new Code();
+        code.addCode("sub $sp, $sp, " + node.getDefinedVariables().size() * 4);
+        generateCode(node.getChildren().get(0));
+        code.addCode(node.getChildren().get(0).getCode());
+        code.addCode("add $sp, $sp, " + node.getDefinedVariables().size() * 4);
+        node.setCode(code);
+    }
+
+    private void generateClassDeclCode(Node node) {
+        for(Node v : node.getChildren())
+            generateCode(v);
+        Code code = new Code();
+        for(Function function : node.getDefinedFunctions())
+            code.addCode(function.getNode().getCode());
+        node.setCode(code);
+    }
+
+    private void generateFunctionDeclCode(Node node) {
+        Code code = new Code();
+        Label label = new Label(); label.creatNewName();
+        node.getDefinedFunctions().get(0).setLabel(label);
+        code.addCode(label.getName() + " :");
+        int index = 2;
+        if(node.getProductionRule() == ProductionRule.VOID_IDENTIFIER_OPENPARENTHESIS_Formals_CLOSEPARENTHESIS_StmtBlock)
+            index = 1;
+        generateCode(node.getChildren().get(index));
+        code.addCode(node.getChildren().get(index).getCode());
+        code.addCode("lw  $ra, " + (1 + node.getDefinedFunctions().get(0).getParameter().size() + 1) * 4 + "($fp)");
+        code.addCode("lw  $fp, " + (1 + node.getDefinedFunctions().get(0).getParameter().size()) * 4 + "($fp)");
+        code.addCode("j $ra");
+        node.setCode(code);
+    }
+
+    public void generateProgramCode(Node node) {
+        node.setCode(codeGenerator.createGlobalVariables(node.getDefinedVariables()));
+        for(Node v : node.getChildren())
+            generateCode(v);
     }
 }

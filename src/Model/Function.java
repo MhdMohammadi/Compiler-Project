@@ -9,6 +9,7 @@ public class Function {
     private AccessMode accessMode = AccessMode.PUBLIC;
     private ArrayList<Variable> parameter = new ArrayList<Variable>();
     private Node node;
+    private Label label;
 
     public Function(){
         this.accessMode = AccessMode.PUBLIC;
@@ -52,5 +53,13 @@ public class Function {
 
     public void setNode(Node node) {
         this.node = node;
+    }
+
+    public Label getLabel() {
+        return label;
+    }
+
+    public void setLabel(Label label) {
+        this.label = label;
     }
 }
