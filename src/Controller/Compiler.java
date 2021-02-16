@@ -490,6 +490,7 @@ public class Compiler {
         Node findNode = node;
         Code code = new Code();
         while (true) {
+            int index = 0;
             for (Variable variable : findNode.getDefinedVariables()) {
                 if (variable.getName().equals(idName)) {
                     if (findNode.getLeftHand() == LeftHand.Program){
@@ -506,14 +507,14 @@ public class Compiler {
                         }
                         else{
                             int offset = getAttributeOffset(clazz, idName);
-                            codeGenerator.getClassVariableAddress(offset);
+                            codeGenerator.getClassVariableAddressInClass(offset);
                         }
                         node.setCode(code);
                         return ;
                     }
                     else if(variable.getNumber() < node.getIndex()){
                         Node tempNode = findNode;
-                        int offset = 8;
+                        int offset = 12 + index * 4;
                         while(tempNode.getLeftHand() != LeftHand.FunctionDecl){
                             tempNode = tempNode.getParent();
                             if (tempNode.getLeftHand() == LeftHand.StmtBlock || tempNode.getLeftHand() == LeftHand.FunctionDecl){
@@ -525,6 +526,7 @@ public class Compiler {
                         return ;
                     }
                 }
+                index ++;
             }
             if (findNode.getParent() == null) {
                 System.out.println("WTF!");
@@ -542,6 +544,13 @@ public class Compiler {
                 generateLvalueIdentifierCode(node);
                 break;
             case Expr_DOT_IDENTIFIER:
+                Node exprNode = node.getChildren().get(0);
+                Node idNode = node.getChildren().get(1);
+                generateCode(exprNode);
+                node.getCode().addCode(exprNode.getCode());
+                Clazz clazz = Clazz.getClazzByName(exprNode.getType().getName());
+                int offset = getAttributeOffset(clazz, (String) idNode.getValue());
+                node.getCode().addCode(codeGenerator.getClassVariableAddressOutOfClass(offset));
                 break;
             case Expr_OPENBRACKET_Expr_CLOSEBRACKET:
 

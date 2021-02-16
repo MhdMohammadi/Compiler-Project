@@ -52,9 +52,15 @@ public class CodeGenerator {
         return code;
     }
 
-    public Code getClassVariableAddress(int offset) {
+    public Code getClassVariableAddressInClass(int offset){
         Code code = new Code();
         code.addCode("lw $t0, 0($fp)");
+        code.addCode("add $t0, $t0, " + offset);
+        return code;
+    }
+
+    public Code getClassVariableAddressOutOfClass(int offset){
+        Code code = new Code();
         code.addCode("add $t0, $t0, " + offset);
         return code;
     }
@@ -450,6 +456,25 @@ public class CodeGenerator {
         code.addCode(label.getName() + ":");
         code.addCode("li $t0, 0");
         code.addCode(label1.getName() + ":");
+        return code;
+    }
+
+    public void call(Node node){
+        if (node.getProductionRule().equals("IDENTIFIER_OPENPARENTHESIS_Actuals_CLOSEPARENTHESIS")){
+            simpleCall(node);
+        } else {
+            extendCall(node);
+        }
+    }
+
+    public Code simpleCall(Node node){
+        Code code = new Code();
+
+        return code;
+    }
+
+    public Code extendCall(Node node){
+        Code code = new Code();
         return code;
     }
 }
