@@ -635,6 +635,16 @@ public class Compiler {
         }
     }
 
+    private void generateReturnCode(Node node) {
+
+    }
+
+    private void generateContinueCode(Node node) {
+    }
+
+    private void generateBreakCode(Node node) {
+    }
+
     private void generateConstantCode(Node node) {
     }
 
