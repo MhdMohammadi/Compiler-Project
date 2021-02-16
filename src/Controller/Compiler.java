@@ -167,7 +167,7 @@ public class Compiler {
     }
 
     public boolean areFunctionCallParametersCorrect(Function function, ArrayList<Type> parametersTypes) {
-        System.out.println(function.getName() + " " + function.getParameter().size() + " " + parametersTypes.size());
+     //   System.out.println(function.getName() + " " + function.getParameter().size() + " " + parametersTypes.size());
         if (function.getParameter().size() != parametersTypes.size()) return false;
         int index = 0;
         for (Variable variable : function.getParameter()) {

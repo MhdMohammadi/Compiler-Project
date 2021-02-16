@@ -8,11 +8,114 @@ import Enum.*;
 import java.util.ArrayList;
 
 public class CodeGenerator {
+    public Code createGlobalVariables(ArrayList <Variable> globalVariables){
+        Code code = new Code();
+        code.addCode(".data");
+        for (Variable variable : globalVariables){
+            if (variable.getType().equals(Type.getTypeByName("double", 0)))
+                code.addCode(variable.getName() + ":    .float   0.0");
+            else
+                code.addCode(variable.getName() + ":    .word   0");
+        }
+        return code;
+    }
+
+    public Code loadIntegerGlobalVariable (Variable variable){
+        Code code = new Code();
+        code.addCode("lw $t0, " + variable.getName());
+        return code;
+    }
+
+    public Code loadDoubleGlobalVariable (Variable variable){
+        Code code = new Code();
+        code.addCode("l.s $f1, " + variable.getName());
+        return code;
+    }
+
+    public Code storeIntegerGlobalVariable(Variable variable){
+        Code code = new Code();
+        code.addCode("sub $sp, $sp, 4");
+        code.addCode("sw $t1, 0($sp)");
+        code.addCode("la $t1, " + variable.getName());
+        code.addCode("sw $t0, 0($t1)");
+        code.addCode("lw $t1, 0($sp)");
+        code.addCode("add $sp, $sp, 4");
+        return code;
+    }
+
+    public Code storeDoubleGlobalVariable(Variable variable){
+        Code code = new Code();
+        code.addCode("sub $sp, $sp, 4");
+        code.addCode("sw $t1, 0($sp)");
+        code.addCode("la $t1, " + variable.getName());
+        code.addCode("s.s $f1, 0($t1)");
+        code.addCode("lw $t1, 0($sp)");
+        code.addCode("add $sp, $sp, 4");
+        return code;
+    }
+
+    public Code loadIntegerLocalVariable(int offset){
+        Code code = new Code();
+        code.addCode("sub $fp, $fp," + offset);
+        code.addCode("sw $t0, 0($fp)");
+        code.addCode("add $fp, $fp, " + offset);
+        return code;
+    }
+
+    public Code loadDoubleLocalVariable(int offset){
+        Code code = new Code();
+        code.addCode("sub $fp, $fp, " + offset);
+        code.addCode("l.s $f1, 0($fp)");
+        code.addCode("add $fp, $fp, " + offset);
+        return code;
+    }
+
+    public Code storeIntegerLocalVariable(int offset){
+        Code code = new Code();
+        code.addCode("sub $fp, $fp, " + offset);
+        code.addCode("sw $t0, 0($fp)");
+        code.addCode("add $fp, $fp, " + offset);
+        return code;
+    }
+
+    public Code storeDoubleLocalVariable(int offset){
+        Code code = new Code();
+        code.addCode("sub $fp, $fp, " + offset);
+        code.addCode("s.s $f1, 0($fp)");
+        code.addCode("add $fp, $fp, " + offset);
+        return code;
+    }
+
     public Code readLine() {
         Code code = new Code();
         code.addCode("li $v0, 5");
         code.addCode("syscall");
         code.addCode("move $t0, $v0");
+        return code;
+    }
+
+    public Code calcDotExpr(Node node1, Node node2) {
+        Code code = new Code();
+        code.addCode(node1.getCode());
+        Clazz clazz = Clazz.getClazzByName(node1.getType().getName());
+        int offset = 0;
+        Type type = Type.getTypeByName("double", 0);
+        for (Variable variable : clazz.getVariables()){
+            if (variable.getName().equals(node2.getValue())){
+                type = variable.getType();
+                break;
+            }
+            offset+=4;
+          }
+        //todo offset ro ba chizi nabayad jam zad?
+        code.addCode("add $t0, $t0, " + offset);
+        if(!type.equals(Type.getTypeByName("double", 0))){
+            code.addCode("lw $t0, 0($t0)");
+        }
+        else {
+            code.addCode("l.s $f1, 0($t0)");
+        }
+        code.addCode("add $t0, $t0, " + offset);
         return code;
     }
 
