@@ -31,10 +31,10 @@ public class Compiler {
         areAllFunctionsUnique(root); // are there variables with the same name in a class?
         setVariableType(root); // set the proper type for each variable
         setFunctionType(root); // set the proper type for each function
-        setAllNodesType(root); // set the proper type for Constant, Call, Lvalue and Expr
-        checkIntegerIndices(root); // check type of indices and count in newArray
         setClazzType(); // set the proper type for each class
         setAllClazzAttributesAndFunctions();
+        setAllNodesType(root); // set the proper type for Constant, Call, Lvalue and Expr
+        checkIntegerIndices(root); // check type of indices and count in newArray
 
         checkFunctionCalls(root);
 
@@ -318,7 +318,28 @@ public class Compiler {
                         v.setType(function.getType());
                         break;
                     case Expr_DOT_IDENTIFIER_OPENPARENTHESIS_Actuals_CLOSEPARENTHESIS:
-                        //todo
+                        Node exprNode = v.getChildren().get(0);
+                        Node idNode = v.getChildren().get(1);
+                        Node actualsNode = v.getChildren().get(2);
+
+                        Type type = exprNode.getType();
+                        if (type.getArrayDegree() > 0 && ((String)idNode.getValue()).equals("length") && actualsNode.getChildren().size() == 0){
+                            v.setType(Type.getTypeByName("int", 0));
+                        }
+                        else{
+                            if (type.getArrayDegree() > 0)semanticError();
+                            Clazz clazz = Clazz.getClazzByName(type.getName());
+                            if (clazz == null)semanticError();
+                            boolean find = false;
+                            for (Function classFunction: clazz.getFunctions()){
+                                if (classFunction.getName().equals((String) idNode.getValue())){
+                                    find = true;
+                                    v.setType(function.getType());
+                                    break;
+                                }
+                            }
+                            if (!find)semanticError();
+                        }
                         break;
                 }
                 break;
@@ -329,8 +350,20 @@ public class Compiler {
                         v.setType(variable.getType());
                         break;
                     case Expr_DOT_IDENTIFIER:
-                        Type type = v.getChildren().get(0).getType();
-                        //todo
+                        Node exprNode = v.getChildren().get(0);
+                        Node idNode = v.getChildren().get(1);
+                        Type type = exprNode.getType();
+                        if (type.getArrayDegree() > 0)semanticError();
+                        Clazz clazz = Clazz.getClazzByName(type.getName());
+                        if (clazz == null)semanticError();
+                        boolean find = false;
+                        for (Variable classVariable : clazz.getVariables()){
+                            if (classVariable.getName().equals((String)idNode.getValue())){
+                                find = true;
+                                v.setType(variable.getType());
+                            }
+                        }
+                        if (!find)semanticError();
                         break;
                     case Expr_OPENBRACKET_Expr_CLOSEBRACKET:
                         Type t1 = v.getChildren().get(0).getType();
@@ -352,7 +385,20 @@ public class Compiler {
                         v.setType(v.getChildren().get(0).getType());
                         break;
                     case THIS:
-                        // todo
+                        Node findNode = v;
+                        boolean find = false;
+                        while (findNode.getParent() != null){
+                            findNode = findNode.getParent();
+                            if (findNode.getLeftHand() == LeftHand.ClassDecl){
+                                find = true;
+                                Node idNode = findNode.getChildren().get(0);
+                                String className = (String)idNode.getValue();
+                                Clazz clazz = Clazz.getClazzByName(className);
+                                if (clazz == null) System.out.println("WTF!!!");
+                                else v.setType(clazz.getType());
+                            }
+                        }
+                        if (!find)semanticError();
                         break;
                     case Call:
                         v.setType(v.getChildren().get(0).getType());
