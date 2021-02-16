@@ -227,36 +227,54 @@ public class CodeGenerator {
 
     public Code ifCondition(Node node){
         Code code = new Code();
-        code.addCode(node.getCode());
-        code.addCode("beq $t0, 0," + elseCondition(node.getChildren().get(2)));
+        code.addCode(node.getChildren().get(0).getCode());
+        Label label = new Label();
+        Label label1 = new Label();
+        label.creatNewName();
+        label1.creatNewName();
+        code.addCode("beq $t0, 0, " + label1.getName());
         code.addCode(node.getChildren().get(1).getCode());
+        code.addCode("j " + label.getName());
+        code.addCode(label1.getName());
+        if (node.getChildren().size() == 3) {
+            code.addCode(node.getChildren().get(2).getCode());
+        }
+        code.addCode(label.getName() + ":");
         return code;
     }
 
-    public Code elseCondition(Node node){
-        Code code = new Code();
-        Label label = new Label();
-        label.creatNewName();
-        code.addCode(label.getName() + ":");
-        code.addCode(node.getCode());
-        return code;
-    }
 
     public Code whileLoop(Node node){
         Code code = new Code();
-        code.addCode(node.getCode());
         Label label = new Label();
+        Label label1 = new Label();
         label.creatNewName();
+        label1.creatNewName();
         code.addCode(label.getName() + ":");
-        code.addCode("beq $t0, 0," + exit());
+        code.addCode(node.getChildren().get(0).getCode());
+        code.addCode("beq $t0, 0, " + label1.getName());
         code.addCode(node.getChildren().get(1).getCode());
         code.addCode("j " + label.getName());
+        code.addCode(label1.getName() + ":");
         return code;
     }
 
-    public Code exit(){
+    public Code forLoop(Node node){
         Code code = new Code();
+        Label label = new Label();
+        label.creatNewName();
+        Label label1 = new Label();
+        label1.creatNewName();
+        code.addCode(node.getChildren().get(0).getCode());
+        code.addCode(label.getName() + ":");
+        code.addCode(node.getChildren().get(1).getCode());
+        code.addCode("beq $t0, 0, " + label1.getName());
+        code.addCode(node.getChildren().get(3).getCode());
+        code.addCode(node.getChildren().get(2).getCode());
+        code.addCode("j " + label.getName());
+        code.addCode(label1.getName() + ":");
         return code;
     }
+
 
 }
