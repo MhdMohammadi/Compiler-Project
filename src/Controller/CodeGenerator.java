@@ -435,4 +435,22 @@ public class CodeGenerator {
         return code;
     }
 
+    public void call(Node node){
+        if (node.getProductionRule().equals("IDENTIFIER_OPENPARENTHESIS_Actuals_CLOSEPARENTHESIS")){
+            simpleCall(node);
+        } else {
+            extendCall(node);
+        }
+    }
+
+    public Code simpleCall(Node node){
+        Code code = new Code();
+
+        return code;
+    }
+
+    public Code extendCall(Node node){
+        Code code = new Code();
+        return code;
+    }
 }
