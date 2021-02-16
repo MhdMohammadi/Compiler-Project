@@ -485,7 +485,7 @@ public class Compiler {
         return offset;
     }
 
-    public Code generateLvalueIdentifierCode(Node node){
+    public void generateLvalueIdentifierCode(Node node){
         String idName = (String)node.getChildren().get(0).getValue();
         Node findNode = node;
         Code code = new Code();
@@ -494,7 +494,8 @@ public class Compiler {
                 if (variable.getName().equals(idName)) {
                     if (findNode.getLeftHand() == LeftHand.Program){
                         code.addCode(codeGenerator.getGlobalVariableAddress(variable));
-                        return code;
+                        node.setCode(code);
+                        return ;
                     }
                     else if(findNode.getLeftHand() == LeftHand.ClassDecl){
                         String className = (String) findNode.getChildren().get(0).getValue();
@@ -507,7 +508,8 @@ public class Compiler {
                             int offset = getAttributeOffset(clazz, idName);
                             codeGenerator.getClassVariableAddress(offset);
                         }
-                        return code;
+                        node.setCode(code);
+                        return ;
                     }
                     else if(variable.getNumber() < node.getIndex()){
                         Node tempNode = findNode;
@@ -519,7 +521,8 @@ public class Compiler {
                             }
                         }
                         code.addCode(codeGenerator.getLocalVariableAddress(offset));
-                        return code;
+                        node.setCode(code);
+                        return ;
                     }
                 }
             }
@@ -530,7 +533,7 @@ public class Compiler {
                 findNode = findNode.getParent();
             }
         }
-        return code;
+        return;
     }
 
 
@@ -538,7 +541,7 @@ public class Compiler {
     public void generateLValueCode(Node node){
         switch (node.getProductionRule()){
             case IDENTIFIER:
-                node.setCode(generateLvalueIdentifierCode(node));
+                generateLvalueIdentifierCode(node);
                 break;
             case Expr_DOT_IDENTIFIER:
                 break;
@@ -554,11 +557,13 @@ public class Compiler {
                 generateCode(node.getChildren().get(0));
                 code.addCode(node.getChildren().get(0).getCode());
                 if (node.getType().equals(Type.getTypeByName("double", 0))){
-
+                    code.addCode(codeGenerator.storeDoubleVariable());
                 }
                 else{
-
+                    code.addCode(codeGenerator.storeIntegerVariable());
                 }
+                node.setCode(code);
+                break;
         }
     }
 
