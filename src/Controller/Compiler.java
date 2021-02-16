@@ -5,6 +5,7 @@ import Model.Type;
 import Model.*;
 import Enum.*;
 
+import java.awt.peer.CanvasPeer;
 import java.util.ArrayList;
 
 public class Compiler {
@@ -693,6 +694,40 @@ public class Compiler {
     }
 
     private void generateConstantCode(Node node) {
+        Code code = new Code();
+        Node childNode = node.getChildren().get(0);
+        switch (node.getProductionRule()){
+            case INTLITERAL:
+                code.addCode("li $t0, " + Integer.parseInt((String)childNode.getValue()));
+                break;
+            case DOUBLELITERAL:
+                code.addCode("li.s $f0, " + Double.parseDouble((String)childNode.getValue()));
+                break;
+            case BOOLEANLITERAL:
+                if((String)childNode.getValue() == "false"){
+                    code.addCode("li $t0, 0");
+                }
+                else code.addCode("li $t0, 1");
+                break;
+            case STRINGLITERAL:
+                String str = (String)childNode.getValue();
+                int len = str.length();
+                code.addCode("li $v0, 9");
+
+                code.addCode("li $a0, " + (4 + len));
+                code.addCode("syscall");
+                code.addCode("li $t0, $v0");
+                code.addCode("li $t1, " + len);
+                code.addCode("sw $t1, 0($t0)");
+                for (int i = 0; i < len; i ++){
+                    code.addCode("li $t2, " + (int)str.charAt(i));
+                    code.addCode("sb $t2 " + (i + 4) + "($t0)");
+                }
+                break;
+            case NULL:
+                //todo
+        }
+        node.setCode(code);
     }
 
     private void generateCallCode(Node node) {
@@ -716,13 +751,13 @@ public class Compiler {
                             code.addCode("sub $sp, $sp, 8");
                             code.addCode("sw $fp, 4($sp)");
                             code.addCode("sw $ra, 0($sp)");
-                            code.addCode("sub $fp, $sp, " + 4 * function.getParameter().size());
+                            code.addCode("sub $fp, $sp, " + (4 * function.getParameter().size()));
                             code.addCode("jal " + function.getLabel().getName());
                             if (!function.getType().equals(Type.getTypeByName("double", 0)))
                                 code.addCode("move $t0, $v0");
                             code.addCode("lw $ra, 0($sp)");
                             code.addCode("lw $fp, 4($sp)");
-                            code.addCode("add $sp, $sp, " + 4 * (2 + 1 + function.getParameter().size()));
+                            code.addCode("add $sp, $sp, " + (4 * (2 + 1 + function.getParameter().size())));
                             node.setCode(code);
                             //f(a, b)
                             break;
@@ -831,8 +866,8 @@ public class Compiler {
             index = 1;
         generateCode(node.getChildren().get(index));
         code.addCode(node.getChildren().get(index).getCode());
-        code.addCode("lw  $ra, " + (1 + node.getDefinedFunctions().get(0).getParameter().size() + 1) * 4 + "($fp)");
-        code.addCode("lw  $fp, " + (1 + node.getDefinedFunctions().get(0).getParameter().size()) * 4 + "($fp)");
+        code.addCode("lw  $ra, " + ((1 + node.getDefinedFunctions().get(0).getParameter().size() + 1) * 4) + "($fp)");
+        code.addCode("lw  $fp, " + ((1 + node.getDefinedFunctions().get(0).getParameter().size()) * 4) + "($fp)");
         code.addCode("j $ra");
         node.setCode(code);
     }
