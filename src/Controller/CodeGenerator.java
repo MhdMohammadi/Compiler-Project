@@ -20,19 +20,19 @@ public class CodeGenerator {
         return code;
     }
 
-    public Code getGlobalVariableAddress(Variable variable){
+    public Code getGlobalVariableAddress(Variable variable) {
         Code code = new Code();
         code.addCode("la $t0, " + variable.getName());
         return code;
     }
 
-    public Code storeIntegerVariable(){
+    public Code storeIntegerVariable() {
         Code code = new Code();
         code.addCode("lw $t0, 0($t0)");
         return code;
     }
 
-    public Code storeDoubleVariable(){
+    public Code storeDoubleVariable() {
         Code code = new Code();
         code.addCode("l.s $f0, 0($t0)");
         return code;
@@ -46,7 +46,7 @@ public class CodeGenerator {
         return code;
     }
 
-    public Code getLocalVariableAddress(int offset){
+    public Code getLocalVariableAddress(int offset) {
         Code code = new Code();
         code.addCode("sub $t0, $fp, " + offset);
         return code;
@@ -228,6 +228,24 @@ public class CodeGenerator {
             case DIV:
                 code.addCode("div.s $f0, $f1, $f0");
                 break;
+            default:
+                if (operator == Operator.LT)
+                    code.addCode("c.lt.s $f1, $f0");
+                if (operator == Operator.LTEQ)
+                    code.addCode("c.le.s $f1, $f0");
+                if (operator == Operator.GT)
+                    code.addCode("c.gt.s $f1, $f0");
+                if (operator == Operator.GTEQ)
+                    code.addCode("c.ge.s $f1, $f0");
+                if (operator == Operator.EQEQ)
+                    code.addCode("c.eq.s $f1, $f0");
+                if (operator == Operator.NOTEQ)
+                    code.addCode("c.ne.s $f1, $f0");
+                code.addCode("li $t0, 0");
+                Label label = new Label(); label.creatNewName();
+                code.addCode("bclf " + label.getName());
+                code.addCode("li $t0, 1");
+                code.addCode(label.getName() + " :");
         }
         return code;
     }
@@ -409,7 +427,7 @@ public class CodeGenerator {
         return code;
     }
 
-    public Code itod(Node node){
+    public Code itod(Node node) {
         Code code = new Code();
         code.addCode(node.getCode());
         code.addCode("mtc1 $t0, $f0");
@@ -417,7 +435,7 @@ public class CodeGenerator {
         return code;
     }
 
-    public Code dtoi(Node node){
+    public Code dtoi(Node node) {
         Code code = new Code();
         code.addCode(node.getCode());
         code.addCode("cvt.w.s $f0, $f0");
@@ -425,7 +443,7 @@ public class CodeGenerator {
         return code;
     }
 
-    public Code itob(Node node){
+    public Code itob(Node node) {
         Code code = new Code();
         Label label = new Label();
         Label label1 = new Label();
@@ -441,4 +459,22 @@ public class CodeGenerator {
         return code;
     }
 
+    public void call(Node node){
+        if (node.getProductionRule().equals("IDENTIFIER_OPENPARENTHESIS_Actuals_CLOSEPARENTHESIS")){
+            simpleCall(node);
+        } else {
+            extendCall(node);
+        }
+    }
+
+    public Code simpleCall(Node node){
+        Code code = new Code();
+
+        return code;
+    }
+
+    public Code extendCall(Node node){
+        Code code = new Code();
+        return code;
+    }
 }
