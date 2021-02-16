@@ -35,6 +35,7 @@ public class Compiler {
 
         checkFunctionCalls(root);
 
+        CodeGenerator codeGenerator = new CodeGenerator();
    }
 
     public void preProcess(Node v) {
@@ -53,7 +54,7 @@ public class Compiler {
         while (true) {
             for (Variable variable : node1.getDefinedVariables()) {
                 if (variable.getName().equals(name)) {
-                    if (node.getLeftHand() == LeftHand.ClassDecl || node.getLeftHand() == LeftHand.Program || variable.getNumber() < node.getIndex()) {
+                    if (node1.getLeftHand() == LeftHand.ClassDecl || node1.getLeftHand() == LeftHand.Program || variable.getNumber() < node.getIndex()) {
                         return variable;
                     }
                 }
@@ -474,4 +475,49 @@ public class Compiler {
     public void setRoot(Node root) {
         this.root = root;
     }
+
+    public Code generateLvalueIdentifierCode(Node node){
+        String idName = (String)node.getChildren().get(0).getValue();
+        Node findNode = node;
+        while (true) {
+            for (Variable variable : findNode.getDefinedVariables()) {
+                if (variable.getName().equals(idName)) {
+                    if (node.getLeftHand() == LeftHand.Program){
+
+                    }
+                    else if(node.getLeftHand() == LeftHand.ClassDecl){
+
+                    }
+                    else if(node.)
+                }
+            }
+            if (findNode.getParent() == null) {
+                break;
+            } else {
+                findNode = findNode.getParent();
+            }
+        }
+        return null;
+    }
+
+    public void generateLValueCode(Node node){
+        switch (node.getProductionRule()){
+            case IDENTIFIER:
+                node.setCode(generateLvalueIdentifierCode(node));
+                break;
+            case Expr_DOT_IDENTIFIER:
+                break;
+            case Expr_OPENBRACKET_Expr_CLOSEBRACKET:
+
+        }
+    }
+
+    public void generateCode(Node node){
+        switch (node.getLeftHand()){
+            case LValue:
+                generateLValueCode(node);
+                break;
+        }
+    }
+
 }
