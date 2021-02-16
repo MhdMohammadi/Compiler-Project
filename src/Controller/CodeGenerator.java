@@ -258,6 +258,8 @@ public class CodeGenerator {
         code.addCode(label.getName() + ":");
         code.addCode(node.getChildren().get(0).getCode());
         code.addCode("beq $t0, 0, " + label1.getName());
+        node.getChildren().get(1).setBreakLabel(label1);
+        node.getChildren().get(1).setContinueLabel(label);
         code.addCode(node.getChildren().get(1).getCode());
         code.addCode("j " + label.getName());
         code.addCode(label1.getName() + ":");
@@ -270,16 +272,34 @@ public class CodeGenerator {
         label.creatNewName();
         Label label1 = new Label();
         label1.creatNewName();
+        Label label2 = new Label();
+        label2.creatNewName();
         code.addCode(node.getChildren().get(0).getCode());
         code.addCode(label.getName() + ":");
         code.addCode(node.getChildren().get(1).getCode());
         code.addCode("beq $t0, 0, " + label1.getName());
+        node.getChildren().get(3).setBreakLabel(label1);
+        node.getChildren().get(3).setContinueLabel(label2);
         code.addCode(node.getChildren().get(3).getCode());
+        code.addCode(label2.getName() + ":");
         code.addCode(node.getChildren().get(2).getCode());
         code.addCode("j " + label.getName());
         code.addCode(label1.getName() + ":");
         return code;
     }
+
+    public Code Break(Node node){
+        Code code = new Code();
+        code.addCode("j " + node.getBreakLabel().getName());
+        return code;
+    }
+
+    public Code Continue(Node node){
+        Code code = new Code();
+        code.addCode("j " + node.getContinueLabel().getName());
+        return code;
+    }
+
 
     public Code newArray(Node node) {
         Code code = new Code();
