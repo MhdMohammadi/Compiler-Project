@@ -407,38 +407,6 @@ public class CodeGenerator {
         return code;
     }
 
-    public Code itod(Node node) {
-        Code code = new Code();
-        code.addCode(node.getCode());
-        code.addCode("mtc1 $t0, $f0");
-        code.addCode("cvt.s.w $f0, $f0");
-        return code;
-    }
-
-    public Code dtoi(Node node) {
-        Code code = new Code();
-        code.addCode(node.getCode());
-        code.addCode("cvt.w.s $f0, $f0");
-        code.addCode("mfc1 $t0, $f0");
-        return code;
-    }
-
-    public Code itob(Node node) {
-        Code code = new Code();
-        Label label = new Label();
-        Label label1 = new Label();
-        label.creatNewName();
-        label1.creatNewName();
-        code.addCode(node.getCode());
-        code.addCode("beq $t0, 0" + label.getName());
-        code.addCode("li $t0, 1");
-        code.addCode("j " + label1.getName());
-        code.addCode(label.getName() + ":");
-        code.addCode("li $t0, 0");
-        code.addCode(label1.getName() + ":");
-        return code;
-    }
-
     public void call(Node node){
         if (node.getProductionRule().equals("IDENTIFIER_OPENPARENTHESIS_Actuals_CLOSEPARENTHESIS")){
             simpleCall(node);
