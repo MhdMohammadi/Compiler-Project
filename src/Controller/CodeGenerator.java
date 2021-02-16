@@ -52,9 +52,15 @@ public class CodeGenerator {
         return code;
     }
 
-    public Code getClassVariableAddress(int offset){
+    public Code getClassVariableAddressInClass(int offset){
         Code code = new Code();
         code.addCode("lw $t0, 0($fp)");
+        code.addCode("add $t0, $t0, " + offset);
+        return code;
+    }
+
+    public Code getClassVariableAddressOutOfClass(int offset){
+        Code code = new Code();
         code.addCode("add $t0, $t0, " + offset);
         return code;
     }
