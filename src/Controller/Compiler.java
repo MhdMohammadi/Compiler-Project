@@ -328,6 +328,7 @@ public class Compiler {
                         }
                         else{
                             if (type.getArrayDegree() > 0)semanticError();
+                            if (((String)idNode.getValue()).equals("length"))semanticError();
                             Clazz clazz = Clazz.getClazzByName(type.getName());
                             if (clazz == null)semanticError();
                             boolean find = false;
@@ -535,11 +536,27 @@ public class Compiler {
                         semanticError();
                     break;
                 case Expr_DOT_IDENTIFIER_OPENPARENTHESIS_Actuals_CLOSEPARENTHESIS:
-                    Function function1 = findFunction(v, (String) v.getChildren().get(1).getValue());
-                    if (areFunctionCallParametersCorrect(function1, v.getChildren().get(2).getActualsTypes()) == false)
-                        semanticError();
+                    Node exprNode = v.getChildren().get(0);
+                    Node idNode = v.getChildren().get(1);
+                    String functionName = (String) idNode.getValue();
+                    Node actualsNode = v.getChildren().get(2);
+                    Type type = exprNode.getType();
+                    if (type.getArrayDegree() > 0 && ((String)idNode.getValue()).equals("length") && actualsNode.getChildren().size() == 0){
+                        return;
+                    }
+                    Clazz clazz = Clazz.getClazzByName(type.getName());
+                    if (clazz == null)semanticError();
+
+                    for (Function classFunction : clazz.getFunctions()){
+                        if (classFunction.getName().equals(functionName)){
+                            if (!areFunctionCallParametersCorrect(classFunction, actualsNode.getActualsTypes()))
+                                semanticError();
+                            break;
+                        }
+                    }
+
+
             }
-            //todo class
         }
     }
 
