@@ -34,30 +34,22 @@ public class CodeGenerator {
 
     public Code storeIntegerGlobalVariable(Variable variable){
         Code code = new Code();
-        code.addCode("sub $sp, $sp, 4");
-        code.addCode("sw $t1, 0($sp)");
         code.addCode("la $t1, " + variable.getName());
         code.addCode("sw $t0, 0($t1)");
-        code.addCode("lw $t1, 0($sp)");
-        code.addCode("add $sp, $sp, 4");
         return code;
     }
 
     public Code storeDoubleGlobalVariable(Variable variable){
         Code code = new Code();
-        code.addCode("sub $sp, $sp, 4");
-        code.addCode("sw $t1, 0($sp)");
         code.addCode("la $t1, " + variable.getName());
         code.addCode("s.s $f1, 0($t1)");
-        code.addCode("lw $t1, 0($sp)");
-        code.addCode("add $sp, $sp, 4");
         return code;
     }
 
     public Code loadIntegerLocalVariable(int offset){
         Code code = new Code();
         code.addCode("sub $fp, $fp," + offset);
-        code.addCode("sw $t0, 0($fp)");
+        code.addCode("lw $t0, 0($fp)");
         code.addCode("add $fp, $fp, " + offset);
         return code;
     }
@@ -115,7 +107,6 @@ public class CodeGenerator {
         else {
             code.addCode("l.s $f1, 0($t0)");
         }
-        code.addCode("add $t0, $t0, " + offset);
         return code;
     }
 
