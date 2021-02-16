@@ -335,7 +335,7 @@ public class Compiler {
                             for (Function classFunction: clazz.getFunctions()){
                                 if (classFunction.getName().equals((String) idNode.getValue())){
                                     find = true;
-                                    v.setType(function.getType());
+                                    v.setType(classFunction.getType());
                                     break;
                                 }
                             }
@@ -361,7 +361,7 @@ public class Compiler {
                         for (Variable classVariable : clazz.getVariables()){
                             if (classVariable.getName().equals((String)idNode.getValue())){
                                 find = true;
-                                v.setType(variable.getType());
+                                v.setType(classVariable.getType());
                             }
                         }
                         if (!find)semanticError();
