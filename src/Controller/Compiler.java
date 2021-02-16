@@ -642,6 +642,7 @@ public class Compiler {
                 generateExprPrimeCode(node);
                 break;
             case IfStmt:
+                node.setCode(codeGenerator.ifCondition(node));
                 break;
             case WhileStmt:
                 node.setCode(codeGenerator.whileLoop(node));

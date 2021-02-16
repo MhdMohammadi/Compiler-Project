@@ -240,7 +240,7 @@ public class CodeGenerator {
         code.addCode("beq $t0, 0, " + label1.getName());
         code.addCode(node.getChildren().get(1).getCode());
         code.addCode("j " + label.getName());
-        code.addCode(label1.getName());
+        code.addCode(label1.getName() + ":");
         if (node.getChildren().size() == 3) {
             code.addCode(node.getChildren().get(2).getCode());
         }
