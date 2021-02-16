@@ -5,7 +5,6 @@ import Model.Type;
 import Model.*;
 import Enum.*;
 
-import java.awt.peer.CanvasPeer;
 import java.util.ArrayList;
 
 public class Compiler {
