@@ -258,6 +258,8 @@ public class CodeGenerator {
         code.addCode(label.getName() + ":");
         code.addCode(node.getChildren().get(0).getCode());
         code.addCode("beq $t0, 0, " + label1.getName());
+        node.getChildren().get(1).setBreakLabel(label1);
+        node.getChildren().get(1).setContinueLabel(label);
         code.addCode(node.getChildren().get(1).getCode());
         code.addCode("j " + label.getName());
         code.addCode(label1.getName() + ":");
@@ -270,16 +272,34 @@ public class CodeGenerator {
         label.creatNewName();
         Label label1 = new Label();
         label1.creatNewName();
+        Label label2 = new Label();
+        label2.creatNewName();
         code.addCode(node.getChildren().get(0).getCode());
         code.addCode(label.getName() + ":");
         code.addCode(node.getChildren().get(1).getCode());
         code.addCode("beq $t0, 0, " + label1.getName());
+        node.getChildren().get(3).setBreakLabel(label1);
+        node.getChildren().get(3).setContinueLabel(label2);
         code.addCode(node.getChildren().get(3).getCode());
+        code.addCode(label2.getName() + ":");
         code.addCode(node.getChildren().get(2).getCode());
         code.addCode("j " + label.getName());
         code.addCode(label1.getName() + ":");
         return code;
     }
+
+    public Code Break(Node node){
+        Code code = new Code();
+        code.addCode("j " + node.getBreakLabel().getName());
+        return code;
+    }
+
+    public Code Continue(Node node){
+        Code code = new Code();
+        code.addCode("j " + node.getContinueLabel().getName());
+        return code;
+    }
+
 
     public Code newArray(Node node) {
         Code code = new Code();
@@ -404,38 +424,6 @@ public class CodeGenerator {
         code.addCode(L4.getName() + " :");
         if (node.getProductionRule() == ProductionRule.Expr_EQUAL_Expr)
             code.addCode("xor $t0, $t0, 1");
-        return code;
-    }
-
-    public Code itod(Node node) {
-        Code code = new Code();
-        code.addCode(node.getCode());
-        code.addCode("mtc1 $t0, $f0");
-        code.addCode("cvt.s.w $f0, $f0");
-        return code;
-    }
-
-    public Code dtoi(Node node) {
-        Code code = new Code();
-        code.addCode(node.getCode());
-        code.addCode("cvt.w.s $f0, $f0");
-        code.addCode("mfc1 $t0, $f0");
-        return code;
-    }
-
-    public Code itob(Node node) {
-        Code code = new Code();
-        Label label = new Label();
-        Label label1 = new Label();
-        label.creatNewName();
-        label1.creatNewName();
-        code.addCode(node.getCode());
-        code.addCode("beq $t0, 0" + label.getName());
-        code.addCode("li $t0, 1");
-        code.addCode("j " + label1.getName());
-        code.addCode(label.getName() + ":");
-        code.addCode("li $t0, 0");
-        code.addCode(label1.getName() + ":");
         return code;
     }
 

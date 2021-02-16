@@ -21,12 +21,13 @@ public class Compiler {
         System.exit(0);
     }
 
-    public void compile(){
+    public void compile() {
         preProcess(root); // assign indices to parse tree
-        areAllVariablesUnique(root); // are there variables with the same name in a scope?
-        areAllFunctionsUnique(root); // are there variables with the same name in a class?
         Type.createTypes(); // create all types and construct tree of types
         createArrays(root); // create arrays and add them to types & set type of each Type node
+        createBuiltinFunctions(root);
+        areAllVariablesUnique(root); // are there variables with the same name in a scope?
+        areAllFunctionsUnique(root); // are there variables with the same name in a class?
         setVariableType(root); // set the proper type for each variable
         setFunctionType(root); // set the proper type for each function
         setAllNodesType(root); // set the proper type for Constant, Call, Lvalue and Expr
@@ -36,7 +37,35 @@ public class Compiler {
 
         checkFunctionCalls(root);
 
-   }
+    }
+
+    private void createBuiltinFunctions(Node root) {
+        Function itob = new Function();
+        initializeFunction(itob, "itob", "int", "boolean");
+        Function btoi = new Function();
+        initializeFunction(btoi, "btoi", "boolean", "int");
+        Function dtoi = new Function();
+        initializeFunction(dtoi, "dtoi", "double", "int");
+        Function itod = new Function();
+        initializeFunction(itod, "itod", "int", "double");
+
+        root.getDefinedFunctions().add(itob);
+        root.getDefinedFunctions().add(btoi);
+        root.getDefinedFunctions().add(dtoi);
+        root.getDefinedFunctions().add(itod);
+    }
+
+    private void initializeFunction(Function x, String name, String input, String output) {
+        Variable tmp = new Variable();
+        tmp.setName("x");
+        tmp.setType(Type.getTypeByName(input, 0));
+        x.getParameter().add(tmp);
+        x.setName(name);
+        x.setType(Type.getTypeByName(output, 0));
+        Label label = new Label();
+        label.creatNewName();
+        x.setLabel(label);
+    }
 
     public void preProcess(Node v) {
         v.setIndex(cnt);
@@ -168,7 +197,7 @@ public class Compiler {
     }
 
     public boolean areFunctionCallParametersCorrect(Function function, ArrayList<Type> parametersTypes) {
-     //   System.out.println(function.getName() + " " + function.getParameter().size() + " " + parametersTypes.size());
+        //   System.out.println(function.getName() + " " + function.getParameter().size() + " " + parametersTypes.size());
         if (function.getParameter().size() != parametersTypes.size()) return false;
         int index = 0;
         for (Variable variable : function.getParameter()) {
@@ -238,7 +267,7 @@ public class Compiler {
         return true;
     }
 
-    public void areAllFunctionsUnique(Node v){
+    public void areAllFunctionsUnique(Node v) {
         ArrayList<Function> functions = v.getDefinedFunctions();
         if (areArrayListFunctionsUnique(functions) == false) semanticError();
 
@@ -246,10 +275,10 @@ public class Compiler {
             areAllFunctionsUnique(node);
     }
 
-    public boolean areArrayListFunctionsUnique(ArrayList<Function> functions){
-        for(int i = 0; i < functions.size(); i ++){
-            for(int j = i + 1; j < functions.size(); j ++){
-                if(functions.get(i).getName().equals(functions.get(j).getName()))
+    public boolean areArrayListFunctionsUnique(ArrayList<Function> functions) {
+        for (int i = 0; i < functions.size(); i++) {
+            for (int j = i + 1; j < functions.size(); j++) {
+                if (functions.get(i).getName().equals(functions.get(j).getName()))
                     return false;
             }
         }
@@ -438,33 +467,34 @@ public class Compiler {
     }
 
     public void checkFunctionCalls(Node v) {
-        for (Node node : v.getChildren()){
+        for (Node node : v.getChildren()) {
             checkFunctionCalls(node);
         }
-        if(v.getLeftHand() == LeftHand.Actuals && v.getProductionRule() == ProductionRule.Expr_ActualsCommaExpr){
+        if (v.getLeftHand() == LeftHand.Actuals && v.getProductionRule() == ProductionRule.Expr_ActualsCommaExpr) {
             v.getActualsTypes().add(v.getChildren().get(0).getType());
             v.getActualsTypes().addAll(v.getChildren().get(1).getActualsTypes());
             //System.out.println("+1");
         }
-        if(v.getLeftHand() == LeftHand.ActualsCommaExpr && v.getProductionRule() == ProductionRule.COMMA_Expr_ActualsCommaExpr){
+        if (v.getLeftHand() == LeftHand.ActualsCommaExpr && v.getProductionRule() == ProductionRule.COMMA_Expr_ActualsCommaExpr) {
             v.getActualsTypes().add(v.getChildren().get(0).getType());
             v.getActualsTypes().addAll(v.getChildren().get(1).getActualsTypes());
             //System.out.println("+1.1");
         }
-        if(v.getLeftHand() == LeftHand.Call){
-            switch (v.getProductionRule()){
+        if (v.getLeftHand() == LeftHand.Call) {
+            switch (v.getProductionRule()) {
                 case IDENTIFIER_OPENPARENTHESIS_Actuals_CLOSEPARENTHESIS:
-                    Function function = findFunction(v, (String)v.getChildren().get(0).getValue());
-                    if (areFunctionCallParametersCorrect(function, v.getChildren().get(1).getActualsTypes()) == false) semanticError();
+                    Function function = findFunction(v, (String) v.getChildren().get(0).getValue());
+                    if (areFunctionCallParametersCorrect(function, v.getChildren().get(1).getActualsTypes()) == false)
+                        semanticError();
                     break;
                 case Expr_DOT_IDENTIFIER_OPENPARENTHESIS_Actuals_CLOSEPARENTHESIS:
-                    Function function1 = findFunction(v, (String)v.getChildren().get(1).getValue());
-                    if (areFunctionCallParametersCorrect(function1, v.getChildren().get(2).getActualsTypes()) == false) semanticError();
+                    Function function1 = findFunction(v, (String) v.getChildren().get(1).getValue());
+                    if (areFunctionCallParametersCorrect(function1, v.getChildren().get(2).getActualsTypes()) == false)
+                        semanticError();
             }
             //todo class
         }
     }
-
 
 
     public Node getRoot() {
@@ -476,57 +506,54 @@ public class Compiler {
         this.root = root;
     }
 
-    public int getAttributeOffset(Clazz clazz, String name){
+    public int getAttributeOffset(Clazz clazz, String name) {
         int offset = 0;
-        for (Variable variable : clazz.getVariables()){
-            if (variable.getName().equals(name))break;
+        for (Variable variable : clazz.getVariables()) {
+            if (variable.getName().equals(name)) break;
             offset += 4;
         }
         return offset;
     }
 
-    public void generateLvalueIdentifierCode(Node node){
-        String idName = (String)node.getChildren().get(0).getValue();
+    public void generateLvalueIdentifierCode(Node node) {
+        String idName = (String) node.getChildren().get(0).getValue();
         Node findNode = node;
         Code code = new Code();
         while (true) {
             int index = 0;
             for (Variable variable : findNode.getDefinedVariables()) {
                 if (variable.getName().equals(idName)) {
-                    if (findNode.getLeftHand() == LeftHand.Program){
+                    if (findNode.getLeftHand() == LeftHand.Program) {
                         code.addCode(codeGenerator.getGlobalVariableAddress(variable));
                         node.setCode(code);
-                        return ;
-                    }
-                    else if(findNode.getLeftHand() == LeftHand.ClassDecl){
+                        return;
+                    } else if (findNode.getLeftHand() == LeftHand.ClassDecl) {
                         String className = (String) findNode.getChildren().get(0).getValue();
                         Clazz clazz = Clazz.getClazzByName(className);
-                        if (clazz == null){
+                        if (clazz == null) {
                             System.out.println("WTF!");
                             semanticError();
-                        }
-                        else{
+                        } else {
                             int offset = getAttributeOffset(clazz, idName);
                             codeGenerator.getClassVariableAddressInClass(offset);
                         }
                         node.setCode(code);
-                        return ;
-                    }
-                    else if(variable.getNumber() < node.getIndex()){
+                        return;
+                    } else if (variable.getNumber() < node.getIndex()) {
                         Node tempNode = findNode;
                         int offset = 12 + index * 4;
-                        while(tempNode.getLeftHand() != LeftHand.FunctionDecl){
+                        while (tempNode.getLeftHand() != LeftHand.FunctionDecl) {
                             tempNode = tempNode.getParent();
-                            if (tempNode.getLeftHand() == LeftHand.StmtBlock || tempNode.getLeftHand() == LeftHand.FunctionDecl){
+                            if (tempNode.getLeftHand() == LeftHand.StmtBlock || tempNode.getLeftHand() == LeftHand.FunctionDecl) {
                                 offset += 4 * (tempNode.getDefinedVariables().size());
                             }
                         }
                         code.addCode(codeGenerator.getLocalVariableAddress(offset));
                         node.setCode(code);
-                        return ;
+                        return;
                     }
                 }
-                index ++;
+                index++;
             }
             if (findNode.getParent() == null) {
                 System.out.println("WTF!");
@@ -535,11 +562,11 @@ public class Compiler {
                 findNode = findNode.getParent();
             }
         }
-        return ;
+        return;
     }
 
-    public void generateLValueCode(Node node){
-        switch (node.getProductionRule()){
+    public void generateLValueCode(Node node) {
+        switch (node.getProductionRule()) {
             case IDENTIFIER:
                 generateLvalueIdentifierCode(node);
                 break;
@@ -557,16 +584,15 @@ public class Compiler {
         }
     }
 
-    public void generateExprCode(Node node){
+    public void generateExprCode(Node node) {
         Code code = new Code();
-        switch (node.getProductionRule()){
+        switch (node.getProductionRule()) {
             case LValue:
                 generateCode(node.getChildren().get(0));
                 code.addCode(node.getChildren().get(0).getCode());
-                if (node.getType().equals(Type.getTypeByName("double", 0))){
+                if (node.getType().equals(Type.getTypeByName("double", 0))) {
                     code.addCode(codeGenerator.storeDoubleVariable());
-                }
-                else{
+                } else {
                     code.addCode(codeGenerator.storeIntegerVariable());
                 }
                 node.setCode(code);
@@ -656,13 +682,14 @@ public class Compiler {
     }
 
     private void generateReturnCode(Node node) {
-
     }
 
     private void generateContinueCode(Node node) {
+        codeGenerator.Continue(node);
     }
 
     private void generateBreakCode(Node node) {
+        codeGenerator.Break(node);
     }
 
     private void generateConstantCode(Node node) {
@@ -709,7 +736,7 @@ public class Compiler {
 
     public void generatePrintCode(Node node) {
         Code code = new Code();
-        if(node.getChildren().size() > 0) {
+        if (node.getChildren().size() > 0) {
             Node child = node.getChildren().get(0);
             generateCode(child);
             code.addCode(child.getCode());
@@ -735,7 +762,7 @@ public class Compiler {
 
     private void generateExprPrimeCode(Node node) {
         Code code = new Code();
-        if(node.getProductionRule() != ProductionRule.EPSILON){
+        if (node.getProductionRule() != ProductionRule.EPSILON) {
             generateCode(node.getChildren().get(0));
             code.addCode(node.getChildren().get(0).getCode());
         }
@@ -745,11 +772,11 @@ public class Compiler {
     private void generateStmtCode(Node node) {
         generateCode(node.getChildren().get(0));
         node.setCode(node.getChildren().get(0).getCode());
-   }
+    }
 
     private void generateStmtStarCode(Node node) {
         Code code = new Code();
-        if (node.getProductionRule() != ProductionRule.EPSILON){
+        if (node.getProductionRule() != ProductionRule.EPSILON) {
             generateCode(node.getChildren().get(0));
             generateCode(node.getChildren().get(1));
             code.addCode(node.getChildren().get(0).getCode());
@@ -759,11 +786,11 @@ public class Compiler {
     }
 
     private void generateInsideStmtBlockCode(Node node) {
-        if(node.getProductionRule() == ProductionRule.StmtStar){
+        if (node.getProductionRule() == ProductionRule.StmtStar) {
             generateCode(node.getChildren().get(0));
             node.setCode(node.getChildren().get(0).getCode());
         }
-        if(node.getProductionRule() == ProductionRule.VariableDecl_InsideStmtBlock){
+        if (node.getProductionRule() == ProductionRule.VariableDecl_InsideStmtBlock) {
             generateCode(node.getChildren().get(1));
             node.setCode(node.getChildren().get(1).getCode());
         }
@@ -779,21 +806,22 @@ public class Compiler {
     }
 
     private void generateClassDeclCode(Node node) {
-        for(Node v : node.getChildren())
+        for (Node v : node.getChildren())
             generateCode(v);
         Code code = new Code();
-        for(Function function : node.getDefinedFunctions())
+        for (Function function : node.getDefinedFunctions())
             code.addCode(function.getNode().getCode());
         node.setCode(code);
     }
 
     private void generateFunctionDeclCode(Node node) {
         Code code = new Code();
-        Label label = new Label(); label.creatNewName();
+        Label label = new Label();
+        label.creatNewName();
         node.getDefinedFunctions().get(0).setLabel(label);
         code.addCode(label.getName() + " :");
         int index = 2;
-        if(node.getProductionRule() == ProductionRule.VOID_IDENTIFIER_OPENPARENTHESIS_Formals_CLOSEPARENTHESIS_StmtBlock)
+        if (node.getProductionRule() == ProductionRule.VOID_IDENTIFIER_OPENPARENTHESIS_Formals_CLOSEPARENTHESIS_StmtBlock)
             index = 1;
         generateCode(node.getChildren().get(index));
         code.addCode(node.getChildren().get(index).getCode());
@@ -805,7 +833,81 @@ public class Compiler {
 
     public void generateProgramCode(Node node) {
         node.setCode(codeGenerator.createGlobalVariables(node.getDefinedVariables()));
-        for(Node v : node.getChildren())
+        for (Node v : node.getChildren()) {
             generateCode(v);
+        }
+
+    }
+
+    public Code gatherGlobalFunction(Node node) {
+        Code code = new Code();
+        for (Function function : node.getDefinedFunctions()) {
+            if (function.getName().equals("itob"))
+                code.addCode(itob(function));
+            else if (function.getName().equals("btoi"))
+                code.addCode(btoi(function));
+            else if (function.getName().equals("dtoi"))
+                code.addCode(dtoi(function));
+            else if (function.getName().equals("itod"))
+                code.addCode(itod(function));
+            else
+                code.addCode(function.getNode().getCode());
+        }
+        return code;
+    }
+
+    public Code btoi(Function function){
+        Code code = new Code();
+        code.addCode(function.getLabel().getName()+ " :");
+        code.addCode("lw $t0, 4($fp)");
+        code.addCode("move $v0, $t0");
+        code.addCode("lw  $ra, 8($fp)");
+        code.addCode("lw  $fp, 12($fp)");
+        code.addCode("j $ra");
+        return code;
+    }
+
+    public Code itod(Function function) {
+        Code code = new Code();
+        code.addCode(function.getLabel().getName()+ " :");
+        code.addCode("lw $t0, 4($fp)");
+        code.addCode("mtc1 $t0, $f0");
+        code.addCode("cvt.s.w $f0, $f0");
+        code.addCode("lw  $ra, 8($fp)");
+        code.addCode("lw  $fp, 12($fp)");
+        code.addCode("j $ra");
+        return code;
+    }
+
+    public Code dtoi(Function function) {
+        Code code = new Code();
+        code.addCode(function.getLabel().getName()+ " :");
+        code.addCode("l.s $f0, 4($fp)");
+        code.addCode("cvt.w.s $f0, $f0");
+        code.addCode("mfc1 $t0, $f0");
+        code.addCode("move $v0, $t0");
+        code.addCode("lw  $ra, 8($fp)");
+        code.addCode("lw  $fp, 12($fp)");
+        code.addCode("j $ra");
+        return code;
+    }
+
+    public Code itob(Function function) {
+        Code code = new Code();
+        code.addCode(function.getLabel().getName()+ " :");
+        Label label = new Label(); label.creatNewName();
+        Label label1 = new Label(); label1.creatNewName();
+        code.addCode("lw $t0, 4($sp)");
+        code.addCode("beq $t0, 0" + label.getName());
+        code.addCode("li $t0, 1");
+        code.addCode("j " + label1.getName());
+        code.addCode(label.getName() + ":");
+        code.addCode("li $t0, 0");
+        code.addCode(label1.getName() + ":");
+        code.addCode("move $v0, $t0");
+        code.addCode("lw  $ra, 8($fp)");
+        code.addCode("lw  $fp, 12($fp)");
+        code.addCode("j $ra");
+        return code;
     }
 }
