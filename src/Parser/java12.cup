@@ -752,7 +752,7 @@ LValue ::=              IDENTIFIER:id
                         tmp.getChildren().add((Node)e2);
                         RESULT = tmp;
                         :}
-						;
+						    ;
 
 Call ::=                IDENTIFIER:functionID OPENPARENTHESIS Actuals:a CLOSEPARENTHESIS
 						{:  Node tmp = new Node(LeftHand.Call, ProductionRule.IDENTIFIER_OPENPARENTHESIS_Actuals_CLOSEPARENTHESIS);
@@ -762,7 +762,7 @@ Call ::=                IDENTIFIER:functionID OPENPARENTHESIS Actuals:a CLOSEPAR
                          tmp.getChildren().add((Node)a);
                          RESULT = tmp;
                         :}
-						| DOT IDENTIFIER:id OPENPARENTHESIS Actuals:a CLOSEPARENTHESIS
+						| Expr:e DOT IDENTIFIER:id OPENPARENTHESIS Actuals:a CLOSEPARENTHESIS
 						{:  Node tmp = new Node(LeftHand.Call, ProductionRule.Expr_DOT_IDENTIFIER_OPENPARENTHESIS_Actuals_CLOSEPARENTHESIS);
                          Node idNode = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
                          idNode.setValue(id);

@@ -574,6 +574,20 @@ public class Compiler {
         }
     }
 
+    public void generateActualsCode(Node node){
+        Code code = new Code();
+        if(node.getProductionRule() != ProductionRule.EPSILON){
+            generateCode(node.getChildren().get(0));
+            code.addCode(node.getChildren().get(0).getCode());
+            code.addCode("sub $sp, $sp, 4");
+            code.addCode("sw $t0, 0($sp)");
+            generateCode(node.getChildren().get(1));
+            code.addCode(node.getChildren().get(1).getCode());
+        }
+        node.setCode(code);
+    }
+
+
     public void generateCode(Node node){
         switch (node.getLeftHand()){
             case Program:
@@ -630,8 +644,14 @@ public class Compiler {
             case Call:
                 generateCallCode(node);
                 break;
+            case Actuals:
+            case ActualsCommaExpr:
+                generateActualsCode(node);
+                break;
             case Constant:
                 generateConstantCode(node);
+                break;
+            default:
         }
     }
 
@@ -649,7 +669,42 @@ public class Compiler {
     }
 
     private void generateCallCode(Node node) {
-        
+        Code code = new Code();
+        switch (node.getProductionRule()){
+            case IDENTIFIER_OPENPARENTHESIS_Actuals_CLOSEPARENTHESIS:
+                Node idNode = node.getChildren().get(0);
+                Node actualsNode = node.getChildren().get(1);
+
+                generateCode(actualsNode);
+
+                Node findNode = node;
+                while (findNode.getParent() != null){
+                    findNode = findNode.getParent();
+                    for (Function function : findNode.getDefinedFunctions()){
+                        if (function.getName().equals((String) idNode.getValue())){
+                            code.addCode("lw $t0, 0($fp)");
+                            code.addCode("sub $sp, $sp, 4");
+                            code.addCode("sw $t0, 0($sp)");
+                            code.addCode(actualsNode.getCode());
+                            code.addCode("sub $sp, $sp, 8");
+                            code.addCode("sw $fp, 4($sp)");
+                            code.addCode("sw $ra, 0($sp)");
+                            code.addCode("sub $fp, $sp, " + 4 * function.getParameter().size());
+                            code.addCode("jal " + function.getLabel().getName());
+                            if (!function.getType().equals(Type.getTypeByName("double", 0)))
+                                code.addCode("move $t0, $v0");
+                            code.addCode("lw $ra, 0($sp)");
+                            code.addCode("lw $fp, 4($sp)");
+                            code.addCode("add $sp, $sp, " + 4 * (2 + 1 + function.getParameter().size()));
+                            node.setCode(code);
+                            //f(a, b)
+                            break;
+                        }
+                    }
+                }
+                break;
+            case Expr_DOT_IDENTIFIER_OPENPARENTHESIS_Actuals_CLOSEPARENTHESIS:
+        }
     }
 
     public void generatePrintCode(Node node) {
