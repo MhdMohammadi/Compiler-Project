@@ -25,6 +25,7 @@ public class CodeGenerator {
         Code code = new Code();
         code.addCode("TRUE: .asciiz \"true\"");
         code.addCode("FALSE: .asciiz \"false\"");
+        code.addCode("ENDL: .asciiz \"\\n\"");
         return code;
     }
 
@@ -411,6 +412,9 @@ public class CodeGenerator {
                 code.addCode("move $a0, $t0");
                 code.addCode("syscall");
             }
+            code.addCode("la $a0, ENDL");
+            code.addCode("li $v0, 4");
+            code.addCode("syscall");
             generateCode(node.getChildren().get(1));
             code.addCode(node.getChildren().get(1).getCode());
         }

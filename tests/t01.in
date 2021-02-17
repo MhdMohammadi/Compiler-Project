@@ -1,12 +1,9 @@
 int main() {
-    bool x;
-    bool y;
-    bool z;
+    double x;
+    double z;
 
-    x = true;
-    y = x || !x;
-    z = y && !y;
+    x = 2.6;
+    z = 0.05;
 
-    Print(y);
-    Print(z);
+    Print(z + x);
 }
