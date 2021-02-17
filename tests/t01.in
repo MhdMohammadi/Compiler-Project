@@ -1,5 +1,21 @@
+class A{
+    private int f(double y){
+            return 1;
+    }
+}
+
+class B extends A{
+public int x;
+    public int g(){
+        f(2.5);
+        return 1;
+    }
+
+}
+
 int main() {
-    bool f;
     int a;
-    a = btoi(f);
+    B b;
+    b = new B;
+    a = b.g();
 }
