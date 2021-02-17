@@ -369,7 +369,7 @@ public class Compiler {
                         boolean find = false;
                         for (Variable classVariable : clazz.getVariables()){
                             if (classVariable.getName().equals((String)idNode.getValue())){
-                                if (variable.getAccessMode() == AccessMode.PUBLIC){
+                                if (classVariable.getAccessMode() == AccessMode.PUBLIC){
                                     find = true;
                                     v.setType(classVariable.getType());
                                 }
