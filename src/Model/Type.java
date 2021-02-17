@@ -104,7 +104,6 @@ public class Type {
     }
 
     public static boolean possible(Type t1, Type t2, Operator operator){
-        System.out.println(t1.getName() + t2.getName() + operator);
         if (operator != Operator.EQEQ && operator != Operator.NOTEQ && operator != Operator.EQ){
             if(t1 != t2) return false;
         }
@@ -124,8 +123,9 @@ public class Type {
         if (operator == Operator.EQEQ || operator == Operator.NOTEQ){
             if (!Compiler.isConvertibleTo(t1, t2) && !Compiler.isConvertibleTo(t2, t1))return false;
         }
-        if (operator == Operator.EQ && !Compiler.isConvertibleTo(t2, t1))
-
+        System.out.println("check eq type");
+        System.out.println(t1 + " " + t2);
+        if (operator == Operator.EQ && !Compiler.isConvertibleTo(t2, t1))return false;
         System.out.println("ok");
         return true;
     }
