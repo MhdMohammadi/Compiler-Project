@@ -57,7 +57,6 @@ public class Type {
             for (int j = 0; j < allPreTypes.size(); j++) {
                 if (i != j) {
                     if (allPreTypes.get(i).getName().equals(allPreTypes.get(j).getName())) {
-
                         Compiler.semanticError();
                     }
                 }

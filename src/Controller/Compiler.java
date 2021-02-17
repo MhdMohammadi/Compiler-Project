@@ -124,6 +124,7 @@ public class Compiler {
 
     public void setVariableType(Node v) {
         //todo
+        //chera todo?
         if (v.getLeftHand() == LeftHand.Variable) {
             Type type = Type.getTypeByName((String) v.getChildren().get(0).getTypeName(), v.getChildren().get(0).getArrayDegree());
             if (type == null) Compiler.semanticError();
