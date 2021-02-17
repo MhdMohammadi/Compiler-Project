@@ -74,6 +74,7 @@ public class CodeGenerator {
         Code code = new Code();
         generateCode(node.getChildren().get(0));
         code.addCode(node.getChildren().get(0).getCode());
+        code.addCode("cvt.w.s $f0, $f0");
         code.addCode("mfc1 $t0, $f0");
         node.setCode(code);
     }

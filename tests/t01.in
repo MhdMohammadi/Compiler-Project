@@ -1,9 +1,9 @@
 int main(){
-    bool a;
+    double a;
     int b;
 
-    a = true;
-    b = btoi(true && (!false || false));
+    a = 2.4;
+    b = dtoi(a);
 
     Print(a, b);
 }
