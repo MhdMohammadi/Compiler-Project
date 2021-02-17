@@ -100,6 +100,7 @@ public class Type {
         for(Type type : allTypes)
             if(type.name.equals(name) && type.arrayDegree == degree)
                 return type;
+        Compiler.semanticError();
         return null;
     }
 

@@ -26,13 +26,13 @@ public class CodeGenerator {
         return code;
     }
 
-    public Code storeIntegerVariable() {
+    public Code loadIntegerVariable() {
         Code code = new Code();
         code.addCode("lw $t0, 0($t0)");
         return code;
     }
 
-    public Code storeDoubleVariable() {
+    public Code loadDoubleVariable() {
         Code code = new Code();
         code.addCode("l.s $f0, 0($t0)");
         return code;
