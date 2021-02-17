@@ -1,7 +1,9 @@
 int main() {
-    boolean x;
+    bool b;
+    int a;
 
-    x = true;
+    a = 10;
+    b = itob(a);
 
-    Print(x);
+    Print(a);
 }

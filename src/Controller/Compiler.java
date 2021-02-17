@@ -74,7 +74,7 @@ public class Compiler {
         createArrays(root); // create arrays and add them to types & set type of each Type node
         System.out.println("3.ok");
 
-        createBuiltinFunctions(root); // btoi, itob, dtoi, itod
+//        createBuiltinFunctions(root); // btoi, itob, dtoi, itod
         System.out.println("4.ok");
 
         areAllVariablesUnique(root); // are there variables with the same name in a scope?
@@ -453,6 +453,8 @@ public class Compiler {
             case Expr:
                 switch (v.getProductionRule()) {
                     case LValue_ASSIGN_Expr:
+                        System.out.println(v.getChildren().get(0).getType().getName());
+                        System.out.println(v.getChildren().get(1).getType().getName());
                         if (!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.EQ))
                             semanticError();
                         v.setType(v.getChildren().get(0).getType());
@@ -574,6 +576,26 @@ public class Compiler {
                         break;
                     case NEWARRAY_OPENPARENTHESIS_Expr_COMMA_Type_CLOSEPARENTHESIS:
                         v.setType(Type.createArrayType(v.getChildren().get(1).getType()));
+                        break;
+                    case DTOI_OPENPARENTHESIS_Expr_CLOSEPARENTHESIS:
+                        if(!v.getChildren().get(0).getType().equals(Type.getTypeByName("double", 0)))
+                            Compiler.semanticError();
+                        v.setType(Type.getTypeByName("int", 0));
+                        break;
+                    case ITOD_OPENPARENTHESIS_Expr_CLOSEPARENTHESIS:
+                        if(!v.getChildren().get(0).getType().equals(Type.getTypeByName("int", 0)))
+                            Compiler.semanticError();
+                        v.setType(Type.getTypeByName("double", 0));
+                        break;
+                    case BTOI_OPENPARENTHESIS_Expr_CLOSEPARENTHESIS:
+                        if(!v.getChildren().get(0).getType().equals(Type.getTypeByName("bool", 0)))
+                            Compiler.semanticError();
+                        v.setType(Type.getTypeByName("int", 0));
+                        break;
+                    case ITOB_OPENPARENTHESIS_Expr_CLOSEPARENTHESIS:
+                        if(!v.getChildren().get(0).getType().equals(Type.getTypeByName("int", 0)))
+                            Compiler.semanticError();
+                        v.setType(Type.getTypeByName("bool", 0));
                         break;
                 }
                 break;
