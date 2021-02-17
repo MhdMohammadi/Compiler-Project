@@ -5,6 +5,7 @@ import Model.Type;
 import Model.*;
 import Enum.*;
 
+import java.net.CookiePolicy;
 import java.util.ArrayList;
 
 public class CodeGenerator {
@@ -406,15 +407,17 @@ public class CodeGenerator {
                 generateLvalueToIdentifierCode(node);
                 break;
             case Expr_DOT_IDENTIFIER:
+                Code code = new Code();
                 Node exprNode = node.getChildren().get(0);
                 Node idNode = node.getChildren().get(1);
                 generateCode(exprNode);
-                node.getCode().addCode(exprNode.getCode());
+                code.addCode(exprNode.getCode());
                 if (exprNode.getType().getArrayDegree() > 0) Compiler.semanticError();
                 Clazz clazz = Clazz.getClazzByName(exprNode.getType().getName());
                 if (clazz == null) Compiler.semanticError();
                 int offset = getAttributeOffset(clazz, (String) idNode.getValue());
-                node.getCode().addCode(getClassVariableAddressOutOfClass(offset));
+                code.addCode(getClassVariableAddressOutOfClass(offset));
+                node.setCode(code);
                 break;
             case Expr_OPENBRACKET_Expr_CLOSEBRACKET:
                 Node exprNode1 = node.getChildren().get(0);
