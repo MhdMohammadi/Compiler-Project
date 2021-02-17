@@ -128,18 +128,13 @@ public class Compiler {
     public Variable findVariable(Node node, String name) {
         Node node1 = node;
         while (true) {
-            for (Variable variable : node1.getDefinedVariables()) {
-                if (variable.getName().equals(name)) {
-                    if (node1.getLeftHand() == LeftHand.ClassDecl || node1.getLeftHand() == LeftHand.Program || variable.getNumber() < node.getIndex()) {
-                        return variable;
-                    }
-                }
-            }
-            if (node1.getParent() == null) {
+            for (Variable variable : node1.getDefinedVariables())
+                if (variable.getName().equals(name))
+                    return variable;
+            if (node1.getParent() == null)
                 break;
-            } else {
+            else
                 node1 = node1.getParent();
-            }
         }
         semanticError();
         return null;
@@ -552,18 +547,21 @@ public class Compiler {
     public void checkIntegerIndices(Node v) {
         if (v.getProductionRule() == ProductionRule.NEWARRAY_OPENPARENTHESIS_Expr_COMMA_Type_CLOSEPARENTHESIS) {
             Type t = v.getChildren().get(0).getType();
-            if (t != Type.getTypeByName("int", 0))
+            if (!t.equals(Type.getTypeByName("int", 0)))
                 semanticError();
         }
         if (v.getProductionRule() == ProductionRule.Expr_OPENBRACKET_Expr_CLOSEBRACKET) {
             Type t = v.getChildren().get(1).getType();
-            if (t != Type.getTypeByName("int", 0))
+            if (!t.equals(Type.getTypeByName("int", 0)))
                 semanticError();
         }
         for (Node node : v.getChildren())
             checkIntegerIndices(node);
     }
-
+    //todo check kardane return type ba functions type
+    //todo class function calls code
+    //todo return code
+    //todo null
     public void checkFunctionCalls(Node v) {
         for (Node node : v.getChildren()) {
             checkFunctionCalls(node);
@@ -582,7 +580,7 @@ public class Compiler {
             switch (v.getProductionRule()) {
                 case IDENTIFIER_OPENPARENTHESIS_Actuals_CLOSEPARENTHESIS:
                     Function function = findFunction(v, (String) v.getChildren().get(0).getValue());
-                    if (areFunctionCallParametersCorrect(function, v.getChildren().get(1).getActualsTypes()) == false)
+                    if (!areFunctionCallParametersCorrect(function, v.getChildren().get(1).getActualsTypes()))
                         semanticError();
                     break;
                 case Expr_DOT_IDENTIFIER_OPENPARENTHESIS_Actuals_CLOSEPARENTHESIS:
@@ -591,9 +589,10 @@ public class Compiler {
                     String functionName = (String) idNode.getValue();
                     Node actualsNode = v.getChildren().get(2);
                     Type type = exprNode.getType();
-                    if (type.getArrayDegree() > 0 && ((String)idNode.getValue()).equals("length") && actualsNode.getChildren().size() == 0){
+                    if (type.getArrayDegree() > 0 && functionName.equals("length") && actualsNode.getChildren().size() == 0){
                         return;
                     }
+                    if (type.getArrayDegree() > 0)semanticError();
                     Clazz clazz = Clazz.getClazzByName(type.getName());
                     if (clazz == null)semanticError();
 
@@ -639,8 +638,6 @@ public class Compiler {
                 if (variable.getName().equals(idName)) {
                     if (findNode.getLeftHand() == LeftHand.Program) {
                         code.addCode(codeGenerator.getGlobalVariableAddress(variable));
-                        node.setCode(code);
-                        return;
                     } else if (findNode.getLeftHand() == LeftHand.ClassDecl) {
                         String className = (String) findNode.getChildren().get(0).getValue();
                         Clazz clazz = Clazz.getClazzByName(className);
@@ -651,11 +648,11 @@ public class Compiler {
                             int offset = getAttributeOffset(clazz, idName);
                             codeGenerator.getClassVariableAddressInClass(offset);
                         }
-                        node.setCode(code);
-                        return;
-                    } else if (variable.getNumber() < node.getIndex()) {
+                    } else {
+                        //formals +12 nemishe
                         Node tempNode = findNode;
-                        int offset = 12 + index * 4;
+                        int offset = 4 + index * 4;
+                        if(findNode.getLeftHand() != LeftHand.FunctionDecl) offset += 8; //$fp and $ra
                         while (tempNode.getLeftHand() != LeftHand.FunctionDecl) {
                             tempNode = tempNode.getParent();
                             if (tempNode.getLeftHand() == LeftHand.StmtBlock || tempNode.getLeftHand() == LeftHand.FunctionDecl) {
@@ -663,14 +660,15 @@ public class Compiler {
                             }
                         }
                         code.addCode(codeGenerator.getLocalVariableAddress(offset));
-                        node.setCode(code);
-                        return;
                     }
+                    node.setCode(code);
+                    return;
                 }
                 index++;
             }
             if (findNode.getParent() == null) {
                 System.out.println("WTF!");
+                semanticError();
                 break;
             } else {
                 findNode = findNode.getParent();
@@ -689,12 +687,24 @@ public class Compiler {
                 Node idNode = node.getChildren().get(1);
                 generateCode(exprNode);
                 node.getCode().addCode(exprNode.getCode());
+                if (exprNode.getType().getArrayDegree() > 0)semanticError();
                 Clazz clazz = Clazz.getClazzByName(exprNode.getType().getName());
+                if (clazz == null)semanticError();
                 int offset = getAttributeOffset(clazz, (String) idNode.getValue());
                 node.getCode().addCode(codeGenerator.getClassVariableAddressOutOfClass(offset));
                 break;
             case Expr_OPENBRACKET_Expr_CLOSEBRACKET:
-
+                Node exprNode1 = node.getChildren().get(0);
+                Node exprNode2 = node.getChildren().get(1);
+                generateCode(exprNode1);
+                node.getCode().addCode(exprNode1.getCode());
+                node.getCode().addCode("sub $sp, $sp, 4");
+                node.getCode().addCode("sw $t0, 0($sp)");
+                generateCode(exprNode2);
+                node.getCode().addCode(exprNode2.getCode());
+                node.getCode().addCode("lw $t1, 0($sp)");
+                node.getCode().addCode("add $sp, $sp, 4");
+                node.getCode().addCode("add $t0, $t0, $t1");
         }
     }
 
