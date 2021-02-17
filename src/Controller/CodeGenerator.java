@@ -23,8 +23,8 @@ public class CodeGenerator {
 
     private Code addFloatingPoints() {
         Code code = new Code();
-        for(int i = 0; i < floatingPoints.size(); i += 2)
-            code.addCode(((Label)floatingPoints.get(i)).getName() + " : .float " + ((Double)floatingPoints.get(i + 1)));
+        code.addCode("TRUE: .asciiz \"true\"");
+        code.addCode("FALSE: .asciiz \"false\"");
         return code;
     }
 
@@ -392,8 +392,15 @@ public class CodeGenerator {
             if (Type.getTypeByName("int", 0).equals(node.getChildren().get(0).getType()) ||
                 Type.getTypeByName("boolean", 0).equals(node.getChildren().get(0).getType())
             ) {
-                code.addCode("li $v0, 1");
-                code.addCode("move $a0, $t0");
+                Label label = new Label(); label.creatNewName();
+                Label label2 = new Label(); label2.creatNewName();
+                code.addCode("beq $t0, 0, " + label.getName());
+                code.addCode("la $a0, TRUE");
+                code.addCode("j " + label2.getName());
+                code.addCode(label.getName() + " :");
+                code.addCode("la $a0, FALSE");
+                code.addCode(label2.getName() + " :");
+                code.addCode("li $v0, 4");
                 code.addCode("syscall");
             } else if (Type.getTypeByName("double", 0).equals(node.getChildren().get(0).getType())) {
                 code.addCode("li $v0, 2");
@@ -659,11 +666,7 @@ public class CodeGenerator {
                 code.addCode("li $t0, " + Integer.parseInt(str));
                 break;
             case DOUBLELITERAL:
-                Label label = new Label(); label.creatNewName();
-                double num = Double.parseDouble(str);
-                floatingPoints.add(label);
-                floatingPoints.add(num);
-                code.addCode("l.s $f0, " + label.getName());
+                code.addCode("li.s $f0, " + Double.parseDouble(str));
                 break;
             case BOOLEANLITERAL:
                 if (str.equals("false")) {

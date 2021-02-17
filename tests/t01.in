@@ -1,68 +1,12 @@
 int main() {
-    double x;
+    bool x;
+    bool y;
+    bool z;
 
-    x = 2.3;
+    x = true;
+    y = x || !x;
+    z = y && !y;
 
-    Print(x);
+    Print(y);
+    Print(z);
 }
-
-.data
-L5 : .float 2.3
-.text
-.globl main
-main :
-move $fp, $sp
-sub $sp, $sp, 8
-sub $sp, $sp, 4
-sub $t0, $fp, 12
-sub $sp, $sp, 4
-sw $t0, 0($sp)
-
-l.s $f0, L5
-
-lw $t1, 0($sp)
-add $sp, $sp, 4
-
-sw $t0, 0($t1)
-
-sub $t0, $fp, 12
-l.s $f0, 0($t0)
-li $v0, 2
-mov.s $f12, $f0
-syscall
-add $sp, $sp, 4
-li $v0, 10
-syscall
-L0 :
-lw $t0, 4($sp)
-beq $t0, 0, L6
-li $t0, 1
-j L7
-L6:
-li $t0, 0
-L7:
-move $v0, $t0
-lw  $ra, 8($fp)
-lw  $fp, 12($fp)
-jr $ra
-L1 :
-lw $t0, 4($fp)
-move $v0, $t0
-lw  $ra, 8($fp)
-lw  $fp, 12($fp)
-jr $ra
-L2 :
-l.s $f0, 4($fp)
-cvt.w.s $f0, $f0
-mfc1 $t0, $f0
-move $v0, $t0
-lw  $ra, 8($fp)
-lw  $fp, 12($fp)
-jr $ra
-L3 :
-lw $t0, 4($fp)
-mtc1 $t0, $f0
-cvt.s.w $f0, $f0
-lw  $ra, 8($fp)
-lw  $fp, 12($fp)
-jr $ra
