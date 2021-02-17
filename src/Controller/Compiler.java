@@ -530,9 +530,10 @@ public class Compiler {
         for (Node node : v.getChildren())
             checkIntegerIndices(node);
     }
-    //todo return code
+
     //todo class function calls code
     //todo null
+
     public void checkFunctionCalls(Node v) {
         for (Node node : v.getChildren()) {
             checkFunctionCalls(node);

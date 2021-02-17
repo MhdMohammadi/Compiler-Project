@@ -174,9 +174,8 @@ public class CodeGenerator {
                             getClassVariableAddressInClass(offset);
                         }
                     } else {
-                        //formals +12 nemishe
                         Node tempNode = findNode;
-                        int offset = 4 + index * 4;
+                        int offset = 4 + index * 4; //this + parameters
                         if(findNode.getLeftHand() != LeftHand.FunctionDecl) offset += 8; //$fp and $ra
                         while (tempNode.getLeftHand() != LeftHand.FunctionDecl) {
                             tempNode = tempNode.getParent();
@@ -285,7 +284,7 @@ public class CodeGenerator {
         }
         code.addCode("j $ra");
         node.setCode(code);
-        //todo
+        //todo check kon
     }
 
     private void generateContinueCode(Node node) {
@@ -338,6 +337,7 @@ public class CodeGenerator {
         switch (node.getProductionRule()){
             case IDENTIFIER_OPENPARENTHESIS_Actuals_CLOSEPARENTHESIS:
                 Node idNode = node.getChildren().get(0);
+                String functionName = (String) idNode.getValue();
                 Node actualsNode = node.getChildren().get(1);
 
                 generateCode(actualsNode);
@@ -345,8 +345,10 @@ public class CodeGenerator {
                 Node findNode = node;
                 while (findNode.getParent() != null){
                     findNode = findNode.getParent();
+                    boolean find = false;
                     for (Function function : findNode.getDefinedFunctions()){
-                        if (function.getName().equals((String) idNode.getValue())){
+                        if (function.getName().equals(functionName)){
+                            find = true;
                             code.addCode("lw $t0, 0($fp)");
                             code.addCode("sub $sp, $sp, 4");
                             code.addCode("sw $t0, 0($sp)");
@@ -354,7 +356,7 @@ public class CodeGenerator {
                             code.addCode("sub $sp, $sp, 8");
                             code.addCode("sw $fp, 4($sp)");
                             code.addCode("sw $ra, 0($sp)");
-                            code.addCode("sub $fp, $sp, " + (4 * function.getParameter().size()));
+                            code.addCode("add $fp, $sp, " + ( 4 * ( 2 + function.getParameter().size() ) ) );
                             code.addCode("jal " + function.getLabel().getName());
                             if (!function.getType().equals(Type.getTypeByName("double", 0)))
                                 code.addCode("move $t0, $v0");
@@ -362,20 +364,50 @@ public class CodeGenerator {
                             code.addCode("lw $fp, 4($sp)");
                             code.addCode("add $sp, $sp, " + (4 * (2 + 1 + function.getParameter().size())));
                             node.setCode(code);
-                            //f(a, b)
+                            break;
+                        }
+                    }
+                    if (find)break;
+                }
+                break;
+            case Expr_DOT_IDENTIFIER_OPENPARENTHESIS_Actuals_CLOSEPARENTHESIS:
+                Node exprNode1 = node.getChildren().get(0);
+                generateCode(exprNode1);
+                code.addCode(exprNode1.getCode());
+
+                Node idNode1 = node.getChildren().get(1);
+                String functionName1 = (String) idNode1.getValue();
+                Node actualsNode1 = node.getChildren().get(2);
+
+                if (functionName1.equals("length")){
+                    //todo length
+                }
+                else{
+                    Type type = exprNode1.getType();
+                    Clazz clazz = Clazz.getClazzByName(type.getName());
+                    for (Function function : clazz.getFunctions()){
+                        if (function.getName().equals(functionName1)){
+                            code.addCode("sub $sp, $sp, 4");
+                            code.addCode("sw $t0, 0($sp)");
+                            code.addCode(actualsNode1.getCode());
+                            code.addCode("sub $sp, $sp, 8");
+                            code.addCode("sw $fp, 4($sp)");
+                            code.addCode("sw $ra, 0($sp)");
+                            code.addCode("add $fp, $sp, " + ( 4 * ( 2 + function.getParameter().size() ) ) );
+                            code.addCode("jal " + function.getLabel().getName());
+                            if (!function.getType().equals(Type.getTypeByName("double", 0)))
+                                code.addCode("move $t0, $v0");
+                            code.addCode("lw $ra, 0($sp)");
+                            code.addCode("lw $fp, 4($sp)");
+                            code.addCode("add $sp, $sp, " + (4 * (2 + 1 + function.getParameter().size())));
                             break;
                         }
                     }
                 }
-                break;
-            case Expr_DOT_IDENTIFIER_OPENPARENTHESIS_Actuals_CLOSEPARENTHESIS:
-                //todo
-                Node exprNode = node.getChildren().get(0);
-                Node identifierNode = node.getChildren().get(1);
-                Node actualNode = node.getChildren().get(2);
-                generateCode(exprNode);
+                node.setCode(code);
 
         }
+        //todo inheritance nazadim
     }
 
     public void generatePrintCode(Node node) {
