@@ -153,63 +153,190 @@ public class CodeGenerator {
         }
     }
 
-    public void generateLvalueIdentifierCode(Node node) {
-        String idName = (String) node.getChildren().get(0).getValue();
-        Node findNode = node;
-        Code code = new Code();
-        while (true) {
-            int index = 0;
-            for (Variable variable : findNode.getDefinedVariables()) {
-                if (variable.getName().equals(idName)) {
-                    if (findNode.getLeftHand() == LeftHand.Program) {
-                        code.addCode(getGlobalVariableAddress(variable));
-                    } else if (findNode.getLeftHand() == LeftHand.ClassDecl) {
-                        String className = (String) findNode.getChildren().get(0).getValue();
-                        Clazz clazz = Clazz.getClazzByName(className);
-                        if (clazz == null) {
-                            System.out.println("WTF!");
-                            Compiler.semanticError();
-                        } else {
-                            int offset = getAttributeOffset(clazz, idName);
-                            getClassVariableAddressInClass(offset);
-                        }
-                    } else {
-                        Node tempNode = findNode;
-                        int offset = 4 + index * 4; //this + parameters
-                        if(findNode.getLeftHand() != LeftHand.FunctionDecl) offset += 8; //$fp and $ra
-                        while (tempNode.getLeftHand() != LeftHand.FunctionDecl) {
-                            tempNode = tempNode.getParent();
-                            if (tempNode.getLeftHand() == LeftHand.StmtBlock || tempNode.getLeftHand() == LeftHand.FunctionDecl) {
-                                offset += 4 * (tempNode.getDefinedVariables().size());
-                            }
-                        }
-                        code.addCode(getLocalVariableAddress(offset));
-                    }
-                    node.setCode(code);
-                    return;
-                }
-                index++;
-            }
-            if (findNode.getParent() == null) {
-                System.out.println("WTF!");
-                Compiler.semanticError();
-                break;
-            } else {
-                findNode = findNode.getParent();
-            }
+    public void generateProgramCode(Node node) {
+        node.setCode(createGlobalVariables(node.getDefinedVariables()));
+        for (Node v : node.getChildren()) {
+            generateCode(v);
         }
+    }
+
+    private void generateFunctionDeclCode(Node node) {
+        Code code = new Code();
+        Label label = new Label();
+        label.creatNewName();
+        node.getDefinedFunctions().get(0).setLabel(label);
+        code.addCode(label.getName() + " :");
+        int index = 2;
+        if (node.getProductionRule() == ProductionRule.VOID_IDENTIFIER_OPENPARENTHESIS_Formals_CLOSEPARENTHESIS_StmtBlock)
+            index = 1;
+        generateCode(node.getChildren().get(index));
+        code.addCode(node.getChildren().get(index).getCode());
+        code.addCode("lw  $ra, " + ((1 + node.getDefinedFunctions().get(0).getParameter().size() + 1) * 4) + "($fp)");
+        code.addCode("lw  $fp, " + ((1 + node.getDefinedFunctions().get(0).getParameter().size()) * 4) + "($fp)");
+        code.addCode("j $ra");
+        node.setCode(code);
+    }
+
+    private void generateClassDeclCode(Node node) {
+        for (Node v : node.getChildren())
+            generateCode(v);
+        Code code = new Code();
+        for (Function function : node.getDefinedFunctions())
+            code.addCode(function.getNode().getCode());
+        node.setCode(code);
+    }
+
+    private void generateStmtBlockCode(Node node) {
+        Code code = new Code();
+        code.addCode("sub $sp, $sp, " + node.getDefinedVariables().size() * 4);
+        generateCode(node.getChildren().get(0));
+        code.addCode(node.getChildren().get(0).getCode());
+        code.addCode("add $sp, $sp, " + node.getDefinedVariables().size() * 4);
+        node.setCode(code);
+    }
+
+    private void generateInsideStmtBlockCode(Node node) {
+        if (node.getProductionRule() == ProductionRule.StmtStar) {
+            generateCode(node.getChildren().get(0));
+            node.setCode(node.getChildren().get(0).getCode());
+        }
+        if (node.getProductionRule() == ProductionRule.VariableDecl_InsideStmtBlock) {
+            generateCode(node.getChildren().get(1));
+            node.setCode(node.getChildren().get(1).getCode());
+        }
+    }
+
+    private void generateStmtStarCode(Node node) {
+        Code code = new Code();
+        if (node.getProductionRule() != ProductionRule.EPSILON) {
+            generateCode(node.getChildren().get(0));
+            generateCode(node.getChildren().get(1));
+            code.addCode(node.getChildren().get(0).getCode());
+            code.addCode(node.getChildren().get(1).getCode());
+        }
+        node.setCode(code);
+    }
+
+    private void generateStmtCode(Node node) {
+        generateCode(node.getChildren().get(0));
+        node.setCode(node.getChildren().get(0).getCode());
+    }
+
+    private void generateExprPrimeCode(Node node) {
+        Code code = new Code();
+        if (node.getProductionRule() != ProductionRule.EPSILON) {
+            generateCode(node.getChildren().get(0));
+            code.addCode(node.getChildren().get(0).getCode());
+        }
+        node.setCode(code);
+    }
+
+    public Code ifCondition(Node node) {
+        Code code = new Code();
+        code.addCode(node.getChildren().get(0).getCode());
+        Label label = new Label();
+        Label label1 = new Label();
+        label.creatNewName();
+        label1.creatNewName();
+        code.addCode("beq $t0, 0, " + label1.getName());
+        code.addCode(node.getChildren().get(1).getCode());
+        code.addCode("j " + label.getName());
+        code.addCode(label1.getName() + ":");
+        if (node.getChildren().size() == 3) {
+            code.addCode(node.getChildren().get(2).getCode());
+        }
+        code.addCode(label.getName() + ":");
+        return code;
+    }
+
+    public Code whileLoop(Node node) {
+        Code code = new Code();
+        Label label = new Label();
+        Label label1 = new Label();
+        label.creatNewName();
+        label1.creatNewName();
+        code.addCode(label.getName() + ":");
+        code.addCode(node.getChildren().get(0).getCode());
+        code.addCode("beq $t0, 0, " + label1.getName());
+        node.getChildren().get(1).setBreakLabel(label1);
+        node.getChildren().get(1).setContinueLabel(label);
+        code.addCode(node.getChildren().get(1).getCode());
+        code.addCode("j " + label.getName());
+        code.addCode(label1.getName() + ":");
+        return code;
+    }
+
+    public Code forLoop(Node node) {
+        Code code = new Code();
+        Label label = new Label();
+        label.creatNewName();
+        Label label1 = new Label();
+        label1.creatNewName();
+        Label label2 = new Label();
+        label2.creatNewName();
+        code.addCode(node.getChildren().get(0).getCode());
+        code.addCode(label.getName() + ":");
+        code.addCode(node.getChildren().get(1).getCode());
+        code.addCode("beq $t0, 0, " + label1.getName());
+        node.getChildren().get(3).setBreakLabel(label1);
+        node.getChildren().get(3).setContinueLabel(label2);
+        code.addCode(node.getChildren().get(3).getCode());
+        code.addCode(label2.getName() + ":");
+        code.addCode(node.getChildren().get(2).getCode());
+        code.addCode("j " + label.getName());
+        code.addCode(label1.getName() + ":");
+        return code;
+    }
+
+    private void generateBreakCode(Node node) {
+        Break(node);
+    }
+
+    private void generateContinueCode(Node node) {
+        Continue(node);
+    }
+
+    public void generateReturnCode(Node node) {
+        Code code = new Code();
+        Node exprNode = node.getChildren().get(0);
+        generateCode(exprNode);
+        code.addCode(exprNode.getCode());
+        code.addCode("add $sp, $fp, 4");
+        if (exprNode.getProductionRule() != ProductionRule.EPSILON){
+            Type returnType = exprNode.getChildren().get(0).getType();
+            if (!returnType.equals(Type.getTypeByName("double", 0)))
+                code.addCode("move $v0, $t0");
+        }
+        code.addCode("j $ra");
+        node.setCode(code);
+        //todo check kon
+    }
+
+    public void generatePrintCode(Node node) {
+        Code code = new Code();
+        if (node.getChildren().size() > 0) {
+            Node child = node.getChildren().get(0);
+            generateCode(child);
+            code.addCode(child.getCode());
+            if (Type.getTypeByName("int", 0).equals(node.getType())) {
+                code.addCode("li $v0, 1");
+                code.addCode("move $a0, $t0");
+                code.addCode("syscall");
+            } else if (Type.getTypeByName("double", 0).equals(node.getType())) {
+                code.addCode("li $v0, 3");
+                code.addCode("mov.s $f12, $f0");
+                code.addCode("syscall");
+            } else if (Type.getTypeByName("string", 0).equals(node.getType())) {
+                code.addCode("li $v0, 4");
+                code.addCode("move $a0, $t0");
+                code.addCode("syscall");
+            }
+            generateCode(node.getChildren().get(1));
+            code.addCode(node.getChildren().get(1).getCode());
+        }
+        node.setCode(code);
         return;
     }
-
-    public int getAttributeOffset(Clazz clazz, String name) {
-        int offset = 0;
-        for (Variable variable : clazz.getVariables()) {
-            if (variable.getName().equals(name)) break;
-            offset += 4;
-        }
-        return offset;
-    }
-
 
     public void generateLValueCode(Node node) {
         switch (node.getProductionRule()) {
@@ -256,80 +383,6 @@ public class CodeGenerator {
                 node.setCode(code);
                 break;
         }
-    }
-
-    public void generateActualsCode(Node node){
-        Code code = new Code();
-        if(node.getProductionRule() != ProductionRule.EPSILON){
-            generateCode(node.getChildren().get(0));
-            code.addCode(node.getChildren().get(0).getCode());
-            code.addCode("sub $sp, $sp, 4");
-            code.addCode("sw $t0, 0($sp)");
-            generateCode(node.getChildren().get(1));
-            code.addCode(node.getChildren().get(1).getCode());
-        }
-        node.setCode(code);
-    }
-
-    public void generateReturnCode(Node node) {
-        Code code = new Code();
-        Node exprNode = node.getChildren().get(0);
-        generateCode(exprNode);
-        code.addCode(exprNode.getCode());
-        code.addCode("add $sp, $fp, 4");
-        if (exprNode.getProductionRule() != ProductionRule.EPSILON){
-            Type returnType = exprNode.getChildren().get(0).getType();
-            if (!returnType.equals(Type.getTypeByName("double", 0)))
-                code.addCode("move $v0, $t0");
-        }
-        code.addCode("j $ra");
-        node.setCode(code);
-        //todo check kon
-    }
-
-    private void generateContinueCode(Node node) {
-        Continue(node);
-    }
-
-    private void generateBreakCode(Node node) {
-        Break(node);
-    }
-
-    private void generateConstantCode(Node node) {
-        Code code = new Code();
-        Node childNode = node.getChildren().get(0);
-        String str = (String)childNode.getValue();
-        switch (node.getProductionRule()){
-            case INTLITERAL:
-                code.addCode("li $t0, " + Integer.parseInt(str));
-                break;
-            case DOUBLELITERAL:
-                code.addCode("li.s $f0, " + Double.parseDouble(str));
-                break;
-            case BOOLEANLITERAL:
-                if(str.equals("false")){
-                    code.addCode("li $t0, 0");
-                }
-                else code.addCode("li $t0, 1");
-                break;
-            case STRINGLITERAL:
-
-                int len = str.length();
-                code.addCode("li $v0, 9");
-                code.addCode("li $a0, " + (4 + len));
-                code.addCode("syscall");
-                code.addCode("li $t0, $v0");
-                code.addCode("li $t1, " + len);
-                code.addCode("sw $t1, 0($t0)");
-                for (int i = 0; i < len; i ++){
-                    code.addCode("li $t2, " + (int)str.charAt(i));
-                    code.addCode("sb $t2 " + (i + 4) + "($t0)");
-                }
-                break;
-            case NULL:
-                //todo
-        }
-        node.setCode(code);
     }
 
     private void generateCallCode(Node node) {
@@ -410,109 +463,111 @@ public class CodeGenerator {
         //todo inheritance nazadim
     }
 
-    public void generatePrintCode(Node node) {
+    public void generateActualsCode(Node node){
         Code code = new Code();
-        if (node.getChildren().size() > 0) {
-            Node child = node.getChildren().get(0);
-            generateCode(child);
-            code.addCode(child.getCode());
-            if (Type.getTypeByName("int", 0).equals(node.getType())) {
-                code.addCode("li $v0, 1");
-                code.addCode("move $a0, $t0");
-                code.addCode("syscall");
-            } else if (Type.getTypeByName("double", 0).equals(node.getType())) {
-                code.addCode("li $v0, 3");
-                code.addCode("mov.s $f12, $f0");
-                code.addCode("syscall");
-            } else if (Type.getTypeByName("string", 0).equals(node.getType())) {
-                code.addCode("li $v0, 4");
-                code.addCode("move $a0, $t0");
-                code.addCode("syscall");
-            }
+        if(node.getProductionRule() != ProductionRule.EPSILON){
+            generateCode(node.getChildren().get(0));
+            code.addCode(node.getChildren().get(0).getCode());
+            code.addCode("sub $sp, $sp, 4");
+            code.addCode("sw $t0, 0($sp)");
             generateCode(node.getChildren().get(1));
             code.addCode(node.getChildren().get(1).getCode());
         }
         node.setCode(code);
+    }
+
+    private void generateConstantCode(Node node) {
+        Code code = new Code();
+        Node childNode = node.getChildren().get(0);
+        String str = (String)childNode.getValue();
+        switch (node.getProductionRule()){
+            case INTLITERAL:
+                code.addCode("li $t0, " + Integer.parseInt(str));
+                break;
+            case DOUBLELITERAL:
+                code.addCode("li.s $f0, " + Double.parseDouble(str));
+                break;
+            case BOOLEANLITERAL:
+                if(str.equals("false")){
+                    code.addCode("li $t0, 0");
+                }
+                else code.addCode("li $t0, 1");
+                break;
+            case STRINGLITERAL:
+
+                int len = str.length();
+                code.addCode("li $v0, 9");
+                code.addCode("li $a0, " + (4 + len));
+                code.addCode("syscall");
+                code.addCode("li $t0, $v0");
+                code.addCode("li $t1, " + len);
+                code.addCode("sw $t1, 0($t0)");
+                for (int i = 0; i < len; i ++){
+                    code.addCode("li $t2, " + (int)str.charAt(i));
+                    code.addCode("sb $t2 " + (i + 4) + "($t0)");
+                }
+                break;
+            case NULL:
+                //todo
+        }
+        node.setCode(code);
+    }
+
+    public void generateLvalueIdentifierCode(Node node) {
+        String idName = (String) node.getChildren().get(0).getValue();
+        Node findNode = node;
+        Code code = new Code();
+        while (true) {
+            int index = 0;
+            for (Variable variable : findNode.getDefinedVariables()) {
+                if (variable.getName().equals(idName)) {
+                    if (findNode.getLeftHand() == LeftHand.Program) {
+                        code.addCode(getGlobalVariableAddress(variable));
+                    } else if (findNode.getLeftHand() == LeftHand.ClassDecl) {
+                        String className = (String) findNode.getChildren().get(0).getValue();
+                        Clazz clazz = Clazz.getClazzByName(className);
+                        if (clazz == null) {
+                            System.out.println("WTF!");
+                            Compiler.semanticError();
+                        } else {
+                            int offset = getAttributeOffset(clazz, idName);
+                            getClassVariableAddressInClass(offset);
+                        }
+                    } else {
+                        Node tempNode = findNode;
+                        int offset = 4 + index * 4; //this + parameters
+                        if(findNode.getLeftHand() != LeftHand.FunctionDecl) offset += 8; //$fp and $ra
+                        while (tempNode.getLeftHand() != LeftHand.FunctionDecl) {
+                            tempNode = tempNode.getParent();
+                            if (tempNode.getLeftHand() == LeftHand.StmtBlock || tempNode.getLeftHand() == LeftHand.FunctionDecl) {
+                                offset += 4 * (tempNode.getDefinedVariables().size());
+                            }
+                        }
+                        code.addCode(getLocalVariableAddress(offset));
+                    }
+                    node.setCode(code);
+                    return;
+                }
+                index++;
+            }
+            if (findNode.getParent() == null) {
+                System.out.println("WTF!");
+                Compiler.semanticError();
+                break;
+            } else {
+                findNode = findNode.getParent();
+            }
+        }
         return;
     }
 
-    private void generateExprPrimeCode(Node node) {
-        Code code = new Code();
-        if (node.getProductionRule() != ProductionRule.EPSILON) {
-            generateCode(node.getChildren().get(0));
-            code.addCode(node.getChildren().get(0).getCode());
+    public int getAttributeOffset(Clazz clazz, String name) {
+        int offset = 0;
+        for (Variable variable : clazz.getVariables()) {
+            if (variable.getName().equals(name)) break;
+            offset += 4;
         }
-        node.setCode(code);
-    }
-
-    private void generateStmtCode(Node node) {
-        generateCode(node.getChildren().get(0));
-        node.setCode(node.getChildren().get(0).getCode());
-    }
-
-    private void generateStmtStarCode(Node node) {
-        Code code = new Code();
-        if (node.getProductionRule() != ProductionRule.EPSILON) {
-            generateCode(node.getChildren().get(0));
-            generateCode(node.getChildren().get(1));
-            code.addCode(node.getChildren().get(0).getCode());
-            code.addCode(node.getChildren().get(1).getCode());
-        }
-        node.setCode(code);
-    }
-
-    private void generateInsideStmtBlockCode(Node node) {
-        if (node.getProductionRule() == ProductionRule.StmtStar) {
-            generateCode(node.getChildren().get(0));
-            node.setCode(node.getChildren().get(0).getCode());
-        }
-        if (node.getProductionRule() == ProductionRule.VariableDecl_InsideStmtBlock) {
-            generateCode(node.getChildren().get(1));
-            node.setCode(node.getChildren().get(1).getCode());
-        }
-    }
-
-    private void generateStmtBlockCode(Node node) {
-        Code code = new Code();
-        code.addCode("sub $sp, $sp, " + node.getDefinedVariables().size() * 4);
-        generateCode(node.getChildren().get(0));
-        code.addCode(node.getChildren().get(0).getCode());
-        code.addCode("add $sp, $sp, " + node.getDefinedVariables().size() * 4);
-        node.setCode(code);
-    }
-
-    private void generateClassDeclCode(Node node) {
-        for (Node v : node.getChildren())
-            generateCode(v);
-        Code code = new Code();
-        for (Function function : node.getDefinedFunctions())
-            code.addCode(function.getNode().getCode());
-        node.setCode(code);
-    }
-
-    private void generateFunctionDeclCode(Node node) {
-        Code code = new Code();
-        Label label = new Label();
-        label.creatNewName();
-        node.getDefinedFunctions().get(0).setLabel(label);
-        code.addCode(label.getName() + " :");
-        int index = 2;
-        if (node.getProductionRule() == ProductionRule.VOID_IDENTIFIER_OPENPARENTHESIS_Formals_CLOSEPARENTHESIS_StmtBlock)
-            index = 1;
-        generateCode(node.getChildren().get(index));
-        code.addCode(node.getChildren().get(index).getCode());
-        code.addCode("lw  $ra, " + ((1 + node.getDefinedFunctions().get(0).getParameter().size() + 1) * 4) + "($fp)");
-        code.addCode("lw  $fp, " + ((1 + node.getDefinedFunctions().get(0).getParameter().size()) * 4) + "($fp)");
-        code.addCode("j $ra");
-        node.setCode(code);
-    }
-
-    public void generateProgramCode(Node node) {
-        node.setCode(createGlobalVariables(node.getDefinedVariables()));
-        for (Node v : node.getChildren()) {
-            generateCode(v);
-        }
-
+        return offset;
     }
 
     public Code createGlobalVariables(ArrayList<Variable> globalVariables) {
@@ -781,63 +836,6 @@ public class CodeGenerator {
         return code;
     }
 
-    public Code ifCondition(Node node) {
-        Code code = new Code();
-        code.addCode(node.getChildren().get(0).getCode());
-        Label label = new Label();
-        Label label1 = new Label();
-        label.creatNewName();
-        label1.creatNewName();
-        code.addCode("beq $t0, 0, " + label1.getName());
-        code.addCode(node.getChildren().get(1).getCode());
-        code.addCode("j " + label.getName());
-        code.addCode(label1.getName() + ":");
-        if (node.getChildren().size() == 3) {
-            code.addCode(node.getChildren().get(2).getCode());
-        }
-        code.addCode(label.getName() + ":");
-        return code;
-    }
-
-
-    public Code whileLoop(Node node) {
-        Code code = new Code();
-        Label label = new Label();
-        Label label1 = new Label();
-        label.creatNewName();
-        label1.creatNewName();
-        code.addCode(label.getName() + ":");
-        code.addCode(node.getChildren().get(0).getCode());
-        code.addCode("beq $t0, 0, " + label1.getName());
-        node.getChildren().get(1).setBreakLabel(label1);
-        node.getChildren().get(1).setContinueLabel(label);
-        code.addCode(node.getChildren().get(1).getCode());
-        code.addCode("j " + label.getName());
-        code.addCode(label1.getName() + ":");
-        return code;
-    }
-
-    public Code forLoop(Node node) {
-        Code code = new Code();
-        Label label = new Label();
-        label.creatNewName();
-        Label label1 = new Label();
-        label1.creatNewName();
-        Label label2 = new Label();
-        label2.creatNewName();
-        code.addCode(node.getChildren().get(0).getCode());
-        code.addCode(label.getName() + ":");
-        code.addCode(node.getChildren().get(1).getCode());
-        code.addCode("beq $t0, 0, " + label1.getName());
-        node.getChildren().get(3).setBreakLabel(label1);
-        node.getChildren().get(3).setContinueLabel(label2);
-        code.addCode(node.getChildren().get(3).getCode());
-        code.addCode(label2.getName() + ":");
-        code.addCode(node.getChildren().get(2).getCode());
-        code.addCode("j " + label.getName());
-        code.addCode(label1.getName() + ":");
-        return code;
-    }
 
     public Code Break(Node node){
         Code code = new Code();
