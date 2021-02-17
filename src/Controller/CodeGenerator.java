@@ -914,7 +914,10 @@ public class CodeGenerator {
         code.addCode(node2.getCode());
         code.addCode("lw $t1, 0($sp)");
         code.addCode("add $sp, $sp, 4");
-        code.addCode("sw $t0, 0($t1)");
+        if (node2.getType().equals(Type.getTypeByName("double", 0)))
+            code.addCode("s.s $f0, 0($t1)");
+        else
+            code.addCode("sw $t0, 0($t1)");
         return code;
     }
 
