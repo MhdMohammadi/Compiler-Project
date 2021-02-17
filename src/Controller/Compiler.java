@@ -249,7 +249,7 @@ public class Compiler {
         return true;
     }
 
-    public boolean isConvertibleTo(Type convertType, Type mainType) {
+    public static boolean isConvertibleTo(Type convertType, Type mainType) {
         if (mainType.equals(convertType)) return true;
         if (convertType.getArrayDegree() > 0 || mainType.getArrayDegree() > 0)return false;
         while (convertType.getParent() != null) {
@@ -531,7 +531,6 @@ public class Compiler {
             checkIntegerIndices(node);
     }
     //todo possible equal isConvertibleTo
-    //todo check kardane return type ba functions type
     //todo return code
     //todo class function calls code
     //todo null
