@@ -1,8 +1,6 @@
 int main(){
 int i;
-while( i < 10){
+for ( i = 0; i < 10; i = i + 1){
 Print(i);
-i = i + 1;
-continue;
 }
 }
