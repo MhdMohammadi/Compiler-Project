@@ -356,7 +356,7 @@ public class CodeGenerator {
     public void generateLValueCode(Node node) {
         switch (node.getProductionRule()) {
             case IDENTIFIER:
-                generateLvalueIdentifierCode(node);
+                generateLvalueToIdentifierCode(node);
                 break;
             case Expr_DOT_IDENTIFIER:
                 Node exprNode = node.getChildren().get(0);
@@ -528,7 +528,36 @@ public class CodeGenerator {
         node.setCode(code);
     }
 
-    public void generateLvalueIdentifierCode(Node node) {
+    public Code generateLValueToIdentifierCodeForClass(Node findNode, String idName){
+        Code code = new Code();
+        String className = (String) findNode.getChildren().get(0).getValue();
+        Clazz clazz = Clazz.getClazzByName(className);
+        if (clazz == null) {
+            System.out.println("WTF!");
+            Compiler.semanticError();
+        } else {
+            int offset = getAttributeOffset(clazz, idName);
+            code.addCode(getClassVariableAddressInClass(offset));
+        }
+        return code;
+    }
+
+    public Code generateLValueToIdentifierCodeForLocal(Node findNode, int index){
+        Code code = new Code();
+        Node tempNode = findNode;
+        int offset = 4 + index * 4; //this + parameters
+        if(findNode.getLeftHand() != LeftHand.FunctionDecl) offset += 8; //$fp and $ra
+        while (tempNode.getLeftHand() != LeftHand.FunctionDecl) {
+            tempNode = tempNode.getParent();
+            if (tempNode.getLeftHand() == LeftHand.StmtBlock || tempNode.getLeftHand() == LeftHand.FunctionDecl) {
+                offset += 4 * (tempNode.getDefinedVariables().size());
+            }
+        }
+        code.addCode(getLocalVariableAddress(offset));
+        return code;
+    }
+
+    public void generateLvalueToIdentifierCode(Node node) {
         String idName = (String) node.getChildren().get(0).getValue();
         Node findNode = node;
         Code code = new Code();
@@ -539,41 +568,34 @@ public class CodeGenerator {
                     if (findNode.getLeftHand() == LeftHand.Program) {
                         code.addCode(getGlobalVariableAddress(variable));
                     } else if (findNode.getLeftHand() == LeftHand.ClassDecl) {
-                        String className = (String) findNode.getChildren().get(0).getValue();
-                        Clazz clazz = Clazz.getClazzByName(className);
-                        if (clazz == null) {
-                            System.out.println("WTF!");
-                            Compiler.semanticError();
-                        } else {
-                            int offset = getAttributeOffset(clazz, idName);
-                            getClassVariableAddressInClass(offset);
-                        }
+                        code.addCode(generateLValueToIdentifierCodeForClass(findNode, idName));
                     } else {
-                        Node tempNode = findNode;
-                        int offset = 4 + index * 4; //this + parameters
-                        if(findNode.getLeftHand() != LeftHand.FunctionDecl) offset += 8; //$fp and $ra
-                        while (tempNode.getLeftHand() != LeftHand.FunctionDecl) {
-                            tempNode = tempNode.getParent();
-                            if (tempNode.getLeftHand() == LeftHand.StmtBlock || tempNode.getLeftHand() == LeftHand.FunctionDecl) {
-                                offset += 4 * (tempNode.getDefinedVariables().size());
-                            }
-                        }
-                        code.addCode(getLocalVariableAddress(offset));
+                        code.addCode(generateLValueToIdentifierCodeForLocal(findNode, index));
                     }
                     node.setCode(code);
                     return;
                 }
                 index++;
             }
-            if (findNode.getParent() == null) {
-                System.out.println("WTF!");
-                Compiler.semanticError();
-                break;
-            } else {
-                findNode = findNode.getParent();
+// extends variables
+            if (findNode.getLeftHand() == LeftHand.ClassDecl){
+                Node idNode = findNode.getChildren().get(0);
+                String className = (String)idNode.getValue();
+                Clazz clazz = Clazz.getClazzByName(className);
+
+                for (Variable variable : clazz.getVariables()){
+                    if (variable.getName().equals(idName)){
+                        if (variable.getAccessMode() == AccessMode.PUBLIC || variable.getAccessMode() == AccessMode.PROTECTED){
+                            int offset = getAttributeOffset(clazz, idName);
+                            code.addCode(getClassVariableAddressInClass(offset));
+                            node.setCode(code);
+                            return;
+                        }
+                    }
+                }
             }
+            findNode = findNode.getParent();
         }
-        return;
     }
 
     public int getAttributeOffset(Clazz clazz, String name) {

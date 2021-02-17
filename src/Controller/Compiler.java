@@ -331,6 +331,12 @@ public class Compiler {
                 switch (v.getProductionRule()) {
                     case IDENTIFIER:
                         Variable variable = findVariable(v, (String) v.getChildren().get(0).getValue());
+                        if (variable.getAccessMode() == AccessMode.PRIVATE){
+
+                        }
+                        else if (variable.getAccessMode() == AccessMode.PROTECTED){
+
+                        }
                         v.setType(variable.getType());
                         break;
                     case Expr_DOT_IDENTIFIER:
