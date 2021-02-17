@@ -27,7 +27,6 @@ public class CodeGenerator {
         return code;
     }
 
-
     public Code gatherGlobalFunction(Node node) {
         Code code = new Code();
         for (Function function : node.getDefinedFunctions()) {

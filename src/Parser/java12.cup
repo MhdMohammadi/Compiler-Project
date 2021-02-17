@@ -248,8 +248,7 @@ FunctionDecl ::=        Type:t IDENTIFIER:i OPENPARENTHESIS Formals:f CLOSEPAREN
     tmp.setArrayDegree(0);
 
     RESULT = tmp;
-:}
-						;
+:};
 
 Formals ::=             Variable:v CommaVariables:c{:
     Node tmp = new Node(LeftHand.Formals, ProductionRule.Variable_CommaVariables);
