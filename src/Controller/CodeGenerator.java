@@ -8,6 +8,83 @@ import Enum.*;
 import java.util.ArrayList;
 
 public class CodeGenerator {
+    public void createFinalCode(){
+        Code code = new Code();
+    }
+
+
+    public Code gatherGlobalFunction(Node node) {
+        Code code = new Code();
+        for (Function function : node.getDefinedFunctions()) {
+            if (function.getName().equals("itob"))
+                code.addCode(itob(function));
+            else if (function.getName().equals("btoi"))
+                code.addCode(btoi(function));
+            else if (function.getName().equals("dtoi"))
+                code.addCode(dtoi(function));
+            else if (function.getName().equals("itod"))
+                code.addCode(itod(function));
+            else
+                code.addCode(function.getNode().getCode());
+        }
+        return code;
+    }
+
+    public Code btoi(Function function){
+        Code code = new Code();
+        code.addCode(function.getLabel().getName()+ " :");
+        code.addCode("lw $t0, 4($fp)");
+        code.addCode("move $v0, $t0");
+        code.addCode("lw  $ra, 8($fp)");
+        code.addCode("lw  $fp, 12($fp)");
+        code.addCode("j $ra");
+        return code;
+    }
+
+    public Code itod(Function function) {
+        Code code = new Code();
+        code.addCode(function.getLabel().getName()+ " :");
+        code.addCode("lw $t0, 4($fp)");
+        code.addCode("mtc1 $t0, $f0");
+        code.addCode("cvt.s.w $f0, $f0");
+        code.addCode("lw  $ra, 8($fp)");
+        code.addCode("lw  $fp, 12($fp)");
+        code.addCode("j $ra");
+        return code;
+    }
+
+    public Code dtoi(Function function) {
+        Code code = new Code();
+        code.addCode(function.getLabel().getName()+ " :");
+        code.addCode("l.s $f0, 4($fp)");
+        code.addCode("cvt.w.s $f0, $f0");
+        code.addCode("mfc1 $t0, $f0");
+        code.addCode("move $v0, $t0");
+        code.addCode("lw  $ra, 8($fp)");
+        code.addCode("lw  $fp, 12($fp)");
+        code.addCode("j $ra");
+        return code;
+    }
+
+    public Code itob(Function function) {
+        Code code = new Code();
+        code.addCode(function.getLabel().getName()+ " :");
+        Label label = new Label(); label.creatNewName();
+        Label label1 = new Label(); label1.creatNewName();
+        code.addCode("lw $t0, 4($sp)");
+        code.addCode("beq $t0, 0" + label.getName());
+        code.addCode("li $t0, 1");
+        code.addCode("j " + label1.getName());
+        code.addCode(label.getName() + ":");
+        code.addCode("li $t0, 0");
+        code.addCode(label1.getName() + ":");
+        code.addCode("move $v0, $t0");
+        code.addCode("lw  $ra, 8($fp)");
+        code.addCode("lw  $fp, 12($fp)");
+        code.addCode("j $ra");
+        return code;
+    }
+
     public void generateCode(Node node){
         switch (node.getLeftHand()){
             case Program:
@@ -854,6 +931,8 @@ public class CodeGenerator {
             code.addCode("xor $t0, $t0, 1");
         return code;
     }
+
+
 
     public void call(Node node){
         if (node.getProductionRule().equals("IDENTIFIER_OPENPARENTHESIS_Actuals_CLOSEPARENTHESIS")){
