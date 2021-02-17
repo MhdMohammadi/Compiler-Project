@@ -8,8 +8,23 @@ import Enum.*;
 import java.util.ArrayList;
 
 public class CodeGenerator {
-    public void createFinalCode(){
+    public void createFinalCode(Node root){
         Code code = new Code();
+        code.addCode(root.getCode());
+        code.addCode(gatherGlobalFunction(root));
+
+        System.out.println(code.getText());
+        System.exit(0);
+    }
+
+    public Code gatherClassCodes(Node node){
+        Code code = new Code();
+        if(node.getLeftHand() == LeftHand.ClassDecl)
+            code.addCode(node.getCode());
+        for(Node v : node.getChildren()) {
+            code.addCode(gatherClassCodes(v));
+        }
+        return code;
     }
 
 
@@ -289,11 +304,11 @@ public class CodeGenerator {
     }
 
     private void generateBreakCode(Node node) {
-        Break(node);
+        node.setCode(Break(node));
     }
 
     private void generateContinueCode(Node node) {
-        Continue(node);
+        node.setCode(Continue(node));
     }
 
     public void generateReturnCode(Node node) {
@@ -382,6 +397,7 @@ public class CodeGenerator {
                 }
                 node.setCode(code);
                 break;
+            //todo
         }
     }
 
@@ -494,7 +510,6 @@ public class CodeGenerator {
                 else code.addCode("li $t0, 1");
                 break;
             case STRINGLITERAL:
-
                 int len = str.length();
                 code.addCode("li $v0, 9");
                 code.addCode("li $a0, " + (4 + len));
@@ -508,7 +523,7 @@ public class CodeGenerator {
                 }
                 break;
             case NULL:
-                //todo
+            code.addCode("li $t0, 0");
         }
         node.setCode(code);
     }

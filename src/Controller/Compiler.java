@@ -81,7 +81,7 @@ public class Compiler {
         checkReturnTypes(root);
         codeGenerator.generateCode(root);
         //todo
-        codeGenerator.createFinalCode();
+        codeGenerator.createFinalCode(root);
         writeToFile(outputFileName);
     }
 
