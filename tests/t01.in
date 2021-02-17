@@ -1,6 +1,9 @@
 int main(){
-int i;
-for ( i = 0; i < 10; i = i + 1){
-Print(i);
-}
+    bool a;
+    int b;
+
+    a = true;
+    b = btoi(true && (!false || false));
+
+    Print(a, b);
 }

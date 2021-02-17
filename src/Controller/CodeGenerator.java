@@ -485,7 +485,7 @@ public class CodeGenerator {
                 node.setCode(node.getChildren().get(0).getCode());
                 break;
             case OPENPARENTHESIS_Expr_CLOSEPARENTHESIS:
-                generateCallCode(node.getChildren().get(0));
+                generateCode(node.getChildren().get(0));
                 node.setCode(node.getChildren().get(0).getCode());
                 break;
             case Expr_PLUS_Expr:
@@ -942,7 +942,9 @@ public class CodeGenerator {
         code.addCode(node1.getCode());
         code.addCode("sub $sp, $sp, 4");
         code.addCode("sw $t0, 0($sp)");
+        System.out.println(node2.getLeftHand() + " " + node2.getProductionRule());
         generateCode(node2);
+        System.out.println(node2.getChildren().get(0).getLeftHand() + " " + node2.getChildren().get(0).getProductionRule() );
         code.addCode(node2.getCode());
         code.addCode("lw $t1, 0($sp)");
         code.addCode("add $sp, $sp, 4");
