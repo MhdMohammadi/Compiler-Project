@@ -39,12 +39,23 @@ public class CodeGenerator {
     }
 
     public Code readLine() {
+        //todo ghalate in
+        Code code = new Code();
+        code.addCode("li $v0, 8");
+        code.addCode("la $a0, buffer");
+        code.addCode("li $a1, 1000");
+        code.addCode("syscall");
+        return code;
+    }
+
+    public Code readInteger() {
         Code code = new Code();
         code.addCode("li $v0, 5");
         code.addCode("syscall");
         code.addCode("move $t0, $v0");
         return code;
     }
+
 
     public Code getLocalVariableAddress(int offset) {
         Code code = new Code();
@@ -88,26 +99,55 @@ public class CodeGenerator {
         return code;
     }
 
-    public Code readInteger() {
-        Code code = new Code();
-        code.addCode("li $v0, 8");
-        code.addCode("la $a0, buffer");
-        code.addCode("li $a1, 1000");
-        code.addCode("syscall");
-        return code;
-    }
+    public Code calcExpr(Node node, Operator operator){
+        Type t1 = node.getType();
+        if (Type.getTypeByName("int", 0).equals(t1) && operator == Operator.SINGLE_MINUS){
+            Code code = new Code();
+            code.addCode(node.getChildren().get(0).getCode());
+            code.addCode("sub $t0, $zero, $t0");
+            return code;
+        }
+        if (Type.getTypeByName("double", 0).equals(t1) && operator == Operator.SINGLE_MINUS){
+            Code code = new Code();
+            code.addCode(node.getChildren().get(0).getCode());
+            code.addCode("neg.s $f0, $f0");
+            return code;
+        }
 
+        if (Type.getTypeByName("boolean", 0).equals(t1) && operator == Operator.SINGLE_NOT){
+            Code code = new Code();
+            code.addCode(node.getChildren().get(0).getCode());
+            code.addCode("xor $t0, $t0, 1");
+            return code;
+        }
+        Compiler.semanticError();
+        return null;
+    }
 
     public Code calcExpr(Node node1, Node node2, Operator operator) {
         Type t1 = node1.getType();
+        if (operator == Operator.EQ){
+            return assignExprs(node1, node2);
+        }
         if (Type.getTypeByName("int", 0).equals(t1)) {
             return calcIntExpr(node1, node2, operator);
         } else if (Type.getTypeByName("boolean", 0).equals(t1)) {
             return calcBooleanExpr(node1, node2, operator);
         } else if (Type.getTypeByName("double", 0).equals(t1)) {
             return calcDoubleExpr(node1, node2, operator);
+        } else if (Type.getTypeByName("String", 0).equals(t1)){
+            if(operator == Operator.PLUS)
+                return arrayPlusArray(node1, node2, 1);
+            if(operator == Operator.EQEQ)
+                return compareString(node1, node2);
+        } else if (t1.getArrayDegree() > 0){
+            return arrayPlusArray(node1, node2, 4);
         }
+        Compiler.semanticError();
         return null;
+    }
+
+    private Code assignExprs(Node node1, Node node2) {
     }
 
     public Code calcIntExpr(Node node1, Node node2, Operator operator) {
@@ -333,12 +373,12 @@ public class CodeGenerator {
         return code;
     }
 
-    public Code arrayPlusArray(Node node, int size) {
+    public Code arrayPlusArray(Node node1, Node node2, int size) {
         Code code = new Code();
-        code.addCode(node.getChildren().get(0).getCode());
+        code.addCode(node1.getChildren().get(0).getCode());
         code.addCode("sub $sp, $sp, 4");
         code.addCode("sw $t0, 0($sp)");
-        code.addCode(node.getChildren().get(1).getCode());
+        code.addCode(node2.getChildren().get(1).getCode());
         code.addCode("lw $t1, 0($sp)");
         code.addCode("add $sp, $sp, 4");
 
@@ -385,13 +425,13 @@ public class CodeGenerator {
         return code;
     }
 
-    public Code compareString(Node node) {
+    public Code compareString(Node node1, Node node2) {
         Code code = new Code();
-        code.addCode(node.getChildren().get(0).getCode());
+        code.addCode(node1.getChildren().get(0).getCode());
         code.addCode("sub $sp, $sp, 4");
         code.addCode("sw $t0, 0($sp)");
 
-        code.addCode(node.getChildren().get(1).getCode());
+        code.addCode(node2.getChildren().get(1).getCode());
         code.addCode("lw $t1, 0($sp)");
         code.addCode("add $sp, $sp, 4");
 
