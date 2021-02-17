@@ -9,13 +9,23 @@ import java.net.CookiePolicy;
 import java.util.ArrayList;
 
 public class CodeGenerator {
+    public ArrayList<Object> floatingPoints = new ArrayList<>();
+
     public void createFinalCode(Node root) {
         Code code = new Code();
         code.addCode(root.getCode());
+        code.addCode(addFloatingPoints());
         code.addCode(gatherGlobalFunction(root));
 //        code.addCode(gatherClassCodes(root));
         System.out.println(code.getText());
         System.exit(0);
+    }
+
+    private Code addFloatingPoints() {
+        Code code = new Code();
+        code.addCode("TRUE: .asciiz \"true\"");
+        code.addCode("FALSE: .asciiz \"false\"");
+        return code;
     }
 
     public Code gatherClassCodes(Node node) {
@@ -382,8 +392,15 @@ public class CodeGenerator {
             if (Type.getTypeByName("int", 0).equals(node.getChildren().get(0).getType()) ||
                 Type.getTypeByName("boolean", 0).equals(node.getChildren().get(0).getType())
             ) {
-                code.addCode("li $v0, 1");
-                code.addCode("move $a0, $t0");
+                Label label = new Label(); label.creatNewName();
+                Label label2 = new Label(); label2.creatNewName();
+                code.addCode("beq $t0, 0, " + label.getName());
+                code.addCode("la $a0, TRUE");
+                code.addCode("j " + label2.getName());
+                code.addCode(label.getName() + " :");
+                code.addCode("la $a0, FALSE");
+                code.addCode(label2.getName() + " :");
+                code.addCode("li $v0, 4");
                 code.addCode("syscall");
             } else if (Type.getTypeByName("double", 0).equals(node.getChildren().get(0).getType())) {
                 code.addCode("li $v0, 2");
@@ -444,7 +461,6 @@ public class CodeGenerator {
                 if (node.getType().equals(Type.getTypeByName("double", 0))) {
                     code.addCode(loadDoubleVariable());
                 } else {
-                    System.out.println("kheili ajibe, codesham ine : " + code.getText());
                     code.addCode(loadIntegerVariable());
                 }
                 node.setCode(code);
