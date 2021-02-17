@@ -17,7 +17,6 @@ public class Compiler {
     private static Code finalCode = new Code();
     private static String inputFileName, outputFileName;
 
-
     public static void semanticError() {
         finalCode = generateSemanticErrorCode();
         System.out.println(finalCode.getText());
@@ -41,6 +40,14 @@ public class Compiler {
         code.addCode(".data");
         code.addCode("errorMsg: .assciiz \"SemanticError\"");
         return code;
+    }
+
+
+    public static void writeToFile( String outputFileName ) throws IOException {
+        System.out.println(outputFileName);
+        FileWriter out = new FileWriter( outputFileName );
+        out.write( finalCode.getText());
+        out.close();
     }
 
     public void compile(String inputFileName, String outputFileName) throws Exception {
@@ -72,19 +79,33 @@ public class Compiler {
         codeGenerator.generateCode(root);
 
         //todo
-        createFinalCode();
+        codeGenerator.createFinalCode();
         writeToFile(outputFileName);
     }
 
-    public static void writeToFile( String outputFileName ) throws IOException {
-        System.out.println(outputFileName);
-        FileWriter out = new FileWriter( outputFileName );
-        out.write( finalCode.getText());
-        out.close();
+    public void preProcess(Node v) {
+        v.setIndex(cnt);
+        for (Variable variable : v.getDefinedVariables())
+            variable.setNodeIndex(v.getIndex());
+        cnt++;
+        for (Node node : v.getChildren()) {
+            node.setParent(v);
+            preProcess(node);
+        }
     }
 
-    public void createFinalCode(){
-        Code code = new Code();
+    public void createArrays(Node v) {
+        for (Node node : v.getChildren())
+            createArrays(node);
+        if (v.getLeftHand() == LeftHand.Type && v.getProductionRule() != ProductionRule.Type_OPENCLOSEBRACKET) {
+            v.setType(Type.getTypeByName(v.getTypeName(), 0));
+        }
+        if (v.getLeftHand() == LeftHand.Type && v.getProductionRule() == ProductionRule.Type_OPENCLOSEBRACKET) {
+            if (v.getArrayDegree() == 1)
+                v.setType(Type.createArrayType(Type.getTypeByName(v.getTypeName(), 0)));
+            else
+                v.setType(Type.createArrayType(v.getChildren().get(0).getType()));
+        }
     }
 
     private void createBuiltinFunctions(Node root) {
@@ -112,184 +133,6 @@ public class Compiler {
         x.setType(Type.getTypeByName(output, 0));
         Label label = new Label(); label.creatNewName();
         x.setLabel(label);
-    }
-
-    public void preProcess(Node v) {
-        v.setIndex(cnt);
-        for (Variable variable : v.getDefinedVariables())
-            variable.setNodeIndex(v.getIndex());
-        cnt++;
-        for (Node node : v.getChildren()) {
-            node.setParent(v);
-            preProcess(node);
-        }
-    }
-
-    public Variable findVariable(Node node, String name) {
-        Node node1 = node;
-        while (true) {
-            for (Variable variable : node1.getDefinedVariables())
-                if (variable.getName().equals(name))
-                    return variable;
-            if (node1.getParent() == null)
-                break;
-            else
-                node1 = node1.getParent();
-        }
-        semanticError();
-        return null;
-    }
-
-    public Function findFunction(Node node, String name) {
-        Node node1 = node;
-        while (true) {
-            for (Function function : node1.getDefinedFunctions()) {
-                if (function.getName().equals(name)) {
-                    return function;
-                }
-            }
-            if (node1.getParent() == null) {
-                break;
-            } else {
-                node1 = node1.getParent();
-            }
-        }
-        semanticError();
-        return null;
-    }
-
-    public void debug(Node v) {
-        System.out.println(v.getLeftHand() + " " + v.getProductionRule());
-        Type type = v.getType();
-        if (type == null) System.out.println("NULL");
-        else System.out.println(type.getName() + " " + type.getParent());
-        for (Node node : v.getChildren())
-            debug(node);
-    }
-
-    public void setVariableType(Node v) {
-        //todo
-        //chera todo?
-        if (v.getLeftHand() == LeftHand.Variable) {
-            Type type = Type.getTypeByName((String) v.getChildren().get(0).getTypeName(), v.getChildren().get(0).getArrayDegree());
-            if (type == null) Compiler.semanticError();
-            v.getDefinedVariables().get(0).setType(type);
-        }
-        for (Node node : v.getChildren())
-            setVariableType(node);
-    }
-
-    public void createArrays(Node v) {
-        for (Node node : v.getChildren())
-            createArrays(node);
-        if (v.getLeftHand() == LeftHand.Type && v.getProductionRule() != ProductionRule.Type_OPENCLOSEBRACKET) {
-            v.setType(Type.getTypeByName(v.getTypeName(), 0));
-        }
-        if (v.getLeftHand() == LeftHand.Type && v.getProductionRule() == ProductionRule.Type_OPENCLOSEBRACKET) {
-            if (v.getArrayDegree() == 1)
-                v.setType(Type.createArrayType(Type.getTypeByName(v.getTypeName(), 0)));
-            else
-                v.setType(Type.createArrayType(v.getChildren().get(0).getType()));
-        }
-    }
-
-    public void setFunctionType(Node v) {
-        //todo
-        if (v.getLeftHand() == LeftHand.FunctionDecl) {
-            Function function = v.getDefinedFunctions().get(0);
-
-            Type type = Type.getTypeByName(v.getTypeName(), v.getArrayDegree());
-            //    System.out.println(v.getTypeName() + " " + v.getArrayDegree());
-            if (type == null) Compiler.semanticError();
-            function.setType(type);
-        }
-        for (Node node : v.getChildren())
-            setFunctionType(node);
-    }
-
-    public void setClazzType() {
-        for (Clazz clazz : Clazz.getClazzes()) {
-            clazz.setType(Type.getTypeByName(clazz.getName(), 0));
-        }
-    }
-
-    public void setAllClazzAttributesAndFunctions() {
-        for (Clazz clazz : Clazz.getClazzes())
-            setClazzAttributesAndFunctions(clazz);
-    }
-
-    public boolean haveSameSignature(Function parFunction, Function function) {
-        if (!isConvertibleTo(function.getType(), parFunction.getType())) return false;
-        if (function.getParameter().size() != parFunction.getParameter().size()) return false;
-        int index = 0;
-        for (Variable variable : function.getParameter()) {
-            Variable parVariable = parFunction.getParameter().get(index);
-            if (!isConvertibleTo(parVariable.getType(), variable.getType())) return false;
-            index++;
-        }
-        return true;
-    }
-
-    public boolean isConvertibleTo(Type convertType, Type mainType) {
-        if (mainType.equals(convertType)) return true;
-        while (convertType.getParent() != null) {
-            convertType = convertType.getParent();
-            if (convertType.equals(mainType)) return true;
-        }
-        return false;
-    }
-
-    public boolean areFunctionCallParametersCorrect(Function function, ArrayList<Type> parametersTypes) {
-        //   System.out.println(function.getName() + " " + function.getParameter().size() + " " + parametersTypes.size());
-        if (function.getParameter().size() != parametersTypes.size()) return false;
-        int index = 0;
-        for (Variable variable : function.getParameter()) {
-            if (!isConvertibleTo(parametersTypes.get(index), variable.getType()))
-                return false;
-            index++;
-        }
-        return true;
-    }
-
-    public ArrayList<Function> mergeFunctions(ArrayList<Function> parFunctions, ArrayList<Function> functions) {
-        ArrayList<Function> mergedFunctions = new ArrayList<>();
-        mergedFunctions.addAll(parFunctions);
-
-        for (Function function : functions) {
-            boolean find = false;
-            int index = 0;
-            for (Function parFunction : parFunctions) {
-                if (parFunction.getName().equals(function.getName())) {
-                    find = true;
-                    if (haveSameSignature(parFunction, function)) {
-                        mergedFunctions.set(index, function);
-                    } else Compiler.semanticError();
-                }
-                index++;
-            }
-            if (find == false) mergedFunctions.add(function);
-        }
-        return mergedFunctions;
-    }
-
-    public ArrayList<Variable> mergeVariables(ArrayList<Variable> parVariables, ArrayList<Variable> variables) {
-        ArrayList<Variable> mergedVariables = new ArrayList<>();
-        mergedVariables.addAll(parVariables);
-        mergedVariables.addAll(variables);
-        if (areArrayListVariablesUnique(mergedVariables) == false) semanticError();
-        return mergedVariables;
-    }
-
-    public void setClazzAttributesAndFunctions(Clazz clazz) {
-        clazz.setSetAttributesAndFunctions(true);
-        Clazz parentClazz = clazz.getParent();
-        if (parentClazz == null) return;
-        if (parentClazz.isSetAttributesAndFunctions() == false) setClazzAttributesAndFunctions(parentClazz);
-
-
-        clazz.setFunctions(mergeFunctions(parentClazz.getFunctions(), clazz.getFunctions()));
-        clazz.setVariables(mergeVariables(parentClazz.getVariables(), clazz.getVariables()));
-
     }
 
     public void areAllVariablesUnique(Node v) {
@@ -326,6 +169,105 @@ public class Compiler {
             }
         }
         return true;
+    }
+
+    public void setVariableType(Node v) {
+        //todo
+        //chera todo?
+        if (v.getLeftHand() == LeftHand.Variable) {
+            Type type = Type.getTypeByName((String) v.getChildren().get(0).getTypeName(), v.getChildren().get(0).getArrayDegree());
+            if (type == null) Compiler.semanticError();
+            v.getDefinedVariables().get(0).setType(type);
+        }
+        for (Node node : v.getChildren())
+            setVariableType(node);
+    }
+
+    public void setFunctionType(Node v) {
+        //todo
+        if (v.getLeftHand() == LeftHand.FunctionDecl) {
+            Function function = v.getDefinedFunctions().get(0);
+
+            Type type = Type.getTypeByName(v.getTypeName(), v.getArrayDegree());
+            //    System.out.println(v.getTypeName() + " " + v.getArrayDegree());
+            if (type == null) Compiler.semanticError();
+            function.setType(type);
+        }
+        for (Node node : v.getChildren())
+            setFunctionType(node);
+    }
+
+    public void setClazzType() {
+        for (Clazz clazz : Clazz.getClazzes()) {
+            clazz.setType(Type.getTypeByName(clazz.getName(), 0));
+        }
+    }
+
+    public void setAllClazzAttributesAndFunctions() {
+        for (Clazz clazz : Clazz.getClazzes())
+            setClazzAttributesAndFunctions(clazz);
+    }
+
+    public void setClazzAttributesAndFunctions(Clazz clazz) {
+        clazz.setSetAttributesAndFunctions(true);
+        Clazz parentClazz = clazz.getParent();
+        if (parentClazz == null) return;
+        if (parentClazz.isSetAttributesAndFunctions() == false) setClazzAttributesAndFunctions(parentClazz);
+
+
+        clazz.setFunctions(mergeFunctions(parentClazz.getFunctions(), clazz.getFunctions()));
+        clazz.setVariables(mergeVariables(parentClazz.getVariables(), clazz.getVariables()));
+
+    }
+
+    public ArrayList<Function> mergeFunctions(ArrayList<Function> parFunctions, ArrayList<Function> functions) {
+        ArrayList<Function> mergedFunctions = new ArrayList<>();
+        mergedFunctions.addAll(parFunctions);
+
+        for (Function function : functions) {
+            boolean find = false;
+            int index = 0;
+            for (Function parFunction : parFunctions) {
+                if (parFunction.getName().equals(function.getName())) {
+                    find = true;
+                    if (haveSameSignature(parFunction, function)) {
+                        mergedFunctions.set(index, function);
+                    } else Compiler.semanticError();
+                }
+                index++;
+            }
+            if (find == false) mergedFunctions.add(function);
+        }
+        return mergedFunctions;
+    }
+
+    public boolean haveSameSignature(Function parFunction, Function function) {
+        if (!isConvertibleTo(function.getType(), parFunction.getType())) return false;
+        if (function.getParameter().size() != parFunction.getParameter().size()) return false;
+        int index = 0;
+        for (Variable variable : function.getParameter()) {
+            Variable parVariable = parFunction.getParameter().get(index);
+            if (!isConvertibleTo(parVariable.getType(), variable.getType())) return false;
+            index++;
+        }
+        return true;
+    }
+
+    public boolean isConvertibleTo(Type convertType, Type mainType) {
+        if (mainType.equals(convertType)) return true;
+        while (convertType.getParent() != null) {
+            convertType = convertType.getParent();
+            if (convertType.equals(mainType)) return true;
+        }
+        return false;
+    }
+
+    public ArrayList<Variable> mergeVariables(ArrayList<Variable> parVariables, ArrayList<Variable> variables) {
+        ArrayList<Variable> mergedVariables = new ArrayList<>();
+        mergedVariables.addAll(parVariables);
+        mergedVariables.addAll(variables);
+        if (areArrayListVariablesUnique(mergedVariables) == false) semanticError();
+        return mergedVariables;
     }
 
     // age be terminal bere, type bayad moshakhas shode bashe
@@ -544,6 +486,39 @@ public class Compiler {
         }
     }
 
+    public Variable findVariable(Node node, String name) {
+        Node node1 = node;
+        while (true) {
+            for (Variable variable : node1.getDefinedVariables())
+                if (variable.getName().equals(name))
+                    return variable;
+            if (node1.getParent() == null)
+                break;
+            else
+                node1 = node1.getParent();
+        }
+        semanticError();
+        return null;
+    }
+
+    public Function findFunction(Node node, String name) {
+        Node node1 = node;
+        while (true) {
+            for (Function function : node1.getDefinedFunctions()) {
+                if (function.getName().equals(name)) {
+                    return function;
+                }
+            }
+            if (node1.getParent() == null) {
+                break;
+            } else {
+                node1 = node1.getParent();
+            }
+        }
+        semanticError();
+        return null;
+    }
+
     public void checkIntegerIndices(Node v) {
         if (v.getProductionRule() == ProductionRule.NEWARRAY_OPENPARENTHESIS_Expr_COMMA_Type_CLOSEPARENTHESIS) {
             Type t = v.getChildren().get(0).getType();
@@ -558,6 +533,7 @@ public class Compiler {
         for (Node node : v.getChildren())
             checkIntegerIndices(node);
     }
+
     //todo check kardane return type ba functions type
     //todo class function calls code
     //todo return code
@@ -589,24 +565,43 @@ public class Compiler {
                     String functionName = (String) idNode.getValue();
                     Node actualsNode = v.getChildren().get(2);
                     Type type = exprNode.getType();
-                    if (type.getArrayDegree() > 0 && functionName.equals("length") && actualsNode.getChildren().size() == 0){
+                    if (type.getArrayDegree() > 0 && functionName.equals("length") && actualsNode.getChildren().size() == 0) {
                         return;
                     }
-                    if (type.getArrayDegree() > 0)semanticError();
+                    if (type.getArrayDegree() > 0) semanticError();
                     Clazz clazz = Clazz.getClazzByName(type.getName());
-                    if (clazz == null)semanticError();
+                    if (clazz == null) semanticError();
 
-                    for (Function classFunction : clazz.getFunctions()){
-                        if (classFunction.getName().equals(functionName)){
+                    for (Function classFunction : clazz.getFunctions()) {
+                        if (classFunction.getName().equals(functionName)) {
                             if (!areFunctionCallParametersCorrect(classFunction, actualsNode.getActualsTypes()))
                                 semanticError();
                             break;
                         }
                     }
-
-
             }
         }
+    }
+
+    public boolean areFunctionCallParametersCorrect(Function function, ArrayList<Type> parametersTypes) {
+        //   System.out.println(function.getName() + " " + function.getParameter().size() + " " + parametersTypes.size());
+        if (function.getParameter().size() != parametersTypes.size()) return false;
+        int index = 0;
+        for (Variable variable : function.getParameter()) {
+            if (!isConvertibleTo(parametersTypes.get(index), variable.getType()))
+                return false;
+            index++;
+        }
+        return true;
+    }
+
+    public void debug(Node v) {
+        System.out.println(v.getLeftHand() + " " + v.getProductionRule());
+        Type type = v.getType();
+        if (type == null) System.out.println("NULL");
+        else System.out.println(type.getName() + " " + type.getParent());
+        for (Node node : v.getChildren())
+            debug(node);
     }
 
     public Node getRoot() {
@@ -615,78 +610,6 @@ public class Compiler {
 
     public void setRoot(Node root) {
         this.root = root;
-    }
-
-    public Code gatherGlobalFunction(Node node) {
-        Code code = new Code();
-        for (Function function : node.getDefinedFunctions()) {
-            if (function.getName().equals("itob"))
-                code.addCode(itob(function));
-            else if (function.getName().equals("btoi"))
-                code.addCode(btoi(function));
-            else if (function.getName().equals("dtoi"))
-                code.addCode(dtoi(function));
-            else if (function.getName().equals("itod"))
-                code.addCode(itod(function));
-            else
-                code.addCode(function.getNode().getCode());
-        }
-        return code;
-    }
-
-    public Code btoi(Function function){
-        Code code = new Code();
-        code.addCode(function.getLabel().getName()+ " :");
-        code.addCode("lw $t0, 4($fp)");
-        code.addCode("move $v0, $t0");
-        code.addCode("lw  $ra, 8($fp)");
-        code.addCode("lw  $fp, 12($fp)");
-        code.addCode("j $ra");
-        return code;
-    }
-
-    public Code itod(Function function) {
-        Code code = new Code();
-        code.addCode(function.getLabel().getName()+ " :");
-        code.addCode("lw $t0, 4($fp)");
-        code.addCode("mtc1 $t0, $f0");
-        code.addCode("cvt.s.w $f0, $f0");
-        code.addCode("lw  $ra, 8($fp)");
-        code.addCode("lw  $fp, 12($fp)");
-        code.addCode("j $ra");
-        return code;
-    }
-
-    public Code dtoi(Function function) {
-        Code code = new Code();
-        code.addCode(function.getLabel().getName()+ " :");
-        code.addCode("l.s $f0, 4($fp)");
-        code.addCode("cvt.w.s $f0, $f0");
-        code.addCode("mfc1 $t0, $f0");
-        code.addCode("move $v0, $t0");
-        code.addCode("lw  $ra, 8($fp)");
-        code.addCode("lw  $fp, 12($fp)");
-        code.addCode("j $ra");
-        return code;
-    }
-
-    public Code itob(Function function) {
-        Code code = new Code();
-        code.addCode(function.getLabel().getName()+ " :");
-        Label label = new Label(); label.creatNewName();
-        Label label1 = new Label(); label1.creatNewName();
-        code.addCode("lw $t0, 4($sp)");
-        code.addCode("beq $t0, 0" + label.getName());
-        code.addCode("li $t0, 1");
-        code.addCode("j " + label1.getName());
-        code.addCode(label.getName() + ":");
-        code.addCode("li $t0, 0");
-        code.addCode(label1.getName() + ":");
-        code.addCode("move $v0, $t0");
-        code.addCode("lw  $ra, 8($fp)");
-        code.addCode("lw  $fp, 12($fp)");
-        code.addCode("j $ra");
-        return code;
     }
 
     public Code getFinalCode() {
