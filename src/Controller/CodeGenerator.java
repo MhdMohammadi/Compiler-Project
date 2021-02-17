@@ -148,10 +148,12 @@ public class CodeGenerator {
     }
 
     private Code assignExprs(Node node1, Node node2) {
+        //todo
     }
 
     public Code calcIntExpr(Node node1, Node node2, Operator operator) {
         Code code = new Code();
+
         code.addCode(node1.getCode());
         code.addCode("sub $sp, $sp, 4");
         code.addCode("sw $t0, 0($sp)");
