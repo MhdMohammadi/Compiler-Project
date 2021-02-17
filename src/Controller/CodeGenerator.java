@@ -12,7 +12,7 @@ public class CodeGenerator {
         Code code = new Code();
         code.addCode(root.getCode());
         code.addCode(gatherGlobalFunction(root));
-
+        code.addCode(gatherClassCodes(root));
         System.out.println(code.getText());
         System.exit(0);
     }
