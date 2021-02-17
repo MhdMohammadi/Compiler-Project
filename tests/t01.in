@@ -1,7 +1,12 @@
+bool f(bool a, bool b){
+    return a && b;
+}
+
 int main() {
-    boolean x;
-
+    bool x;
+    bool y;
     x = true;
-
+    y = false;
+    x = f(x, y);
     Print(x);
 }

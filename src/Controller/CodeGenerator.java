@@ -240,7 +240,7 @@ public class CodeGenerator {
         if (!node.getDefinedFunctions().get(0).getName().equals("main")) {
             code.addCode("lw  $ra, " + -((1 + function.getParameter().size() + 1) * 4) + "($fp)");
             code.addCode("lw  $fp, " + -((1 + function.getParameter().size()) * 4) + "($fp)");
-            code.addCode("j $ra");
+            code.addCode("jr $ra");
         } else{
             code.addCode("li $v0, 10");
             code.addCode("syscall");
@@ -378,7 +378,7 @@ public class CodeGenerator {
             if (!returnType.equals(Type.getTypeByName("double", 0)))
                 code.addCode("move $v0, $t0");
         }
-        code.addCode("j $ra");
+        code.addCode("jr $ra");
         node.setCode(code);
         //todo check kon
     }
