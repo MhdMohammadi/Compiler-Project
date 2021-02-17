@@ -28,12 +28,19 @@ beq $t0, 0, L6
 sub $sp, $sp, 0
 sub $t0, $fp, 12
 lw $t0, 0($t0)
-li $v0, 1
-move $a0, $t0
-syscall
-la $a0, ENDL
-li $v0, 4
-syscall
+sub $sp, $sp, 4
+sw $t0, 0($sp)
+li $t0, 6
+lw $t1, 0($sp)
+add $sp, $sp, 4
+seq $t0, $t1, $t0
+beq $t0, 0, L9
+sub $sp, $sp, 0
+j L7
+add $sp, $sp, 0
+j L8
+L9:
+L8:
 add $sp, $sp, 0
 L7:
 sub $t0, $fp, 12
@@ -57,12 +64,12 @@ li $v0, 10
 syscall
 L0 :
 lw $t0, 4($sp)
-beq $t0, 0, L8
+beq $t0, 0, L10
 li $t0, 1
-j L9
-L8:
+j L11
+L10:
 li $t0, 0
-L9:
+L11:
 move $v0, $t0
 lw  $ra, 8($fp)
 lw  $fp, 12($fp)
