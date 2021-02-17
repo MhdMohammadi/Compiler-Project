@@ -34,16 +34,15 @@ public class Compiler {
         preProcess(root); // assign indices to parse tree
         Type.createTypes(); // create all types and construct tree of types
         createArrays(root); // create arrays and add them to types & set type of each Type node
-        createBuiltinFunctions(root);
+        createBuiltinFunctions(root); // btoi, itob, dtoi, itod
         areAllVariablesUnique(root); // are there variables with the same name in a scope?
-        areAllFunctionsUnique(root); // are there variables with the same name in a class?
+        areAllFunctionsUnique(root); // are there functions with the same name in a class?
         setVariableType(root); // set the proper type for each variable
         setFunctionType(root); // set the proper type for each function
         setClazzType(); // set the proper type for each class
         setAllClazzAttributesAndFunctions();
         setAllNodesType(root); // set the proper type for Constant, Call, Lvalue and Expr
-        checkIntegerIndices(root); // check type of indices and count in newArray
-
+        checkIntegerIndices(root); // check type of indices and count in NewArray
         checkFunctionCalls(root);
         generateCode(root);
 
@@ -85,8 +84,7 @@ public class Compiler {
         x.getParameter().add(tmp);
         x.setName(name);
         x.setType(Type.getTypeByName(output, 0));
-        Label label = new Label();
-        label.creatNewName();
+        Label label = new Label(); label.creatNewName();
         x.setLabel(label);
     }
 

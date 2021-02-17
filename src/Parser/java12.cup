@@ -143,7 +143,7 @@ VariableDecl ::=        Variable:v SEMICOLON{:
 :};
 
 Variable ::=            Type:t IDENTIFIER:i{:
-    Node tmp = new Node(LeftHand.Model.Variable, ProductionRule.Type_IDENTIFIER);
+    Node tmp = new Node(LeftHand.Variable, ProductionRule.Type_IDENTIFIER);
     tmp.getChildren().add((Node) t);
     Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
     id.setValue(i);
@@ -156,7 +156,7 @@ Variable ::=            Type:t IDENTIFIER:i{:
 						;
 
 Type ::=                INT:i{:
-     Node tmp = new Node(LeftHand.Model.Type, ProductionRule.INT);
+     Node tmp = new Node(LeftHand.Type, ProductionRule.INT);
      Node in = new Node(LeftHand.INT, ProductionRule.TERMINAL);
      in.setValue(i);
      tmp.getChildren().add(in);
@@ -165,7 +165,7 @@ Type ::=                INT:i{:
      RESULT = tmp;
 :}
 						| DOUBLE:d{:
-     Node tmp = new Node(LeftHand.Model.Type, ProductionRule.DOUBLE);
+     Node tmp = new Node(LeftHand.Type, ProductionRule.DOUBLE);
      Node doub = new Node(LeftHand.DOUBLE, ProductionRule.TERMINAL);
      doub.setValue(d);
      tmp.getChildren().add(doub);
@@ -174,7 +174,7 @@ Type ::=                INT:i{:
      RESULT = tmp;
 :}
 						| BOOL:b{:
-     Node tmp = new Node(LeftHand.Model.Type, ProductionRule.BOOL);
+     Node tmp = new Node(LeftHand.Type, ProductionRule.BOOL);
      Node bo = new Node(LeftHand.BOOL, ProductionRule.TERMINAL);
      bo.setValue(b);
      tmp.getChildren().add(bo);
@@ -183,7 +183,7 @@ Type ::=                INT:i{:
      RESULT = tmp;
 :}
 						| STRING:s{:
-     Node tmp = new Node(LeftHand.Model.Type, ProductionRule.STRING);
+     Node tmp = new Node(LeftHand.Type, ProductionRule.STRING);
      Node str = new Node(LeftHand.STRING, ProductionRule.TERMINAL);
      str.setValue(s);
      tmp.getChildren().add(str);
@@ -192,7 +192,7 @@ Type ::=                INT:i{:
      RESULT = tmp;
 :}
                         | IDENTIFIER:i{:
-    Node tmp = new Node(LeftHand.Model.Type, ProductionRule.IDENTIFIER);
+    Node tmp = new Node(LeftHand.Type, ProductionRule.IDENTIFIER);
     Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
     id.setValue(i);
     tmp.getChildren().add(id);
@@ -201,7 +201,7 @@ Type ::=                INT:i{:
     RESULT = tmp;
 :}
 						| Type:t OPENCLOSEBRACKET{:
-    Node tmp = new Node(LeftHand.Model.Type, ProductionRule.Type_OPENCLOSEBRACKET);
+    Node tmp = new Node(LeftHand.Type, ProductionRule.Type_OPENCLOSEBRACKET);
     tmp.getChildren().add((Node)t);
     tmp.setTypeName(((Node)t).getTypeName());
     tmp.setArrayDegree(((Node)t).getArrayDegree() + 1);
@@ -302,6 +302,7 @@ ClassDecl ::=           CLASS IDENTIFIER:i ClassDeclExtends:c1 ClassDeclImplemen
 
     RESULT = tmp;
 :};
+
 ClassDeclExtends ::=    EXTENDS IDENTIFIER:i{:
     Node tmp = new Node(LeftHand.ClassDeclExtends, ProductionRule.EXTENDS_IDENTIFIER);
     Node id = new Node(LeftHand.IDENTIFIER, ProductionRule.TERMINAL);
