@@ -75,7 +75,7 @@ public class Compiler {
         setAllNodesType(root); // set the proper type for Constant, Call, Lvalue and Expr
         checkIntegerIndices(root); // check type of indices and count in NewArray
         checkFunctionCalls(root);
-
+        checkReturnTypes(root);
         codeGenerator.generateCode(root);
 
         //todo
@@ -251,6 +251,7 @@ public class Compiler {
 
     public boolean isConvertibleTo(Type convertType, Type mainType) {
         if (mainType.equals(convertType)) return true;
+        if (convertType.getArrayDegree() > 0 || mainType.getArrayDegree() > 0)return false;
         while (convertType.getParent() != null) {
             convertType = convertType.getParent();
             if (convertType.equals(mainType)) return true;
@@ -589,6 +590,26 @@ public class Compiler {
             index++;
         }
         return true;
+    }
+
+    public void checkReturnTypes(Node node){
+        if (node.getLeftHand() == LeftHand.ReturnStmt){
+            Node exprNode = node.getChildren().get(0);
+            Node findNode = node;
+            boolean find = false;
+            while(findNode.getParent() != null){
+                findNode = findNode.getParent();
+                if (findNode.getLeftHand() == LeftHand.FunctionDecl){
+                    find = true;
+                    Function function = findNode.getDefinedFunctions().get(0);
+                    Type returnType = Type.getTypeByName("void", 0);
+                    if (exprNode.getChildren().size() > 0)returnType = exprNode.getChildren().get(0).getType();
+                    if (!isConvertibleTo(returnType, function.getType()))semanticError();
+                    break;
+                }
+            }
+            if (!find)semanticError();
+        }
     }
 
     public void debug(Node v) {
