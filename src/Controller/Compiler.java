@@ -4,24 +4,33 @@ import Model.Node;
 import Model.Type;
 import Model.*;
 import Enum.*;
+import Parser.parser;
+import Scanner.MyScanner;
 
+import java.io.*;
 import java.util.ArrayList;
 
 public class Compiler {
     private Node root;
     private int cnt = 0;
     CodeGenerator codeGenerator = new CodeGenerator();
-
-    public Compiler(Node root) {
-        this.root = root;
-    }
+    private Code finalCode = new Code();
 
     public static void semanticError() {
         System.out.println("semantic error");
         System.exit(0);
     }
 
-    public void compile() {
+    public void compile(String inputFileName, String outputFileName) throws Exception {
+        Reader reader;
+        if (inputFileName != null)
+            reader = new FileReader("Tests/" + inputFileName);
+        else
+            reader = new FileReader("tests/t01.in");
+        parser p = new parser(new MyScanner(reader));
+        p.parse();
+        this.setRoot(parser.root);
+
         preProcess(root); // assign indices to parse tree
         Type.createTypes(); // create all types and construct tree of types
         createArrays(root); // create arrays and add them to types & set type of each Type node
@@ -35,6 +44,21 @@ public class Compiler {
         setAllNodesType(root); // set the proper type for Constant, Call, Lvalue and Expr
         checkIntegerIndices(root); // check type of indices and count in NewArray
         checkFunctionCalls(root);
+        generateCode(root);
+
+        //todo
+        createFinalCode();
+        writeToFile(outputFileName);
+    }
+
+    public void writeToFile( String outputFileName ) throws IOException {
+        FileWriter out = new FileWriter( outputFileName );
+        out.write( this.finalCode.getText());
+        out.close();
+    }
+
+    public void createFinalCode(){
+
     }
 
     private void createBuiltinFunctions(Node root) {
@@ -1012,5 +1036,13 @@ public class Compiler {
         code.addCode("lw  $fp, 12($fp)");
         code.addCode("j $ra");
         return code;
+    }
+
+    public Code getFinalCode() {
+        return finalCode;
+    }
+
+    public void setFinalCode(Code finalCode) {
+        this.finalCode = finalCode;
     }
 }
