@@ -12,7 +12,7 @@ public class CodeGenerator {
         Code code = new Code();
         code.addCode(root.getCode());
         code.addCode(gatherGlobalFunction(root));
-
+        code.addCode(gatherClassCodes(root));
         System.out.println(code.getText());
         System.exit(0);
     }
@@ -397,7 +397,81 @@ public class CodeGenerator {
                 }
                 node.setCode(code);
                 break;
-            //todo
+            case LValue_ASSIGN_Expr:
+                break;
+            case Constant:
+                generateCode(node.getChildren().get(0));
+                node.setCode(node.getChildren().get(0).getCode());
+                break;
+            case THIS:
+                code.addCode("lw $t0, 0($fp)");
+                node.setCode(code);
+                break;
+            case Call:
+                generateCode(node.getChildren().get(0));
+                node.setCode(node.getChildren().get(0).getCode());
+                break;
+            case OPENPARENTHESIS_Expr_CLOSEPARENTHESIS:
+                generateCallCode(node.getChildren().get(0));
+                node.setCode(node.getChildren().get(0).getCode());
+                break;
+            case Expr_PLUS_Expr:
+                node.setCode(calcExpr(node.getChildren().get(0), node.getChildren().get(1), Operator.PLUS));
+                break;
+            case Expr_MINUS_Expr:
+                node.setCode(calcExpr(node.getChildren().get(0), node.getChildren().get(1), Operator.MINUS));
+                break;
+            case Expr_MULTIPLY_Expr:
+                node.setCode(calcExpr(node.getChildren().get(0), node.getChildren().get(1), Operator.MULT));
+                break;
+            case Expr_DIVIDE_Expr:
+                node.setCode(calcExpr(node.getChildren().get(0), node.getChildren().get(1), Operator.DIV));
+                break;
+            case Expr_MOD_Expr:
+                node.setCode(calcExpr(node.getChildren().get(0), node.getChildren().get(1), Operator.MOD));
+                break;
+            case MINUS_Expr:
+                node.setCode(calcExpr(node.getChildren().get(0), Operator.SINGLE_MINUS));
+                break;
+            case Expr_LESS_Expr:
+                node.setCode(calcExpr(node.getChildren().get(0), node.getChildren().get(1), Operator.LT));
+                break;
+            case Expr_LESSEQUAL_Expr:
+                node.setCode(calcExpr(node.getChildren().get(0), node.getChildren().get(1), Operator.LTEQ));
+                break;
+            case Expr_GREATER_Expr:
+                node.setCode(calcExpr(node.getChildren().get(0), node.getChildren().get(1), Operator.GT));
+                break;
+            case Expr_GREATEREQUAL_Expr:
+                node.setCode(calcExpr(node.getChildren().get(0), node.getChildren().get(1), Operator.GTEQ));
+                break;
+            case Expr_EQUAL_Expr:
+                node.setCode(calcExpr(node.getChildren().get(0), node.getChildren().get(1), Operator.EQEQ));
+                break;
+            case Expr_NOTEQUAL_Expr:
+                node.setCode(calcExpr(node.getChildren().get(0), node.getChildren().get(1), Operator.NOTEQ));
+                break;
+            case Expr_AND_Expr:
+                node.setCode(calcExpr(node.getChildren().get(0), node.getChildren().get(1), Operator.ANDAND));
+                break;
+            case Expr_OR_Expr:
+                node.setCode(calcExpr(node.getChildren().get(0), node.getChildren().get(1), Operator.OROR));
+                break;
+            case NOT_Expr:
+                node.setCode(calcExpr(node.getChildren().get(0), Operator.SINGLE_NOT));
+                break;
+            case READINTEGER_OPENPARENTHESIS_CLOSEPARENTHESIS:
+                node.setCode(readInteger());
+                break;
+            case READLINE_OPENPARENTHESIS_CLOSEPARENTHESIS:
+                node.setCode(readLine());
+                break;
+            case NEW_IDENTIFIER:
+                node.setCode(newIdentifier(node));
+                break;
+            case NEWARRAY_OPENPARENTHESIS_Expr_COMMA_Type_CLOSEPARENTHESIS:
+                node.setCode(newArray(node));
+                break;
         }
     }
 
@@ -680,12 +754,14 @@ public class CodeGenerator {
         Type t1 = node.getType();
         if (Type.getTypeByName("int", 0).equals(t1) && operator == Operator.SINGLE_MINUS){
             Code code = new Code();
+            generateCode(node.getChildren().get(0));
             code.addCode(node.getChildren().get(0).getCode());
             code.addCode("sub $t0, $zero, $t0");
             return code;
         }
         if (Type.getTypeByName("double", 0).equals(t1) && operator == Operator.SINGLE_MINUS){
             Code code = new Code();
+            generateCode(node.getChildren().get(0));
             code.addCode(node.getChildren().get(0).getCode());
             code.addCode("neg.s $f0, $f0");
             return code;
@@ -693,6 +769,7 @@ public class CodeGenerator {
 
         if (Type.getTypeByName("boolean", 0).equals(t1) && operator == Operator.SINGLE_NOT){
             Code code = new Code();
+            generateCode(node.getChildren().get(0));
             code.addCode(node.getChildren().get(0).getCode());
             code.addCode("xor $t0, $t0, 1");
             return code;
@@ -725,17 +802,26 @@ public class CodeGenerator {
     }
 
     private Code assignExprs(Node node1, Node node2) {
-        //todo
-
-        return null;
+        Code code = new Code();
+        generateCode(node1);
+        code.addCode(node1.getCode());
+        code.addCode("sub $sp, $sp, 4");
+        code.addCode("sw $t0, 0($sp)");
+        generateCode(node2);
+        code.addCode(node2.getCode());
+        code.addCode("lw $t1, 0($sp)");
+        code.addCode("add $sp, $sp, 4");
+        code.addCode("sw $t0, 0($t1)");
+        return code;
     }
 
     public Code calcIntExpr(Node node1, Node node2, Operator operator) {
         Code code = new Code();
-
+        generateCode(node1);
         code.addCode(node1.getCode());
         code.addCode("sub $sp, $sp, 4");
         code.addCode("sw $t0, 0($sp)");
+        generateCode(node2);
         code.addCode(node2.getCode());
         code.addCode("lw $t1, 0($sp)");
         code.addCode("add $sp, $sp, 4");
@@ -783,9 +869,11 @@ public class CodeGenerator {
 
     public Code calcBooleanExpr(Node node1, Node node2, Operator operator) {
         Code code = new Code();
+        generateCode(node1);
         code.addCode(node1.getCode());
         code.addCode("sub $sp, $sp, 4");
         code.addCode("sw $t0, 0($sp)");
+        generateCode(node2);
         code.addCode(node2.getCode());
         code.addCode("lw $t1, 0($sp)");
         code.addCode("add $sp, $sp, 4");
@@ -810,9 +898,11 @@ public class CodeGenerator {
 
     public Code calcDoubleExpr(Node node1, Node node2, Operator operator) {
         Code code = new Code();
+        generateCode(node1);
         code.addCode(node1.getCode());
         code.addCode("sub $sp, $sp, 4");
         code.addCode("s.s $f0, 0($sp)");
+        generateCode(node2);
         code.addCode(node2.getCode());
         code.addCode("l.s $f1, 0($sp)");
         code.addCode("add $sp, $sp, 4");
@@ -851,7 +941,6 @@ public class CodeGenerator {
         return code;
     }
 
-
     public Code Break(Node node){
         Code code = new Code();
         code.addCode("j " + node.getBreakLabel().getName());
@@ -867,6 +956,7 @@ public class CodeGenerator {
 
     public Code newArray(Node node) {
         Code code = new Code();
+        generateCode(node.getChildren().get(0));
         code.addCode(node.getChildren().get(0).getCode());
         //todo age t0 positive nabood chi
         code.addCode("add $t0, $t0, 1");
@@ -876,6 +966,17 @@ public class CodeGenerator {
         code.addCode("syscall");
         code.addCode("sub $t0, $t0, 1");
         code.addCode("sw $t0, 0($v0)");
+        code.addCode("move $t0, $v0");
+        return code;
+    }
+
+    private Code newIdentifier(Node node) {
+        Code code = new Code();
+        String name = (String) node.getChildren().get(0).getValue();
+        int numberOfVariables = Clazz.getClazzByName(name).getVariables().size();
+        code.addCode("li $a0, " + numberOfVariables * 4);
+        code.addCode("li $v0, 9");
+        code.addCode("syscall");
         code.addCode("move $t0, $v0");
         return code;
     }
@@ -989,8 +1090,9 @@ public class CodeGenerator {
         code.addCode(L1.getName() + " :");
         code.addCode("li $t0, 0");
         code.addCode(L4.getName() + " :");
-        if (node.getProductionRule() == ProductionRule.Expr_NOTEQUAL_Expr)
-            code.addCode("xor $t0, $t0, 1");
+        //todo bayad in doros she
+        //        if (node.getProductionRule() == ProductionRule.Expr_EQUAL_Expr)
+//            code.addCode("xor $t0, $t0, 1");
         return code;
     }
 
