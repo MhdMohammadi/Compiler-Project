@@ -5,6 +5,7 @@ import Model.Type;
 import Model.*;
 import Enum.*;
 
+import java.net.CookiePolicy;
 import java.util.ArrayList;
 
 public class CodeGenerator {
@@ -406,15 +407,17 @@ public class CodeGenerator {
                 generateLvalueToIdentifierCode(node);
                 break;
             case Expr_DOT_IDENTIFIER:
+                Code code = new Code();
                 Node exprNode = node.getChildren().get(0);
                 Node idNode = node.getChildren().get(1);
                 generateCode(exprNode);
-                node.getCode().addCode(exprNode.getCode());
+                code.addCode(exprNode.getCode());
                 if (exprNode.getType().getArrayDegree() > 0) Compiler.semanticError();
                 Clazz clazz = Clazz.getClazzByName(exprNode.getType().getName());
                 if (clazz == null) Compiler.semanticError();
                 int offset = getAttributeOffset(clazz, (String) idNode.getValue());
-                node.getCode().addCode(getClassVariableAddressOutOfClass(offset));
+                code.addCode(getClassVariableAddressOutOfClass(offset));
+                node.setCode(code);
                 break;
             case Expr_OPENBRACKET_Expr_CLOSEBRACKET:
                 Node exprNode1 = node.getChildren().get(0);
@@ -441,6 +444,7 @@ public class CodeGenerator {
                 if (node.getType().equals(Type.getTypeByName("double", 0))) {
                     code.addCode(loadDoubleVariable());
                 } else {
+                    System.out.println("kheili ajibe, codesham ine : " + code.getText());
                     code.addCode(loadIntegerVariable());
                 }
                 node.setCode(code);
@@ -508,6 +512,7 @@ public class CodeGenerator {
                 break;
             case NOT_Expr:
                 node.setCode(calcExpr(node.getChildren().get(0), Operator.SINGLE_NOT));
+                System.out.println(node.getCode().getText());
                 break;
             case READINTEGER_OPENPARENTHESIS_CLOSEPARENTHESIS:
                 node.setCode(readInteger());
@@ -851,23 +856,24 @@ public class CodeGenerator {
         Type t1 = node.getType();
         if (Type.getTypeByName("int", 0).equals(t1) && operator == Operator.SINGLE_MINUS) {
             Code code = new Code();
-            generateCode(node.getChildren().get(0));
-            code.addCode(node.getChildren().get(0).getCode());
+            generateCode(node);
+            code.addCode(node.getCode());
             code.addCode("sub $t0, $zero, $t0");
             return code;
         }
         if (Type.getTypeByName("double", 0).equals(t1) && operator == Operator.SINGLE_MINUS) {
             Code code = new Code();
-            generateCode(node.getChildren().get(0));
-            code.addCode(node.getChildren().get(0).getCode());
+            generateCode(node);
+            code.addCode(node.getCode());
             code.addCode("neg.s $f0, $f0");
             return code;
         }
 
         if (Type.getTypeByName("boolean", 0).equals(t1) && operator == Operator.SINGLE_NOT) {
             Code code = new Code();
-            generateCode(node.getChildren().get(0));
-            code.addCode(node.getChildren().get(0).getCode());
+//            System.out.println(node.getChildren().get(0).getLeftHand());
+            generateCode(node);
+            code.addCode(node.getCode());
             code.addCode("xor $t0, $t0, 1");
             return code;
         }
