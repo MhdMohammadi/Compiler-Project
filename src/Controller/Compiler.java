@@ -63,23 +63,53 @@ public class Compiler {
         this.setRoot(parser.root);
 
         // detect semantic errors
-        preProcess(root); // assign indices to parse tree
-        Type.createTypes(); // create all types and construct tree of types
-        createArrays(root); // create arrays and add them to types & set type of each Type node
-        createBuiltinFunctions(root); // btoi, itob, dtoi, itod
-        areAllVariablesUnique(root); // are there variables with the same name in a scope?
-        areAllFunctionsUnique(root); // are there functions with the same name in a class?
-        setVariableType(root); // set the proper type for each variable
-        setFunctionType(root); // set the proper type for each function
-        setClazzType(); // set the proper type for each class
-        setAllClazzAttributesAndFunctions();
-        setAllNodesType(root); // set the proper type for Constant, Call, Lvalue and Expr
-        checkIntegerIndices(root); // check type of indices and count in NewArray
-        checkFunctionCalls(root);
+        System.out.println("0.ok");
 
+        preProcess(root); // assign indices to parse tree
+        System.out.println("1.ok");
+
+        Type.createTypes(); // create all types and construct tree of types
+        System.out.println("2.ok");
+
+        createArrays(root); // create arrays and add them to types & set type of each Type node
+        System.out.println("3.ok");
+
+        createBuiltinFunctions(root); // btoi, itob, dtoi, itod
+        System.out.println("4.ok");
+
+        areAllVariablesUnique(root); // are there variables with the same name in a scope?
+        System.out.println("5.ok");
+
+        areAllFunctionsUnique(root); // are there functions with the same name in a class?
+        System.out.println("6.ok");
+
+        setVariableType(root); // set the proper type for each variable
+        System.out.println("7.ok");
+
+        setFunctionType(root); // set the proper type for each function
+        System.out.println("8.ok");
+
+        setClazzType(); // set the proper type for each class
+        System.out.println("9.ok");
+
+        setAllClazzAttributesAndFunctions();
+        System.out.println("10.ok");
+
+        setAllNodesType(root); // set the proper type for Constant, Call, Lvalue and Expr
+        System.out.println("11.ok");
+
+        checkIntegerIndices(root); // check type of indices and count in NewArray
+        System.out.println("12.ok");
+
+        checkFunctionCalls(root);
+        System.out.println("13.ok");
         // produce the final code
         checkReturnTypes(root);
+        System.out.println("14.ok");
+
         setFunctionLabels(root);
+        System.out.println("15.ok");
+
         codeGenerator.generateCode(root);
         //todo
         finalCode = codeGenerator.createFinalCode(root);
@@ -140,8 +170,9 @@ public class Compiler {
 
     public void areAllVariablesUnique(Node v) {
         ArrayList<Variable> variables = v.getDefinedVariables();
-        if (areArrayListVariablesUnique(variables) == false) semanticError();
-
+        System.out.println(v.getLeftHand());
+        if (!areArrayListVariablesUnique(variables)) semanticError();
+        System.out.println("ok !");
         for (Node node : v.getChildren())
             areAllVariablesUnique(node);
     }
@@ -241,7 +272,8 @@ public class Compiler {
     }
 
     public boolean haveSameSignature(Function parFunction, Function function) {
-    //    System.out.println("return type signature");
+       // System.out.println(function.getName());
+       // System.out.println("return type signature");
         if (!isConvertibleTo(function.getType(), parFunction.getType())) return false;
      //   System.out.println("ok");
         if (function.getParameter().size() != parFunction.getParameter().size()) return false;
@@ -249,7 +281,9 @@ public class Compiler {
         for (Variable variable : function.getParameter()) {
             Variable parVariable = parFunction.getParameter().get(index);
      //       System.out.println("parameters signature");
+          //  System.out.println(variable.getName());
             if (!isConvertibleTo(parVariable.getType(), variable.getType())) return false;
+         //   System.out.println("ok");
        //     System.out.println("ok");
             index++;
         }
