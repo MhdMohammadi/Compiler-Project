@@ -1,21 +1,15 @@
 class A{
-    private int f(double y){
-            return 1;
+    private int f(B b){
+        return 2.3;
     }
 }
 
 class B extends A{
 public int x;
-    public int g(){
-        f(2.5);
-        return 1;
+    public int f(A a){
     }
 
 }
 
 int main() {
-    int a;
-    B b;
-    b = new B;
-    a = b.g();
 }

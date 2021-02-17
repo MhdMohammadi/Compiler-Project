@@ -241,23 +241,23 @@ public class Compiler {
     }
 
     public boolean haveSameSignature(Function parFunction, Function function) {
-        System.out.println("return type signature");
+    //    System.out.println("return type signature");
         if (!isConvertibleTo(function.getType(), parFunction.getType())) return false;
-        System.out.println("ok");
+     //   System.out.println("ok");
         if (function.getParameter().size() != parFunction.getParameter().size()) return false;
         int index = 0;
         for (Variable variable : function.getParameter()) {
             Variable parVariable = parFunction.getParameter().get(index);
-            System.out.println("parameters signature");
+     //       System.out.println("parameters signature");
             if (!isConvertibleTo(parVariable.getType(), variable.getType())) return false;
-            System.out.println("ok");
+       //     System.out.println("ok");
             index++;
         }
         return true;
     }
 
     public static boolean isConvertibleTo(Type convertType, Type mainType) {
-        System.out.println(convertType.getName() + " " + mainType.getName());
+    //    System.out.println(convertType.getName() + " " + mainType.getName());
         if (mainType.equals(convertType)) return true;
         if (convertType.getArrayDegree() > 0 || mainType.getArrayDegree() > 0)return false;
         while (convertType.getParent() != null) {
@@ -301,11 +301,11 @@ public class Compiler {
                 }
                 break;
             case Call:
-                System.out.println("HI");
+            //    System.out.println("HI");
                 switch (v.getProductionRule()) {
                     case IDENTIFIER_OPENPARENTHESIS_Actuals_CLOSEPARENTHESIS:
                         Function function = findFunction(v, (String) v.getChildren().get(0).getValue());
-                        System.out.println(function.getName() + " " + function.getType());
+            //            System.out.println(function.getName() + " " + function.getType());
                         v.setType(function.getType());
                         break;
                     case Expr_DOT_IDENTIFIER_OPENPARENTHESIS_Actuals_CLOSEPARENTHESIS:
@@ -561,7 +561,7 @@ public class Compiler {
         }
         for (Node child : node.getChildren())
             getNodeClazz(child, clazz);
-        System.out.println("class node not found!");
+    //    System.out.println("class node not found!");
         semanticError();
         return null;
     }
@@ -693,10 +693,10 @@ public class Compiler {
         if (function.getParameter().size() != parametersTypes.size()) return false;
         int index = 0;
         for (Variable variable : function.getParameter()) {
-            System.out.println("function call param");
+        //    System.out.println("function call param");
             if (!isConvertibleTo(parametersTypes.get(index), variable.getType()))
                 return false;
-            System.out.println("ok");
+        //    System.out.println("ok");
             index++;
         }
         return true;
@@ -727,18 +727,20 @@ public class Compiler {
                     Function function = findNode.getDefinedFunctions().get(0);
                     Type returnType = Type.getTypeByName("void", 0);
                     if (exprNode.getChildren().size() > 0)returnType = exprNode.getChildren().get(0).getType();
-                    System.out.println("check return type with expr return type");
+                //    System.out.println("check return type with expr return type");
                     if (!isConvertibleTo(returnType, function.getType()))semanticError();
-                    System.out.println("ok");
+                //    System.out.println("ok");
                     break;
                 }
             }
             if (!find)semanticError();
         }
+        for (Node child : node.getChildren())
+            checkReturnTypes(child);
     }
 
     public void debug(Node v) {
-        System.out.println(v.getLeftHand() + " " + v.getProductionRule());
+    //    System.out.println(v.getLeftHand() + " " + v.getProductionRule());
         Type type = v.getType();
         if (type == null) System.out.println("NULL");
         else System.out.println(type.getName() + " " + type.getParent());
