@@ -444,7 +444,6 @@ public class CodeGenerator {
                 if (node.getType().equals(Type.getTypeByName("double", 0))) {
                     code.addCode(loadDoubleVariable());
                 } else {
-                    System.out.println("kheili ajibe, codesham ine : " + code.getText());
                     code.addCode(loadIntegerVariable());
                 }
                 node.setCode(code);

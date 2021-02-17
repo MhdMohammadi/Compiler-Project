@@ -1,14 +1,9 @@
-class A {
-    public int x;
-    public void f(){
-        x = x + 1;
-    }
-}
-
 int main() {
-    int b;
-    A a;
-    a = new A;
-    a.f();
-    b = a.x;
+    boolean x;
+    boolean y;
+
+    x = true;
+    y = x && !x;
+
+    Print(y);
 }
