@@ -1,9 +1,21 @@
+class A{
+    private int f(double y){
+            return 1;
+    }
+}
+
+class B extends A{
+public int x;
+    public int g(){
+        f(2.5);
+        return 1;
+    }
+
+}
+
 int main() {
-    double x;
-    double z;
-
-    x = 2.6;
-    z = 0.05;
-
-    Print(z + x);
+    int a;
+    B b;
+    b = new B;
+    a = b.g();
 }
