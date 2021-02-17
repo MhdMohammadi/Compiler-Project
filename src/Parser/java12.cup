@@ -178,7 +178,7 @@ Type ::=                INT:i{:
      Node bo = new Node(LeftHand.BOOL, ProductionRule.TERMINAL);
      bo.setValue(b);
      tmp.getChildren().add(bo);
-     tmp.setTypeName("boolean");
+     tmp.setTypeName("bool");
      tmp.setArrayDegree(0);
      RESULT = tmp;
 :}

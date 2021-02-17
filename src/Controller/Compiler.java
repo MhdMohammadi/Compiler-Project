@@ -113,9 +113,9 @@ public class Compiler {
 
     private void createBuiltinFunctions(Node root) {
         Function itob = new Function();
-        initializeFunction(itob, "itob", "int", "boolean");
+        initializeFunction(itob, "itob", "int", "bool");
         Function btoi = new Function();
-        initializeFunction(btoi, "btoi", "boolean", "int");
+        initializeFunction(btoi, "btoi", "bool", "int");
         Function dtoi = new Function();
         initializeFunction(dtoi, "dtoi", "double", "int");
         Function itod = new Function();
@@ -134,7 +134,7 @@ public class Compiler {
         x.getParameter().add(tmp);
         x.setName(name);
         x.setType(Type.getTypeByName(output, 0));
-        Label label = new Label(); label.creatNewName();
+        Label label = new Label(); label.createNewName();
         x.setLabel(label);
     }
 
@@ -289,7 +289,7 @@ public class Compiler {
                         v.setType(Type.getTypeByName("double", 0));
                         break;
                     case BOOLEANLITERAL:
-                        v.setType(Type.getTypeByName("boolean", 0));
+                        v.setType(Type.getTypeByName("bool", 0));
                         break;
                     case STRINGLITERAL:
                         v.setType(Type.getTypeByName("string", 0));
@@ -485,47 +485,47 @@ public class Compiler {
                         if (!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.LT)) {
                             semanticError();
                         }
-                        v.setType(Type.getTypeByName("boolean", 0));
+                        v.setType(Type.getTypeByName("bool", 0));
                         break;
                     case Expr_LESSEQUAL_Expr:
                         if (!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.LTEQ))
                             semanticError();
-                        v.setType(Type.getTypeByName("boolean", 0));
+                        v.setType(Type.getTypeByName("bool", 0));
                         break;
                     case Expr_GREATER_Expr:
                         if (!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.GT))
                             semanticError();
-                        v.setType(Type.getTypeByName("boolean", 0));
+                        v.setType(Type.getTypeByName("bool", 0));
                         break;
                     case Expr_GREATEREQUAL_Expr:
                         if (!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.GTEQ))
                             semanticError();
-                        v.setType(Type.getTypeByName("boolean", 0));
+                        v.setType(Type.getTypeByName("bool", 0));
                         break;
                     case Expr_EQUAL_Expr:
                         if (!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.EQEQ))
                             semanticError();
-                        v.setType(Type.getTypeByName("boolean", 0));
+                        v.setType(Type.getTypeByName("bool", 0));
                         break;
                     case Expr_NOTEQUAL_Expr:
                         if (!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.NOTEQ))
                             semanticError();
-                        v.setType(Type.getTypeByName("boolean", 0));
+                        v.setType(Type.getTypeByName("bool", 0));
                         break;
                     case Expr_AND_Expr:
                         if (!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.ANDAND))
                             semanticError();
-                        v.setType(Type.getTypeByName("boolean", 0));
+                        v.setType(Type.getTypeByName("bool", 0));
                         break;
                     case Expr_OR_Expr:
                         if (!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.OROR))
                             semanticError();
-                        v.setType(Type.getTypeByName("boolean", 0));
+                        v.setType(Type.getTypeByName("bool", 0));
                         break;
                     case NOT_Expr:
                         if (!Type.possible(v.getChildren().get(0).getType(), Operator.SINGLE_NOT))
                             semanticError();
-                        v.setType(Type.getTypeByName("boolean", 0));
+                        v.setType(Type.getTypeByName("bool", 0));
                         break;
                     case READINTEGER_OPENPARENTHESIS_CLOSEPARENTHESIS:
                         v.setType(Type.getTypeByName("int", 0));
@@ -707,7 +707,7 @@ public class Compiler {
         if (node.getLeftHand() == LeftHand.FunctionDecl){
             Function function = node.getDefinedFunctions().get(0);
             Label label = new Label();
-            label.creatNewName();
+            label.createNewName();
             function.setLabel(label);
         }
         for (Node child : node.getChildren()){
