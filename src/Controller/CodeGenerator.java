@@ -27,7 +27,6 @@ public class CodeGenerator {
         return code;
     }
 
-
     public Code gatherGlobalFunction(Node node) {
         Code code = new Code();
         for (Function function : node.getDefinedFunctions()) {
@@ -386,7 +385,7 @@ public class CodeGenerator {
                 code.addCode("move $a0, $t0");
                 code.addCode("syscall");
             } else if (Type.getTypeByName("double", 0).equals(node.getChildren().get(0).getType())) {
-                code.addCode("li $v0, 3");
+                code.addCode("li $v0, 2");
                 code.addCode("mov.s $f12, $f0");
                 code.addCode("syscall");
             } else if (Type.getTypeByName("string", 0).equals(node.getChildren().get(0).getType())) {
