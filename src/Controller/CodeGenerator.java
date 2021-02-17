@@ -994,8 +994,9 @@ public class CodeGenerator {
         code.addCode(L1.getName() + " :");
         code.addCode("li $t0, 0");
         code.addCode(L4.getName() + " :");
-        if (node.getProductionRule() == ProductionRule.Expr_EQUAL_Expr)
-            code.addCode("xor $t0, $t0, 1");
+        //todo bayad in doros she
+        //        if (node.getProductionRule() == ProductionRule.Expr_EQUAL_Expr)
+//            code.addCode("xor $t0, $t0, 1");
         return code;
     }
 
