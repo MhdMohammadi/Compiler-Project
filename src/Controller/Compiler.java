@@ -112,7 +112,7 @@ public class Compiler {
 
         codeGenerator.generateCode(root);
         //todo
-        codeGenerator.createFinalCode(root);
+        finalCode = codeGenerator.createFinalCode(root);
         writeToFile(outputFileName);
     }
 

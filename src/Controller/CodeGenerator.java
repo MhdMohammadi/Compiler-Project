@@ -11,20 +11,21 @@ import java.util.ArrayList;
 public class CodeGenerator {
     public ArrayList<Object> floatingPoints = new ArrayList<>();
 
-    public void createFinalCode(Node root) {
+    public Code createFinalCode(Node root) {
         Code code = new Code();
         code.addCode(root.getCode());
         code.addCode(addFloatingPoints());
         code.addCode(gatherGlobalFunction(root));
 //        code.addCode(gatherClassCodes(root));
         System.out.println(code.getText());
-        System.exit(0);
+        return code;
     }
 
     private Code addFloatingPoints() {
         Code code = new Code();
         code.addCode("TRUE: .asciiz \"true\"");
         code.addCode("FALSE: .asciiz \"false\"");
+        code.addCode("ENDL: .asciiz \"\\n\"");
         return code;
     }
 
@@ -411,6 +412,9 @@ public class CodeGenerator {
                 code.addCode("move $a0, $t0");
                 code.addCode("syscall");
             }
+            code.addCode("la $a0, ENDL");
+            code.addCode("li $v0, 4");
+            code.addCode("syscall");
             generateCode(node.getChildren().get(1));
             code.addCode(node.getChildren().get(1).getCode());
         }
