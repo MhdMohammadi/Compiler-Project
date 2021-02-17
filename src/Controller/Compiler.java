@@ -317,9 +317,35 @@ public class Compiler {
                             boolean find = false;
                             for (Function classFunction: clazz.getFunctions()){
                                 if (classFunction.getName().equals((String) idNode.getValue())){
-                                    find = true;
-                                    v.setType(classFunction.getType());
-                                    break;
+                                    if (classFunction.getAccessMode() == AccessMode.PUBLIC){
+                                        find = true;
+                                        v.setType(classFunction.getType());
+                                        break;
+                                    }
+                                    else{
+                                        Node findNode = v;
+                                        while (findNode.getParent() != null){
+                                            findNode = findNode.getParent();
+                                            if (findNode.getLeftHand() == LeftHand.ClassDecl){
+                                                break;
+                                            }
+                                        }
+                                        if (findNode.getLeftHand() == LeftHand.ClassDecl){
+                                            Clazz coverClazz = getClazzNode(findNode);
+                                            if (coverClazz.equals(clazz)){
+                                                if (classFunction.getAccessMode() == AccessMode.PROTECTED){
+                                                    find = true;
+                                                    v.setType(classFunction.getType());
+                                                }
+                                                else {
+                                                    if (findNode.getDefinedFunctions().contains(classFunction)){
+                                                        find = true;
+                                                        v.setType(classFunction.getType());
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
                             if (!find)semanticError();
@@ -358,12 +384,12 @@ public class Compiler {
                                     if (findNode.getLeftHand() == LeftHand.ClassDecl){
                                         Clazz coverClazz = getClazzNode(findNode);
                                         if (coverClazz.equals(clazz)){
-                                            if (variable.getAccessMode() == AccessMode.PROTECTED){
+                                            if (classVariable.getAccessMode() == AccessMode.PROTECTED){
                                                 find = true;
                                                 v.setType(classVariable.getType());
                                             }
                                             else {
-                                                if (findNode.getDefinedVariables().contains(variable)){
+                                                if (findNode.getDefinedVariables().contains(classVariable)){
                                                     find = true;
                                                     v.setType(classVariable.getType());
                                                 }
