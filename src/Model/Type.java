@@ -51,7 +51,7 @@ public class Type {
         allPreTypes.add(new PreType("void", null));
         allPreTypes.add(new PreType("int", null));
         allPreTypes.add(new PreType("double", null));
-        allPreTypes.add(new PreType("boolean", null));
+        allPreTypes.add(new PreType("bool", null));
         allPreTypes.add(new PreType("string", null));
         for (int i = 0; i < allPreTypes.size(); i++) {
             for (int j = 0; j < allPreTypes.size(); j++) {
@@ -70,7 +70,7 @@ public class Type {
         for (int i = 0; i < allPreTypes.size(); i++){
             String parentName = allPreTypes.get(i).getParent();
             if(parentName == null) continue;
-            if (parentName.equals("int") || parentName.equals("double") || parentName.equals("boolean") || parentName.equals("string"))
+            if (parentName.equals("int") || parentName.equals("double") || parentName.equals("bool") || parentName.equals("string"))
                 Compiler.semanticError();
             if (parentName.equals(allPreTypes.get(i).name))
                 Compiler.semanticError();
@@ -110,7 +110,7 @@ public class Type {
 
         Type INT = getTypeByName("int", 0);
         Type DOUBLE = getTypeByName("double", 0);
-        Type BOOLEAN = getTypeByName("boolean", 0);
+        Type BOOLEAN = getTypeByName("bool", 0);
         Type STRING = getTypeByName("string", 0);
 
         if(operator == Operator.MOD && t1 != INT) return false;
@@ -133,7 +133,7 @@ public class Type {
     public static boolean possible(Type t1, Operator operator){
         Type INT = getTypeByName("int", 0);
         Type DOUBLE = getTypeByName("double", 0);
-        Type BOOLEAN = getTypeByName("boolean", 0);
+        Type BOOLEAN = getTypeByName("bool", 0);
         if(operator == Operator.SINGLE_NOT && t1 == BOOLEAN) return true;
         if(operator == Operator.SINGLE_MINUS && (t1 == INT || t1 == DOUBLE)) return true;
         return false;

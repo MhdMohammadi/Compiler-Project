@@ -16,7 +16,7 @@ public class Label {
         return name;
     }
 
-    public void creatNewName(){
+    public void createNewName(){
         setName("L" + number);
         number += 1;
     }

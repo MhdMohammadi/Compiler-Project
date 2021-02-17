@@ -5,26 +5,26 @@ import Model.Type;
 import Model.*;
 import Enum.*;
 
-import java.net.CookiePolicy;
 import java.util.ArrayList;
 
 public class CodeGenerator {
     public ArrayList<Object> floatingPoints = new ArrayList<>();
 
-    public void createFinalCode(Node root) {
+    public Code createFinalCode(Node root) {
         Code code = new Code();
         code.addCode(root.getCode());
         code.addCode(addFloatingPoints());
         code.addCode(gatherGlobalFunction(root));
 //        code.addCode(gatherClassCodes(root));
         System.out.println(code.getText());
-        System.exit(0);
+        return code;
     }
 
     private Code addFloatingPoints() {
         Code code = new Code();
         code.addCode("TRUE: .asciiz \"true\"");
         code.addCode("FALSE: .asciiz \"false\"");
+        code.addCode("ENDL: .asciiz \"\\n\"");
         return code;
     }
 
@@ -102,9 +102,9 @@ public class CodeGenerator {
         Code code = new Code();
         code.addCode(function.getLabel().getName() + " :");
         Label label = new Label();
-        label.creatNewName();
+        label.createNewName();
         Label label1 = new Label();
-        label1.creatNewName();
+        label1.createNewName();
         code.addCode("lw $t0, 4($sp)");
         code.addCode("beq $t0, 0, " + label.getName());
         code.addCode("li $t0, 1");
@@ -243,7 +243,7 @@ public class CodeGenerator {
         if (!node.getDefinedFunctions().get(0).getName().equals("main")) {
             code.addCode("lw  $ra, " + -((1 + function.getParameter().size() + 1) * 4) + "($fp)");
             code.addCode("lw  $fp, " + -((1 + function.getParameter().size()) * 4) + "($fp)");
-            code.addCode("j $ra");
+            code.addCode("jr $ra");
         } else{
             code.addCode("li $v0, 10");
             code.addCode("syscall");
@@ -318,8 +318,8 @@ public class CodeGenerator {
         code.addCode(node.getChildren().get(0).getCode());
         Label label = new Label();
         Label label1 = new Label();
-        label.creatNewName();
-        label1.creatNewName();
+        label.createNewName();
+        label1.createNewName();
         code.addCode("beq $t0, 0, " + label1.getName());
         code.addCode(node.getChildren().get(1).getCode());
         code.addCode("j " + label.getName());
@@ -342,8 +342,8 @@ public class CodeGenerator {
         Code code = new Code();
         Label label = new Label();
         Label label1 = new Label();
-        label.creatNewName();
-        label1.creatNewName();
+        label.createNewName();
+        label1.createNewName();
         code.addCode(label.getName() + ":");
         code.addCode(node.getChildren().get(0).getCode());
         code.addCode("beq $t0, 0, " + label1.getName());
@@ -365,11 +365,11 @@ public class CodeGenerator {
     public Code forLoop(Node node) {
         Code code = new Code();
         Label label = new Label();
-        label.creatNewName();
+        label.createNewName();
         Label label1 = new Label();
-        label1.creatNewName();
+        label1.createNewName();
         Label label2 = new Label();
-        label2.creatNewName();
+        label2.createNewName();
         code.addCode(node.getChildren().get(0).getCode());
         code.addCode(label.getName() + ":");
         code.addCode(node.getChildren().get(1).getCode());
@@ -403,7 +403,7 @@ public class CodeGenerator {
             if (!returnType.equals(Type.getTypeByName("double", 0)))
                 code.addCode("move $v0, $t0");
         }
-        code.addCode("j $ra");
+        code.addCode("jr $ra");
         node.setCode(code);
         //todo check kon
     }
@@ -415,10 +415,10 @@ public class CodeGenerator {
             generateCode(child);
             code.addCode(child.getCode());
             if (Type.getTypeByName("int", 0).equals(node.getChildren().get(0).getType()) ||
-                Type.getTypeByName("boolean", 0).equals(node.getChildren().get(0).getType())
+                Type.getTypeByName("bool", 0).equals(node.getChildren().get(0).getType())
             ) {
-                Label label = new Label(); label.creatNewName();
-                Label label2 = new Label(); label2.creatNewName();
+                Label label = new Label(); label.createNewName();
+                Label label2 = new Label(); label2.createNewName();
                 code.addCode("beq $t0, 0, " + label.getName());
                 code.addCode("la $a0, TRUE");
                 code.addCode("j " + label2.getName());
@@ -436,6 +436,9 @@ public class CodeGenerator {
                 code.addCode("move $a0, $t0");
                 code.addCode("syscall");
             }
+            code.addCode("la $a0, ENDL");
+            code.addCode("li $v0, 4");
+            code.addCode("syscall");
             generateCode(node.getChildren().get(1));
             code.addCode(node.getChildren().get(1).getCode());
         }
@@ -910,7 +913,7 @@ public class CodeGenerator {
             return code;
         }
 
-        if (Type.getTypeByName("boolean", 0).equals(t1) && operator == Operator.SINGLE_NOT) {
+        if (Type.getTypeByName("bool", 0).equals(t1) && operator == Operator.SINGLE_NOT) {
             Code code = new Code();
 //            System.out.println(node.getChildren().get(0).getLeftHand());
             generateCode(node);
@@ -929,7 +932,7 @@ public class CodeGenerator {
         }
         if (Type.getTypeByName("int", 0).equals(t1)) {
             return calcIntExpr(node1, node2, operator);
-        } else if (Type.getTypeByName("boolean", 0).equals(t1)) {
+        } else if (Type.getTypeByName("bool", 0).equals(t1)) {
             return calcBooleanExpr(node1, node2, operator);
         } else if (Type.getTypeByName("double", 0).equals(t1)) {
             return calcDoubleExpr(node1, node2, operator);
@@ -1081,7 +1084,7 @@ public class CodeGenerator {
                     code.addCode("c.ne.s $f1, $f0");
                 code.addCode("li $t0, 0");
                 Label label = new Label();
-                label.creatNewName();
+                label.createNewName();
                 code.addCode("bclf " + label.getName());
                 code.addCode("li $t0, 1");
                 code.addCode(label.getName() + " :");
@@ -1172,11 +1175,11 @@ public class CodeGenerator {
         code.addCode("lw $t2, 0($t0)");
         code.addCode("add $t4, $t4, " + size);
         Label L1 = new Label();
-        L1.creatNewName();
+        L1.createNewName();
         Label L2 = new Label();
-        L2.creatNewName();
+        L2.createNewName();
         Label L3 = new Label();
-        L3.creatNewName();
+        L3.createNewName();
         code.addCode(L1.getName() + ":");
         code.addCode("beq $t3, 0, " + L2.getName());
         code.addCode("add $t1, $t1, " + size);
@@ -1213,13 +1216,13 @@ public class CodeGenerator {
         code.addCode("lw $t3, 0($t1)");
 
         Label L1 = new Label();
-        L1.creatNewName();
+        L1.createNewName();
         Label L2 = new Label();
-        L2.creatNewName();
+        L2.createNewName();
         Label L3 = new Label();
-        L3.creatNewName();
+        L3.createNewName();
         Label L4 = new Label();
-        L4.creatNewName();
+        L4.createNewName();
        /* code.addCode("bne $t2, $t3, " + L1.getName());
         code.addCode("add $t0, $t0, 4");
         code.addCode("add $t1, $t1, 4");*/
