@@ -388,9 +388,7 @@ public class CodeGenerator {
             Node child = node.getChildren().get(0);
             generateCode(child);
             code.addCode(child.getCode());
-            if (Type.getTypeByName("int", 0).equals(node.getChildren().get(0).getType()) ||
-                Type.getTypeByName("bool", 0).equals(node.getChildren().get(0).getType())
-            ) {
+            if (Type.getTypeByName("bool", 0).equals(node.getChildren().get(0).getType())) {
                 Label label = new Label(); label.createNewName();
                 Label label2 = new Label(); label2.createNewName();
                 code.addCode("beq $t0, 0, " + label.getName());
@@ -400,6 +398,10 @@ public class CodeGenerator {
                 code.addCode("la $a0, FALSE");
                 code.addCode(label2.getName() + " :");
                 code.addCode("li $v0, 4");
+                code.addCode("syscall");
+            } else if (Type.getTypeByName("int", 0).equals(node.getChildren().get(0).getType())){
+                code.addCode("li $v0, 1");
+                code.addCode("move $a0, $t0");
                 code.addCode("syscall");
             } else if (Type.getTypeByName("double", 0).equals(node.getChildren().get(0).getType())) {
                 code.addCode("li $v0, 2");
