@@ -565,6 +565,15 @@ public class Compiler {
                     return function;
                 }
             }
+            if (node1.getLeftHand() == LeftHand.ClassDecl){
+                Clazz clazz = getClazzNode(node1);
+                for (Function function : clazz.getFunctions()){
+                    if (function.getName().equals(name)){
+                        if (function.getAccessMode() == AccessMode.PROTECTED || function.getAccessMode() == AccessMode.PUBLIC)
+                            return function;
+                    }
+                }
+            }
             if (node1.getParent() == null) {
                 break;
             } else {
