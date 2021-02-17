@@ -77,11 +77,11 @@ add $sp, $sp, 4
 and $t0, $t0, $t1
 add $sp, $fp, 4
 move $v0, $t0
-j $ra
+jr $ra
 add $sp, $sp, 0
 lw  $ra, -16($fp)
 lw  $fp, -12($fp)
-j $ra
+jr $ra
 L0 :
 lw $t0, 4($sp)
 beq $t0, 0, L8
