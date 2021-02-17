@@ -117,7 +117,7 @@ public class Type {
         if((operator == Operator.MINUS || operator == Operator.DIV || operator == Operator.MULT)
                 && (t1 != INT && t1 != DOUBLE)) return false;
         if((operator == Operator.PLUS) && (t1 != INT && t1 != DOUBLE && t1 != STRING && t1.arrayDegree == 0)) return false;
-        if((operator == Operator.ANDAND || operator == Operator.OROR) && t1 != DOUBLE) return false;
+        if((operator == Operator.ANDAND || operator == Operator.OROR) && t1 != BOOLEAN) return false;
         if((operator == Operator.LT || operator == Operator.GT || operator == Operator.LTEQ || operator == Operator.GTEQ)
         && (t1 != DOUBLE && t1 != INT)) return false;
         if (operator == Operator.EQEQ || operator == Operator.NOTEQ){
