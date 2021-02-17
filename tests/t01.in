@@ -1,5 +1,14 @@
+class A{
+
+}
+
+class B extends A{
+
+}
+
 int main() {
-    int a;
-    int b;
-    a = b * a;
+    A a;
+    B b;
+    a = new A;
+    a = b;
 }
