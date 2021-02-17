@@ -426,7 +426,9 @@ public class CodeGenerator {
     public void generateLValueCode(Node node) {
         switch (node.getProductionRule()) {
             case IDENTIFIER:
+                System.out.println("salam dawsh");
                 generateLvalueToIdentifierCode(node);
+                System.out.println(node.getCode().getText());
                 break;
             case Expr_DOT_IDENTIFIER:
                 Code code = new Code();
@@ -444,6 +446,7 @@ public class CodeGenerator {
             case Expr_OPENBRACKET_Expr_CLOSEBRACKET:
                 Node exprNode1 = node.getChildren().get(0);
                 Node exprNode2 = node.getChildren().get(1);
+                System.out.println(exprNode1.getLeftHand() + " " + exprNode1.getProductionRule());
                 generateCode(exprNode1);
                 node.getCode().addCode(exprNode1.getCode());
                 node.getCode().addCode("sub $sp, $sp, 4");
@@ -461,6 +464,7 @@ public class CodeGenerator {
 //        System.out.println(node.getProductionRule());
         switch (node.getProductionRule()) {
             case LValue:
+                System.out.println(node.getChildren().get(0).getLeftHand() + " " + node.getChildren().get(0).getProductionRule());
                 generateCode(node.getChildren().get(0));
                 code.addCode(node.getChildren().get(0).getCode());
                 if (node.getType().equals(Type.getTypeByName("double", 0))) {

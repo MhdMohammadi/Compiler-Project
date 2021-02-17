@@ -1,9 +1,7 @@
 int main(){
-    double a;
-    int b;
+    int[] a;
 
-    a = 2.4;
-    b = dtoi(a);
-
-    Print(a, b);
+    a = NewArray(10, int);
+    a[2] = 10;
+    a[3] = 11;
 }
