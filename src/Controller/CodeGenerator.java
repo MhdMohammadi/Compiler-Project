@@ -802,9 +802,17 @@ public class CodeGenerator {
     }
 
     private Code assignExprs(Node node1, Node node2) {
-        //todo
-
-        return null;
+        Code code = new Code();
+        generateCode(node1);
+        code.addCode(node1.getCode());
+        code.addCode("sub $sp, $sp, 4");
+        code.addCode("sw $t0, 0($sp)");
+        generateCode(node2);
+        code.addCode(node2.getCode());
+        code.addCode("lw $t1, 0($sp)");
+        code.addCode("add $sp, $sp, 4");
+        code.addCode("sw $t0, 0($t1)");
+        return code;
     }
 
     public Code calcIntExpr(Node node1, Node node2, Operator operator) {
