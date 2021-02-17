@@ -272,7 +272,19 @@ public class CodeGenerator {
         node.setCode(code);
     }
 
-    private void generateReturnCode(Node node) {
+    public void generateReturnCode(Node node) {
+        Code code = new Code();
+        Node exprNode = node.getChildren().get(0);
+        generateCode(exprNode);
+        code.addCode(exprNode.getCode());
+        code.addCode("add $sp, $fp, 4");
+        if (exprNode.getProductionRule() != ProductionRule.EPSILON){
+            Type returnType = exprNode.getChildren().get(0).getType();
+            if (!returnType.equals(Type.getTypeByName("double", 0)))
+                code.addCode("move $v0, $t0");
+        }
+        code.addCode("j $ra");
+        node.setCode(code);
         //todo
     }
 

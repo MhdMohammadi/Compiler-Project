@@ -530,7 +530,6 @@ public class Compiler {
         for (Node node : v.getChildren())
             checkIntegerIndices(node);
     }
-    //todo possible equal isConvertibleTo
     //todo return code
     //todo class function calls code
     //todo null
