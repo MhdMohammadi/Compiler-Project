@@ -14,14 +14,38 @@ public class Compiler {
     private Node root;
     private int cnt = 0;
     CodeGenerator codeGenerator = new CodeGenerator();
-    private Code finalCode = new Code();
+    private static Code finalCode = new Code();
+    private static String inputFileName, outputFileName;
+
 
     public static void semanticError() {
-        System.out.println("semantic error");
+        finalCode = generateSemanticErrorCode();
+        System.out.println(finalCode.getText());
+        try {
+            writeToFile(Compiler.outputFileName);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         System.exit(0);
     }
 
+    private static Code generateSemanticErrorCode(){
+        Code code = new Code();
+        code.addCode(".text");
+        code.addCode(".globl main");
+        code.addCode("main:");
+        code.addCode("la $a0, errorMsg");
+        code.addCode("addi $v0, $zero, 4");
+        code.addCode("syscall");
+        code.addCode("jr $ra");
+        code.addCode(".data");
+        code.addCode("errorMsg: .assciiz \"SemanticError\"");
+        return code;
+    }
+
     public void compile(String inputFileName, String outputFileName) throws Exception {
+        Compiler.inputFileName = inputFileName;
+        Compiler.outputFileName = outputFileName;
         Reader reader;
         if (inputFileName != null)
             reader = new FileReader("Tests/" + inputFileName);
@@ -51,14 +75,15 @@ public class Compiler {
         writeToFile(outputFileName);
     }
 
-    public void writeToFile( String outputFileName ) throws IOException {
+    public static void writeToFile( String outputFileName ) throws IOException {
+        System.out.println(outputFileName);
         FileWriter out = new FileWriter( outputFileName );
-        out.write( this.finalCode.getText());
+        out.write( finalCode.getText());
         out.close();
     }
 
     public void createFinalCode(){
-
+        Code code = new Code();
     }
 
     private void createBuiltinFunctions(Node root) {
@@ -677,9 +702,9 @@ public class Compiler {
                 generateCode(node.getChildren().get(0));
                 code.addCode(node.getChildren().get(0).getCode());
                 if (node.getType().equals(Type.getTypeByName("double", 0))) {
-                    code.addCode(codeGenerator.storeDoubleVariable());
+                    code.addCode(codeGenerator.loadDoubleVariable());
                 } else {
-                    code.addCode(codeGenerator.storeIntegerVariable());
+                    code.addCode(codeGenerator.loadIntegerVariable());
                 }
                 node.setCode(code);
                 break;
