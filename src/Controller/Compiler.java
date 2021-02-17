@@ -79,6 +79,7 @@ public class Compiler {
 
         // produce the final code
         checkReturnTypes(root);
+        setFunctionLabels(root);
         codeGenerator.generateCode(root);
         //todo
         codeGenerator.createFinalCode(root);
@@ -683,6 +684,19 @@ public class Compiler {
             index++;
         }
         return true;
+    }
+
+
+    public void setFunctionLabels(Node node){
+        if (node.getLeftHand() == LeftHand.FunctionDecl){
+            Function function = node.getDefinedFunctions().get(0);
+            Label label = new Label();
+            label.creatNewName();
+            function.setLabel(label);
+        }
+        for (Node child : node.getChildren()){
+            setFunctionLabels(child);
+        }
     }
 
     public void checkReturnTypes(Node node){
