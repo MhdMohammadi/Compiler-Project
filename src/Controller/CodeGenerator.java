@@ -59,7 +59,7 @@ public class CodeGenerator {
         code.addCode("move $v0, $t0");
         code.addCode("lw  $ra, 8($fp)");
         code.addCode("lw  $fp, 12($fp)");
-        code.addCode("j $ra");
+        code.addCode("jr $ra");
         return code;
     }
 
@@ -71,7 +71,7 @@ public class CodeGenerator {
         code.addCode("cvt.s.w $f0, $f0");
         code.addCode("lw  $ra, 8($fp)");
         code.addCode("lw  $fp, 12($fp)");
-        code.addCode("j $ra");
+        code.addCode("jr $ra");
         return code;
     }
 
@@ -84,7 +84,7 @@ public class CodeGenerator {
         code.addCode("move $v0, $t0");
         code.addCode("lw  $ra, 8($fp)");
         code.addCode("lw  $fp, 12($fp)");
-        code.addCode("j $ra");
+        code.addCode("jr $ra");
         return code;
     }
 
@@ -96,7 +96,7 @@ public class CodeGenerator {
         Label label1 = new Label();
         label1.creatNewName();
         code.addCode("lw $t0, 4($sp)");
-        code.addCode("beq $t0, 0" + label.getName());
+        code.addCode("beq $t0, 0, " + label.getName());
         code.addCode("li $t0, 1");
         code.addCode("j " + label1.getName());
         code.addCode(label.getName() + ":");
@@ -105,7 +105,7 @@ public class CodeGenerator {
         code.addCode("move $v0, $t0");
         code.addCode("lw  $ra, 8($fp)");
         code.addCode("lw  $fp, 12($fp)");
-        code.addCode("j $ra");
+        code.addCode("jr $ra");
         return code;
     }
 
@@ -233,6 +233,9 @@ public class CodeGenerator {
             code.addCode("lw  $ra, " + -((1 + node.getDefinedFunctions().get(0).getParameter().size() + 1) * 4) + "($fp)");
             code.addCode("lw  $fp, " + -((1 + node.getDefinedFunctions().get(0).getParameter().size()) * 4) + "($fp)");
             code.addCode("j $ra");
+        } else{
+            code.addCode("li $v0, 10");
+            code.addCode("syscall");
         }
         node.setCode(code);
     }
