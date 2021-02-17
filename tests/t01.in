@@ -1,19 +1,5 @@
-class A extends B{
-    public int x;
-    public void f(){
-        x = x + 1;
-        y = y + 1;
-    }
-}
-
-class B {
-    public int y;
-}
-
 int main() {
+    int a;
     int b;
-    A a;
-    a = new A;
-    a.f();
-    b = a.x;
+    a = b * a;
 }
