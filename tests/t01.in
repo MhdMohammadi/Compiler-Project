@@ -1,6 +1,7 @@
-int main() {
-    double x;
-    x = 2.3;
-
-    Print(x);
+int main(){
+int i;
+i = 5;
+if (i < 4){
+Print(i);
+}
 }
