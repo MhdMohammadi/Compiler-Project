@@ -403,7 +403,7 @@ public class CodeGenerator {
     public void generateLValueCode(Node node) {
         switch (node.getProductionRule()) {
             case IDENTIFIER:
-                generateLvalueIdentifierCode(node);
+                generateLvalueToIdentifierCode(node);
                 break;
             case Expr_DOT_IDENTIFIER:
                 Node exprNode = node.getChildren().get(0);
@@ -524,6 +524,25 @@ public class CodeGenerator {
         }
     }
 
+    public Code generateFunctionCode(Node actualsNode, Function function){
+        Code code = new Code();
+        code.addCode("lw $t0, 0($fp)");
+        code.addCode("sub $sp, $sp, 4");
+        code.addCode("sw $t0, 0($sp)");
+        code.addCode(actualsNode.getCode());
+        code.addCode("sub $sp, $sp, 8");
+        code.addCode("sw $fp, 4($sp)");
+        code.addCode("sw $ra, 0($sp)");
+        code.addCode("add $fp, $sp, " + (4 * (2 + function.getParameter().size())));
+        code.addCode("jal " + function.getLabel().getName());
+        if (!function.getType().equals(Type.getTypeByName("double", 0)))
+            code.addCode("move $t0, $v0");
+        code.addCode("lw $ra, 0($sp)");
+        code.addCode("lw $fp, 4($sp)");
+        code.addCode("add $sp, $sp, " + (4 * (2 + 1 + function.getParameter().size())));
+        return code;
+    }
+
     private void generateCallCode(Node node) {
         Code code = new Code();
         switch (node.getProductionRule()) {
@@ -541,22 +560,24 @@ public class CodeGenerator {
                     for (Function function : findNode.getDefinedFunctions()) {
                         if (function.getName().equals(functionName)) {
                             find = true;
-                            code.addCode("lw $t0, 0($fp)");
-                            code.addCode("sub $sp, $sp, 4");
-                            code.addCode("sw $t0, 0($sp)");
-                            code.addCode(actualsNode.getCode());
-                            code.addCode("sub $sp, $sp, 8");
-                            code.addCode("sw $fp, 4($sp)");
-                            code.addCode("sw $ra, 0($sp)");
-                            code.addCode("add $fp, $sp, " + (4 * (2 + function.getParameter().size())));
-                            code.addCode("jal " + function.getLabel().getName());
-                            if (!function.getType().equals(Type.getTypeByName("double", 0)))
-                                code.addCode("move $t0, $v0");
-                            code.addCode("lw $ra, 0($sp)");
-                            code.addCode("lw $fp, 4($sp)");
-                            code.addCode("add $sp, $sp, " + (4 * (2 + 1 + function.getParameter().size())));
-                            node.setCode(code);
+                            node.setCode(generateFunctionCode(actualsNode, function));
                             break;
+                        }
+                    }
+                    if (find) break;
+                    if (findNode.getLeftHand() == LeftHand.ClassDecl){
+                        Node classIdNode = findNode.getChildren().get(0);
+                        String className = (String)classIdNode.getValue();
+                        Clazz clazz = Clazz.getClazzByName(className);
+                        for (Function function : clazz.getFunctions()){
+                            if (function.getName().equals(functionName)){
+                                if (function.getAccessMode() == AccessMode.PUBLIC || function.getAccessMode() == AccessMode.PROTECTED){
+                                    find = true;
+                                    node.setCode(generateFunctionCode(actualsNode, function));
+                                    break;
+                                }
+
+                            }
                         }
                     }
                     if (find) break;
@@ -649,7 +670,36 @@ public class CodeGenerator {
         node.setCode(code);
     }
 
-    public void generateLvalueIdentifierCode(Node node) {
+    public Code generateLValueToIdentifierCodeForClass(Node findNode, String idName){
+        Code code = new Code();
+        String className = (String) findNode.getChildren().get(0).getValue();
+        Clazz clazz = Clazz.getClazzByName(className);
+        if (clazz == null) {
+            System.out.println("WTF!");
+            Compiler.semanticError();
+        } else {
+            int offset = getAttributeOffset(clazz, idName);
+            code.addCode(getClassVariableAddressInClass(offset));
+        }
+        return code;
+    }
+
+    public Code generateLValueToIdentifierCodeForLocal(Node findNode, int index){
+        Code code = new Code();
+        Node tempNode = findNode;
+        int offset = 4 + index * 4; //this + parameters
+        if(findNode.getLeftHand() != LeftHand.FunctionDecl) offset += 8; //$fp and $ra
+        while (tempNode.getLeftHand() != LeftHand.FunctionDecl) {
+            tempNode = tempNode.getParent();
+            if (tempNode.getLeftHand() == LeftHand.StmtBlock || tempNode.getLeftHand() == LeftHand.FunctionDecl) {
+                offset += 4 * (tempNode.getDefinedVariables().size());
+            }
+        }
+        code.addCode(getLocalVariableAddress(offset));
+        return code;
+    }
+
+    public void generateLvalueToIdentifierCode(Node node) {
         String idName = (String) node.getChildren().get(0).getValue();
         Node findNode = node;
         Code code = new Code();
@@ -662,43 +712,38 @@ public class CodeGenerator {
                         node.setCode(code);
                         return;
                     } else if (findNode.getLeftHand() == LeftHand.ClassDecl) {
-                        String className = (String) findNode.getChildren().get(0).getValue();
-                        Clazz clazz = Clazz.getClazzByName(className);
-                        if (clazz == null) {
-                            System.out.println("WTF!");
-                            Compiler.semanticError();
-                        } else {
-                            int offset = getAttributeOffset(clazz, idName);
-                            getClassVariableAddressInClass(offset);
-                        }
+                        code.addCode(generateLValueToIdentifierCodeForClass(findNode, idName));
                         node.setCode(code);
                         return;
-                    } else if (findNode.getLeftHand() != LeftHand.InsideStmtBlock) {
-                        Node tempNode = findNode;
-                        int offset = 4 + index * 4; //this + parameters
-                        if (findNode.getLeftHand() != LeftHand.FunctionDecl) offset += 8; //$fp and $ra
-                        while (tempNode.getLeftHand() != LeftHand.FunctionDecl) {
-                            tempNode = tempNode.getParent();
-                            if (tempNode.getLeftHand() == LeftHand.StmtBlock || tempNode.getLeftHand() == LeftHand.FunctionDecl) {
-                                offset += 4 * (tempNode.getDefinedVariables().size());
-                            }
-                        }
-                        code.addCode(getLocalVariableAddress(offset));
+                    } else if (findNode.getLeftHand() != LeftHand.InsideStmtBlock){
+                        //todo codo az mammad begir doros kon
+                        code.addCode(generateLValueToIdentifierCodeForLocal(findNode, index));
                         node.setCode(code);
                         return;
                     }
+
                 }
                 index++;
             }
-            if (findNode.getParent() == null) {
-                System.out.println("WTF!");
-                Compiler.semanticError();
-                break;
-            } else {
-                findNode = findNode.getParent();
+// extends variables
+            if (findNode.getLeftHand() == LeftHand.ClassDecl){
+                Node idNode = findNode.getChildren().get(0);
+                String className = (String)idNode.getValue();
+                Clazz clazz = Clazz.getClazzByName(className);
+
+                for (Variable variable : clazz.getVariables()){
+                    if (variable.getName().equals(idName)){
+                        if (variable.getAccessMode() == AccessMode.PUBLIC || variable.getAccessMode() == AccessMode.PROTECTED){
+                            int offset = getAttributeOffset(clazz, idName);
+                            code.addCode(getClassVariableAddressInClass(offset));
+                            node.setCode(code);
+                            return;
+                        }
+                    }
+                }
             }
+            findNode = findNode.getParent();
         }
-        return;
     }
 
     public int getAttributeOffset(Clazz clazz, String name) {

@@ -317,9 +317,35 @@ public class Compiler {
                             boolean find = false;
                             for (Function classFunction: clazz.getFunctions()){
                                 if (classFunction.getName().equals((String) idNode.getValue())){
-                                    find = true;
-                                    v.setType(classFunction.getType());
-                                    break;
+                                    if (classFunction.getAccessMode() == AccessMode.PUBLIC){
+                                        find = true;
+                                        v.setType(classFunction.getType());
+                                        break;
+                                    }
+                                    else{
+                                        Node findNode = v;
+                                        while (findNode.getParent() != null){
+                                            findNode = findNode.getParent();
+                                            if (findNode.getLeftHand() == LeftHand.ClassDecl){
+                                                break;
+                                            }
+                                        }
+                                        if (findNode.getLeftHand() == LeftHand.ClassDecl){
+                                            Clazz coverClazz = getClazzNode(findNode);
+                                            if (coverClazz.equals(clazz)){
+                                                if (classFunction.getAccessMode() == AccessMode.PROTECTED){
+                                                    find = true;
+                                                    v.setType(classFunction.getType());
+                                                }
+                                                else {
+                                                    if (findNode.getDefinedFunctions().contains(classFunction)){
+                                                        find = true;
+                                                        v.setType(classFunction.getType());
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
                             if (!find)semanticError();
@@ -343,10 +369,37 @@ public class Compiler {
                         boolean find = false;
                         for (Variable classVariable : clazz.getVariables()){
                             if (classVariable.getName().equals((String)idNode.getValue())){
-                                find = true;
-                                v.setType(classVariable.getType());
+                                if (classVariable.getAccessMode() == AccessMode.PUBLIC){
+                                    find = true;
+                                    v.setType(classVariable.getType());
+                                }
+                                else{
+                                    Node findNode = v;
+                                    while (findNode.getParent() != null){
+                                        findNode = findNode.getParent();
+                                        if (findNode.getLeftHand() == LeftHand.ClassDecl){
+                                            break;
+                                        }
+                                    }
+                                    if (findNode.getLeftHand() == LeftHand.ClassDecl){
+                                        Clazz coverClazz = getClazzNode(findNode);
+                                        if (coverClazz.equals(clazz)){
+                                            if (classVariable.getAccessMode() == AccessMode.PROTECTED){
+                                                find = true;
+                                                v.setType(classVariable.getType());
+                                            }
+                                            else {
+                                                if (findNode.getDefinedVariables().contains(classVariable)){
+                                                    find = true;
+                                                    v.setType(classVariable.getType());
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
+
                         if (!find)semanticError();
                         break;
                     case Expr_OPENBRACKET_Expr_CLOSEBRACKET:
@@ -485,6 +538,26 @@ public class Compiler {
         }
     }
 
+    public static Clazz getClazzNode(Node node){
+        Node classIdNode = node.getChildren().get(0);
+        String className = (String)classIdNode.getValue();
+        Clazz clazz = Clazz.getClazzByName(className);
+        return clazz;
+    }
+
+    public static Node getNodeClazz(Node node, Clazz clazz){
+        if (node.getLeftHand() == LeftHand.ClassDecl){
+            Clazz nodeClazz = getClazzNode(node);
+            if (clazz.getName().equals(nodeClazz.getName()))
+                return node;
+        }
+        for (Node child : node.getChildren())
+            getNodeClazz(child, clazz);
+        System.out.println("class node not found!");
+        semanticError();
+        return null;
+    }
+
     public Variable findVariable(Node node, String name) {
         Node node1 = node;
         while (true) {
@@ -495,6 +568,16 @@ public class Compiler {
                 break;
             else
                 node1 = node1.getParent();
+            if (node.getLeftHand() == LeftHand.ClassDecl){
+                Clazz clazz = getClazzNode(node);
+                for (Variable variable : clazz.getVariables()){
+                    if (variable.getName().equals(name)){
+                        if (variable.getAccessMode() == AccessMode.PROTECTED || variable.getAccessMode() == AccessMode.PUBLIC){
+                            return variable;
+                        }
+                    }
+                }
+            }
         }
         semanticError();
         return null;
@@ -506,6 +589,15 @@ public class Compiler {
             for (Function function : node1.getDefinedFunctions()) {
                 if (function.getName().equals(name)) {
                     return function;
+                }
+            }
+            if (node1.getLeftHand() == LeftHand.ClassDecl){
+                Clazz clazz = getClazzNode(node1);
+                for (Function function : clazz.getFunctions()){
+                    if (function.getName().equals(name)){
+                        if (function.getAccessMode() == AccessMode.PROTECTED || function.getAccessMode() == AccessMode.PUBLIC)
+                            return function;
+                    }
                 }
             }
             if (node1.getParent() == null) {
