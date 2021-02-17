@@ -196,6 +196,7 @@ public class CodeGenerator {
     }
 
     private void generateReturnCode(Node node) {
+        //todo
     }
 
     private void generateContinueCode(Node node) {
@@ -209,24 +210,24 @@ public class CodeGenerator {
     private void generateConstantCode(Node node) {
         Code code = new Code();
         Node childNode = node.getChildren().get(0);
+        String str = (String)childNode.getValue();
         switch (node.getProductionRule()){
             case INTLITERAL:
-                code.addCode("li $t0, " + Integer.parseInt((String)childNode.getValue()));
+                code.addCode("li $t0, " + Integer.parseInt(str));
                 break;
             case DOUBLELITERAL:
-                code.addCode("li.s $f0, " + Double.parseDouble((String)childNode.getValue()));
+                code.addCode("li.s $f0, " + Double.parseDouble(str));
                 break;
             case BOOLEANLITERAL:
-                if((String)childNode.getValue() == "false"){
+                if(str.equals("false")){
                     code.addCode("li $t0, 0");
                 }
                 else code.addCode("li $t0, 1");
                 break;
             case STRINGLITERAL:
-                String str = (String)childNode.getValue();
+
                 int len = str.length();
                 code.addCode("li $v0, 9");
-
                 code.addCode("li $a0, " + (4 + len));
                 code.addCode("syscall");
                 code.addCode("li $t0, $v0");
