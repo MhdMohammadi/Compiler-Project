@@ -9,13 +9,23 @@ import java.net.CookiePolicy;
 import java.util.ArrayList;
 
 public class CodeGenerator {
+    public ArrayList<Object> floatingPoints = new ArrayList<>();
+
     public void createFinalCode(Node root) {
         Code code = new Code();
         code.addCode(root.getCode());
+        code.addCode(addFloatingPoints());
         code.addCode(gatherGlobalFunction(root));
 //        code.addCode(gatherClassCodes(root));
         System.out.println(code.getText());
         System.exit(0);
+    }
+
+    private Code addFloatingPoints() {
+        Code code = new Code();
+        for(int i = 0; i < floatingPoints.size(); i += 2)
+            code.addCode(((Label)floatingPoints.get(i)).getName() + " : .float " + ((Double)floatingPoints.get(i + 1)));
+        return code;
     }
 
     public Code gatherClassCodes(Node node) {
@@ -649,7 +659,11 @@ public class CodeGenerator {
                 code.addCode("li $t0, " + Integer.parseInt(str));
                 break;
             case DOUBLELITERAL:
-                code.addCode("li.s $f0, " + Double.parseDouble(str));
+                Label label = new Label(); label.creatNewName();
+                double num = Double.parseDouble(str);
+                floatingPoints.add(label);
+                floatingPoints.add(num);
+                code.addCode("l.s $f0, " + label.getName());
                 break;
             case BOOLEANLITERAL:
                 if (str.equals("false")) {
