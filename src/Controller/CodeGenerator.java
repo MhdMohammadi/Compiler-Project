@@ -710,14 +710,19 @@ public class CodeGenerator {
                 if (variable.getName().equals(idName)) {
                     if (findNode.getLeftHand() == LeftHand.Program) {
                         code.addCode(getGlobalVariableAddress(variable));
+                        node.setCode(code);
+                        return;
                     } else if (findNode.getLeftHand() == LeftHand.ClassDecl) {
                         code.addCode(generateLValueToIdentifierCodeForClass(findNode, idName));
-                    } else {
+                        node.setCode(code);
+                        return;
+                    } else if (findNode.getLeftHand() != LeftHand.InsideStmtBlock){
                         //todo codo az mammad begir doros kon
                         code.addCode(generateLValueToIdentifierCodeForLocal(findNode, index));
+                        node.setCode(code);
+                        return;
                     }
-                    node.setCode(code);
-                    return;
+
                 }
                 index++;
             }
