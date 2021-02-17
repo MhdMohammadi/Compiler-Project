@@ -568,7 +568,7 @@ public class Compiler {
                     return variable;
 
             if (node1.getLeftHand() == LeftHand.ClassDecl){
-                Clazz clazz = getClazzNode(node);
+                Clazz clazz = getClazzNode(node1);
                 //System.out.println(clazz.getName() + " " + clazz.getParent().getName());
                 for (Variable variable : clazz.getVariables()){
               //      System.out.println(variable.getName());
