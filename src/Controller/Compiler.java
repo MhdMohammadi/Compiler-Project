@@ -82,7 +82,7 @@ public class Compiler {
         setFunctionLabels(root);
         codeGenerator.generateCode(root);
         //todo
-        codeGenerator.createFinalCode(root);
+        finalCode = codeGenerator.createFinalCode(root);
         writeToFile(outputFileName);
     }
 

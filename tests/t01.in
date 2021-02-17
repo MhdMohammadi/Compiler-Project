@@ -1,15 +1,9 @@
-class A{
-    private int f(B b){
-        return 2.3;
-    }
-}
-
-class B extends A{
-public int x;
-    public int f(A a){
-    }
-
-}
-
 int main() {
+    int a;
+    double b;
+
+    a = 1;
+    b = itod(a);
+
+    Print(a, b);
 }

@@ -11,14 +11,14 @@ import java.util.ArrayList;
 public class CodeGenerator {
     public ArrayList<Object> floatingPoints = new ArrayList<>();
 
-    public void createFinalCode(Node root) {
+    public Code createFinalCode(Node root) {
         Code code = new Code();
         code.addCode(root.getCode());
         code.addCode(addFloatingPoints());
         code.addCode(gatherGlobalFunction(root));
 //        code.addCode(gatherClassCodes(root));
         System.out.println(code.getText());
-        System.exit(0);
+        return code;
     }
 
     private Code addFloatingPoints() {
