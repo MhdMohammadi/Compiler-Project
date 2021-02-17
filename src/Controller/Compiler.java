@@ -62,6 +62,7 @@ public class Compiler {
         p.parse();
         this.setRoot(parser.root);
 
+        // detect semantic errors
         preProcess(root); // assign indices to parse tree
         Type.createTypes(); // create all types and construct tree of types
         createArrays(root); // create arrays and add them to types & set type of each Type node
@@ -76,8 +77,8 @@ public class Compiler {
         checkIntegerIndices(root); // check type of indices and count in NewArray
         checkFunctionCalls(root);
 
+        // produce the final code
         codeGenerator.generateCode(root);
-
         //todo
         codeGenerator.createFinalCode();
         writeToFile(outputFileName);
