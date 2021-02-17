@@ -713,6 +713,7 @@ public class CodeGenerator {
                     } else if (findNode.getLeftHand() == LeftHand.ClassDecl) {
                         code.addCode(generateLValueToIdentifierCodeForClass(findNode, idName));
                     } else {
+                        //todo codo az mammad begir doros kon
                         code.addCode(generateLValueToIdentifierCodeForLocal(findNode, index));
                     }
                     node.setCode(code);
