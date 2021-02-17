@@ -10,5 +10,5 @@ int main() {
     A a;
     B b;
     a = new A;
-    a = b;
+    b = a;
 }
