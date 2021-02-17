@@ -957,6 +957,7 @@ public class CodeGenerator {
 
         code.addCode(node2.getChildren().get(1).getCode());
         code.addCode("lw $t1, 0($sp)");
+        code.addCode("sw $t0, 0($sp)");
         code.addCode("add $sp, $sp, 4");
 
         code.addCode("lw $t2, 0($t0)");
@@ -970,15 +971,17 @@ public class CodeGenerator {
         L3.creatNewName();
         Label L4 = new Label();
         L4.creatNewName();
-        code.addCode("bne $t2, $t3, " + L1.getName());
+       /* code.addCode("bne $t2, $t3, " + L1.getName());
         code.addCode("add $t0, $t0, 4");
-        code.addCode("add $t1, $t1, 4");
+        code.addCode("add $t1, $t1, 4");*/
         code.addCode(L2.getName() + " :");
-        code.addCode("beq $t2, 0, " + L3.getName());
-        code.addCode("lb $t4, 0($t0)");
-        code.addCode("lb $t5, 0($t1)");
+        //code.addCode("beq $t2, 0, " + L3.getName());
+        code.addCode("lb $t4, 0($t2)");
+        code.addCode("lb $t5, 0($t3)");
         code.addCode("bne $t4, $t5, " + L1.getName());
-        code.addCode("sub $t2, $t2, 1");
+        code.addCode("beq $t2, 0, " + L3.getName());
+        code.addCode("addi $t2, $t2, 1");
+        code.addCode("addi $t3, $t3, 1");
         code.addCode("j " + L2.getName());
         code.addCode(L3.getName() + " :");
         code.addCode("li $t0, 1");
@@ -986,14 +989,14 @@ public class CodeGenerator {
         code.addCode(L1.getName() + " :");
         code.addCode("li $t0, 0");
         code.addCode(L4.getName() + " :");
-        if (node.getProductionRule() == ProductionRule.Expr_EQUAL_Expr)
+        if (node.getProductionRule() == ProductionRule.Expr_NOTEQUAL_Expr)
             code.addCode("xor $t0, $t0, 1");
         return code;
     }
 
 
 
-    public void call(Node node){
+   /* public void call(Node node){
         if (node.getProductionRule().equals("IDENTIFIER_OPENPARENTHESIS_Actuals_CLOSEPARENTHESIS")){
             simpleCall(node);
         } else {
@@ -1010,5 +1013,5 @@ public class CodeGenerator {
     public Code extendCall(Node node){
         Code code = new Code();
         return code;
-    }
+    }*/
 }
