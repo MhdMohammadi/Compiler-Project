@@ -172,8 +172,6 @@ public class Compiler {
     }
 
     public void setVariableType(Node v) {
-        //todo
-        //chera todo?
         if (v.getLeftHand() == LeftHand.Variable) {
             Type type = Type.getTypeByName((String) v.getChildren().get(0).getTypeName(), v.getChildren().get(0).getArrayDegree());
             if (type == null) Compiler.semanticError();
@@ -184,12 +182,10 @@ public class Compiler {
     }
 
     public void setFunctionType(Node v) {
-        //todo
         if (v.getLeftHand() == LeftHand.FunctionDecl) {
             Function function = v.getDefinedFunctions().get(0);
 
             Type type = Type.getTypeByName(v.getTypeName(), v.getArrayDegree());
-            //    System.out.println(v.getTypeName() + " " + v.getArrayDegree());
             if (type == null) Compiler.semanticError();
             function.setType(type);
         }
@@ -533,10 +529,10 @@ public class Compiler {
         for (Node node : v.getChildren())
             checkIntegerIndices(node);
     }
-
+    //todo possible equal isConvertibleTo
     //todo check kardane return type ba functions type
-    //todo class function calls code
     //todo return code
+    //todo class function calls code
     //todo null
     public void checkFunctionCalls(Node v) {
         for (Node node : v.getChildren()) {
