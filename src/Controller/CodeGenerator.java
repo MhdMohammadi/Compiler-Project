@@ -48,75 +48,50 @@ public class CodeGenerator {
             }
         }
         for (Function function : node.getDefinedFunctions()) {
-            if (function.getName().equals("itob"))
-                code.addCode(itob(function));
-            else if (function.getName().equals("btoi"))
-                code.addCode(btoi(function));
-            else if (function.getName().equals("dtoi"))
-                code.addCode(dtoi(function));
-            else if (function.getName().equals("itod"))
-                code.addCode(itod(function));
-            else if (!function.getName().equals("main"))
+            if (!function.getName().equals("main"))
                 code.addCode(function.getNode().getCode());
         }
         return code;
     }
 
-    public Code btoi(Function function) {
+    public void btoi(Node node) {
         Code code = new Code();
-        code.addCode(function.getLabel().getName() + " :");
-        code.addCode("lw $t0, 4($fp)");
-        code.addCode("move $v0, $t0");
-        code.addCode("lw  $ra, 8($fp)");
-        code.addCode("lw  $fp, 12($fp)");
-        code.addCode("jr $ra");
-        return code;
+        generateCode(node.getChildren().get(0));
+        code.addCode(node.getChildren().get(0).getCode());
+        node.setCode(code);
     }
 
-    public Code itod(Function function) {
+    public void itod(Node node) {
         Code code = new Code();
-        code.addCode(function.getLabel().getName() + " :");
-        code.addCode("lw $t0, 4($fp)");
+        generateCode(node.getChildren().get(0));
+        code.addCode(node.getChildren().get(0).getCode());
         code.addCode("mtc1 $t0, $f0");
         code.addCode("cvt.s.w $f0, $f0");
-        code.addCode("lw  $ra, 8($fp)");
-        code.addCode("lw  $fp, 12($fp)");
-        code.addCode("jr $ra");
-        return code;
+        node.setCode(code);
     }
 
-    public Code dtoi(Function function) {
+    public void dtoi(Node node) {
         Code code = new Code();
-        code.addCode(function.getLabel().getName() + " :");
-        code.addCode("l.s $f0, 4($fp)");
+        generateCode(node.getChildren().get(0));
+        code.addCode(node.getChildren().get(0).getCode());
         code.addCode("cvt.w.s $f0, $f0");
         code.addCode("mfc1 $t0, $f0");
-        code.addCode("move $v0, $t0");
-        code.addCode("lw  $ra, 8($fp)");
-        code.addCode("lw  $fp, 12($fp)");
-        code.addCode("jr $ra");
-        return code;
+        node.setCode(code);
     }
 
-    public Code itob(Function function) {
+    public void itob(Node node) {
         Code code = new Code();
-        code.addCode(function.getLabel().getName() + " :");
+        generateCode(node.getChildren().get(0));
+        code.addCode(node.getChildren().get(0).getCode());
         Label label = new Label();
-        label.createNewName();
         Label label1 = new Label();
-        label1.createNewName();
-        code.addCode("lw $t0, 4($sp)");
         code.addCode("beq $t0, 0, " + label.getName());
         code.addCode("li $t0, 1");
         code.addCode("j " + label1.getName());
         code.addCode(label.getName() + ":");
         code.addCode("li $t0, 0");
         code.addCode(label1.getName() + ":");
-        code.addCode("move $v0, $t0");
-        code.addCode("lw  $ra, 8($fp)");
-        code.addCode("lw  $fp, 12($fp)");
-        code.addCode("jr $ra");
-        return code;
+        node.setCode(code);
     }
 
     public void generateCode(Node node) {
@@ -451,7 +426,9 @@ public class CodeGenerator {
     public void generateLValueCode(Node node) {
         switch (node.getProductionRule()) {
             case IDENTIFIER:
+                System.out.println("salam dawsh");
                 generateLvalueToIdentifierCode(node);
+                System.out.println(node.getCode().getText());
                 break;
             case Expr_DOT_IDENTIFIER:
                 Code code = new Code();
@@ -469,6 +446,7 @@ public class CodeGenerator {
             case Expr_OPENBRACKET_Expr_CLOSEBRACKET:
                 Node exprNode1 = node.getChildren().get(0);
                 Node exprNode2 = node.getChildren().get(1);
+                System.out.println(exprNode1.getLeftHand() + " " + exprNode1.getProductionRule());
                 generateCode(exprNode1);
                 node.getCode().addCode(exprNode1.getCode());
                 node.getCode().addCode("sub $sp, $sp, 4");
@@ -486,6 +464,7 @@ public class CodeGenerator {
 //        System.out.println(node.getProductionRule());
         switch (node.getProductionRule()) {
             case LValue:
+                System.out.println(node.getChildren().get(0).getLeftHand() + " " + node.getChildren().get(0).getProductionRule());
                 generateCode(node.getChildren().get(0));
                 code.addCode(node.getChildren().get(0).getCode());
                 if (node.getType().equals(Type.getTypeByName("double", 0))) {
@@ -511,7 +490,7 @@ public class CodeGenerator {
                 node.setCode(node.getChildren().get(0).getCode());
                 break;
             case OPENPARENTHESIS_Expr_CLOSEPARENTHESIS:
-                generateCallCode(node.getChildren().get(0));
+                generateCode(node.getChildren().get(0));
                 node.setCode(node.getChildren().get(0).getCode());
                 break;
             case Expr_PLUS_Expr:
@@ -571,6 +550,18 @@ public class CodeGenerator {
                 break;
             case NEWARRAY_OPENPARENTHESIS_Expr_COMMA_Type_CLOSEPARENTHESIS:
                 node.setCode(newArray(node));
+                break;
+            case ITOB_OPENPARENTHESIS_Expr_CLOSEPARENTHESIS:
+                itob(node);
+                break;
+            case BTOI_OPENPARENTHESIS_Expr_CLOSEPARENTHESIS:
+                btoi(node);
+                break;
+            case DTOI_OPENPARENTHESIS_Expr_CLOSEPARENTHESIS:
+                dtoi(node);
+                break;
+            case ITOD_OPENPARENTHESIS_Expr_CLOSEPARENTHESIS:
+                itod(node);
                 break;
         }
     }
@@ -956,7 +947,9 @@ public class CodeGenerator {
         code.addCode(node1.getCode());
         code.addCode("sub $sp, $sp, 4");
         code.addCode("sw $t0, 0($sp)");
+        System.out.println(node2.getLeftHand() + " " + node2.getProductionRule());
         generateCode(node2);
+        System.out.println(node2.getChildren().get(0).getLeftHand() + " " + node2.getChildren().get(0).getProductionRule() );
         code.addCode(node2.getCode());
         code.addCode("lw $t1, 0($sp)");
         code.addCode("add $sp, $sp, 4");
