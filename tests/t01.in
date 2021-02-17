@@ -3,7 +3,7 @@ int main() {
     boolean y;
 
     x = false;
-    y = !x;
+    y = !x && x;
 
     Print(y);
 }
