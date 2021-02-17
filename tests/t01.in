@@ -1,10 +1,11 @@
 int main(){
 int i;
-for ( i = 0; i < 10; i = i + 1){
-if ( i == 6){
-continue;
-} else{
+i = 0;
+while ( i < 10){
 Print(i);
+if ( i == 7){
+break;
 }
+i = i + 1;
 }
 }
