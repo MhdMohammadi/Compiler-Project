@@ -126,13 +126,16 @@ public class CodeGenerator {
                 generateExprPrimeCode(node);
                 break;
             case IfStmt:
-                node.setCode(ifCondition(node));
+               // node.setCode(ifCondition(node));
+                generateIfStmt(node);
                 break;
             case WhileStmt:
-                node.setCode(whileLoop(node));
+                //node.setCode(whileLoop(node));
+                generateWhileStmt(node);
                 break;
             case ForStmt:
-                node.setCode(forLoop(node));
+                //node.setCode(forLoop(node));
+                generateForStmt(node);
                 break;
             case BreakStmt:
                 generateBreakCode(node);
@@ -214,7 +217,7 @@ public class CodeGenerator {
         if (!node.getDefinedFunctions().get(0).getName().equals("main")) {
             code.addCode("lw  $ra, " + -((1 + function.getParameter().size() + 1) * 4) + "($fp)");
             code.addCode("lw  $fp, " + -((1 + function.getParameter().size()) * 4) + "($fp)");
-            code.addCode("j $ra");
+            code.addCode("jr $ra");
         } else{
             code.addCode("li $v0, 10");
             code.addCode("syscall");
@@ -276,8 +279,16 @@ public class CodeGenerator {
         node.setCode(code);
     }
 
+    public void generateIfStmt(Node node){
+        for (Node node1: node.getChildren()){
+            generateCode(node1);
+        }
+        node.setCode(ifCondition(node));
+    }
+
     public Code ifCondition(Node node) {
         Code code = new Code();
+        //code.addCode(node.getChildren().get(0).getCode());
         code.addCode(node.getChildren().get(0).getCode());
         Label label = new Label();
         Label label1 = new Label();
@@ -292,6 +303,13 @@ public class CodeGenerator {
         }
         code.addCode(label.getName() + ":");
         return code;
+    }
+
+    public void generateWhileStmt(Node node){
+        for (Node node1: node.getChildren()){
+            generateCode(node1);
+        }
+        node.setCode(whileLoop(node));
     }
 
     public Code whileLoop(Node node) {
@@ -309,6 +327,13 @@ public class CodeGenerator {
         code.addCode("j " + label.getName());
         code.addCode(label1.getName() + ":");
         return code;
+    }
+
+    public void generateForStmt(Node node){
+        for (Node node1: node.getChildren()){
+            generateCode(node1);
+        }
+        node.setCode(forLoop(node));
     }
 
     public Code forLoop(Node node) {
@@ -352,7 +377,7 @@ public class CodeGenerator {
             if (!returnType.equals(Type.getTypeByName("double", 0)))
                 code.addCode("move $v0, $t0");
         }
-        code.addCode("j $ra");
+        code.addCode("jr $ra");
         node.setCode(code);
         //todo check kon
     }
