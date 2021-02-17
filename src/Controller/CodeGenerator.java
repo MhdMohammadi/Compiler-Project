@@ -374,7 +374,7 @@ public class CodeGenerator {
         code.addCode("j " + L1.getName());
         code.addCode(L2.getName() + ":");
         code.addCode("beq $t2, 0, " + L2.getName());
-        code.addCode("add $t0, $t0, " + size);
+        code.addCode("add $t0, $t0, + " + size);
         code.addCode("lw $t6, 0($t0)");
         code.addCode("sw $t6, 0($t4)");
         code.addCode("add $t4, $t4, " + size);
