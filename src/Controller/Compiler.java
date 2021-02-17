@@ -562,16 +562,16 @@ public class Compiler {
     public Variable findVariable(Node node, String name) {
         Node node1 = node;
         while (true) {
+            //System.out.println(node1.getLeftHand());
             for (Variable variable : node1.getDefinedVariables())
                 if (variable.getName().equals(name))
                     return variable;
-            if (node1.getParent() == null)
-                break;
-            else
-                node1 = node1.getParent();
-            if (node.getLeftHand() == LeftHand.ClassDecl){
-                Clazz clazz = getClazzNode(node);
+
+            if (node1.getLeftHand() == LeftHand.ClassDecl){
+                Clazz clazz = getClazzNode(node1);
+                //System.out.println(clazz.getName() + " " + clazz.getParent().getName());
                 for (Variable variable : clazz.getVariables()){
+              //      System.out.println(variable.getName());
                     if (variable.getName().equals(name)){
                         if (variable.getAccessMode() == AccessMode.PROTECTED || variable.getAccessMode() == AccessMode.PUBLIC){
                             return variable;
@@ -579,7 +579,12 @@ public class Compiler {
                     }
                 }
             }
+            if (node1.getParent() == null)
+                break;
+            else
+                node1 = node1.getParent();
         }
+        //System.out.println("variable: " + name);
         semanticError();
         return null;
     }
