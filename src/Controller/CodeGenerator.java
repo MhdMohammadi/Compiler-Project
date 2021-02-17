@@ -380,7 +380,9 @@ public class CodeGenerator {
             Node child = node.getChildren().get(0);
             generateCode(child);
             code.addCode(child.getCode());
-            if (Type.getTypeByName("int", 0).equals(node.getChildren().get(0).getType())) {
+            if (Type.getTypeByName("int", 0).equals(node.getChildren().get(0).getType()) ||
+                Type.getTypeByName("boolean", 0).equals(node.getChildren().get(0).getType())
+            ) {
                 code.addCode("li $v0, 1");
                 code.addCode("move $a0, $t0");
                 code.addCode("syscall");
@@ -601,6 +603,7 @@ public class CodeGenerator {
                         if (function.getName().equals(functionName1)) {
                             code.addCode("sub $sp, $sp, 4");
                             code.addCode("sw $t0, 0($sp)");
+                            generateCode(actualsNode1);
                             code.addCode(actualsNode1.getCode());
                             code.addCode("sub $sp, $sp, 8");
                             code.addCode("sw $fp, 4($sp)");
