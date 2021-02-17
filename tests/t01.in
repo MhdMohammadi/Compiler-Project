@@ -1,6 +1,9 @@
 int main() {
-    double x;
-    x = 2.3;
+    boolean x;
+    boolean y;
 
-    Print(x);
+    x = true;
+    y = !x;
+
+    Print(y);
 }
