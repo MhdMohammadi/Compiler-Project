@@ -44,6 +44,7 @@ public class Compiler {
         setAllNodesType(root); // set the proper type for Constant, Call, Lvalue and Expr
         checkIntegerIndices(root); // check type of indices and count in NewArray
         checkFunctionCalls(root);
+
         generateCode(root);
 
         //todo
@@ -510,7 +511,9 @@ public class Compiler {
                         v.setType(Type.getTypeByName("string", 0));
                         break;
                     case NEW_IDENTIFIER:
-                        v.setType(Type.getTypeByName((String)v.getChildren().get(0).getValue(), 0));
+                        Type type = Type.getTypeByName((String)v.getChildren().get(0).getValue(), 0);
+                        if (type == null) semanticError();
+                        v.setType(type);
                         break;
                     case NEWARRAY_OPENPARENTHESIS_Expr_COMMA_Type_CLOSEPARENTHESIS:
                         v.setType(Type.createArrayType(v.getChildren().get(1).getType()));
