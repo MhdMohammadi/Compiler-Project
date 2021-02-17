@@ -603,6 +603,7 @@ public class CodeGenerator {
                         if (function.getName().equals(functionName1)) {
                             code.addCode("sub $sp, $sp, 4");
                             code.addCode("sw $t0, 0($sp)");
+                            generateCode(actualsNode1);
                             code.addCode(actualsNode1.getCode());
                             code.addCode("sub $sp, $sp, 8");
                             code.addCode("sw $fp, 4($sp)");

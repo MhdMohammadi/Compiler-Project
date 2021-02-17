@@ -1,9 +1,12 @@
+class A {
+    private int x;
+    public void f(){
+        x = x + 1;
+    }
+}
+
 int main() {
-    boolean x;
-    boolean y;
-
-    x = true;
-    y = !x;
-
-    Print(y);
+    A a;
+    a = new A;
+    a.f();
 }
