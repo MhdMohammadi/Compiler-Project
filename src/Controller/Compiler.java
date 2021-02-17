@@ -78,6 +78,7 @@ public class Compiler {
         checkFunctionCalls(root);
 
         // produce the final code
+        checkReturnTypes(root);
         codeGenerator.generateCode(root);
         //todo
         codeGenerator.createFinalCode();
@@ -173,8 +174,6 @@ public class Compiler {
     }
 
     public void setVariableType(Node v) {
-        //todo
-        //chera todo?
         if (v.getLeftHand() == LeftHand.Variable) {
             Type type = Type.getTypeByName((String) v.getChildren().get(0).getTypeName(), v.getChildren().get(0).getArrayDegree());
             if (type == null) Compiler.semanticError();
@@ -185,12 +184,10 @@ public class Compiler {
     }
 
     public void setFunctionType(Node v) {
-        //todo
         if (v.getLeftHand() == LeftHand.FunctionDecl) {
             Function function = v.getDefinedFunctions().get(0);
 
             Type type = Type.getTypeByName(v.getTypeName(), v.getArrayDegree());
-            //    System.out.println(v.getTypeName() + " " + v.getArrayDegree());
             if (type == null) Compiler.semanticError();
             function.setType(type);
         }
@@ -254,8 +251,9 @@ public class Compiler {
         return true;
     }
 
-    public boolean isConvertibleTo(Type convertType, Type mainType) {
+    public static boolean isConvertibleTo(Type convertType, Type mainType) {
         if (mainType.equals(convertType)) return true;
+        if (convertType.getArrayDegree() > 0 || mainType.getArrayDegree() > 0)return false;
         while (convertType.getParent() != null) {
             convertType = convertType.getParent();
             if (convertType.equals(mainType)) return true;
@@ -535,10 +533,9 @@ public class Compiler {
             checkIntegerIndices(node);
     }
 
-    //todo check kardane return type ba functions type
     //todo class function calls code
-    //todo return code
     //todo null
+
     public void checkFunctionCalls(Node v) {
         for (Node node : v.getChildren()) {
             checkFunctionCalls(node);
@@ -594,6 +591,26 @@ public class Compiler {
             index++;
         }
         return true;
+    }
+
+    public void checkReturnTypes(Node node){
+        if (node.getLeftHand() == LeftHand.ReturnStmt){
+            Node exprNode = node.getChildren().get(0);
+            Node findNode = node;
+            boolean find = false;
+            while(findNode.getParent() != null){
+                findNode = findNode.getParent();
+                if (findNode.getLeftHand() == LeftHand.FunctionDecl){
+                    find = true;
+                    Function function = findNode.getDefinedFunctions().get(0);
+                    Type returnType = Type.getTypeByName("void", 0);
+                    if (exprNode.getChildren().size() > 0)returnType = exprNode.getChildren().get(0).getType();
+                    if (!isConvertibleTo(returnType, function.getType()))semanticError();
+                    break;
+                }
+            }
+            if (!find)semanticError();
+        }
     }
 
     public void debug(Node v) {

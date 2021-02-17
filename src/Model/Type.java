@@ -104,7 +104,9 @@ public class Type {
     }
 
     public static boolean possible(Type t1, Type t2, Operator operator){
-        if(t1 != t2) return false;
+        if (operator != Operator.EQEQ && operator != Operator.NOTEQ){
+            if(t1 != t2) return false;
+        }
 
         Type INT = getTypeByName("int", 0);
         Type DOUBLE = getTypeByName("double", 0);
@@ -118,8 +120,9 @@ public class Type {
         if((operator == Operator.ANDAND || operator == Operator.OROR) && t1 != DOUBLE) return false;
         if((operator == Operator.LT || operator == Operator.GT || operator == Operator.LTEQ || operator == Operator.GTEQ)
         && (t1 != DOUBLE && t1 != INT)) return false;
-        if((operator == Operator.EQEQ || operator == Operator.NOTEQ) && (t1 != INT && t1 != DOUBLE && t1 != STRING &&
-                t1 != BOOLEAN)) return false;
+        if (operator == Operator.EQEQ || operator == Operator.NOTEQ){
+            if (!Compiler.isConvertibleTo(t1, t2) && !Compiler.isConvertibleTo(t2, t1))return false;
+        }
         return true;
     }
 
