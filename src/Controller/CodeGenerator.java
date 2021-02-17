@@ -213,13 +213,11 @@ public class CodeGenerator {
 
     private void generateFunctionDeclCode(Node node) {
         Code code = new Code();
-        Label label = new Label();
-        label.creatNewName();
-        node.getDefinedFunctions().get(0).setLabel(label);
-        if (node.getDefinedFunctions().get(0).getName().equals("main"))
-            node.getDefinedFunctions().get(0).getLabel().setName("main");
-        code.addCode(label.getName() + " :");
-        if (node.getDefinedFunctions().get(0).getName().equals("main")) {
+        Function function = node.getDefinedFunctions().get(0);
+        if (function.getName().equals("main"))
+            function.getLabel().setName("main");
+        code.addCode(function.getLabel().getName() + " :");
+        if (function.getName().equals("main")) {
             code.addCode("move $fp, $sp");
             code.addCode("sub $sp, $sp, 8");
         }
@@ -229,8 +227,8 @@ public class CodeGenerator {
         generateCode(node.getChildren().get(index));
         code.addCode(node.getChildren().get(index).getCode());
         if (!node.getDefinedFunctions().get(0).getName().equals("main")) {
-            code.addCode("lw  $ra, " + -((1 + node.getDefinedFunctions().get(0).getParameter().size() + 1) * 4) + "($fp)");
-            code.addCode("lw  $fp, " + -((1 + node.getDefinedFunctions().get(0).getParameter().size()) * 4) + "($fp)");
+            code.addCode("lw  $ra, " + -((1 + function.getParameter().size() + 1) * 4) + "($fp)");
+            code.addCode("lw  $fp, " + -((1 + function.getParameter().size()) * 4) + "($fp)");
             code.addCode("j $ra");
         } else{
             code.addCode("li $v0, 10");
