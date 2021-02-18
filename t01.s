@@ -68,7 +68,7 @@ add $sp, $sp, 4
 seq $t0, $t1, $t0
 beq $t0, 0, L8
 sub $sp, $sp, 0
-j L6
+j L5
 add $sp, $sp, 0
 j L7
 L8:
