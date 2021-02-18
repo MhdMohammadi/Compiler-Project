@@ -1,8 +1,12 @@
-int main(){
-    int[] a;
+bool f(bool a, bool b){
+    return a && b;
+}
 
-    a = NewArray(10, int);
-    a[2] = 10;
-    a[3] = 12;
-    Print(a[2] - a[3]);
+int main(){
+    bool a;
+    bool b;
+    a = true;
+    b = false;
+    a = f(a, b);
+    Print(a);
 }
