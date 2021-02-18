@@ -42,7 +42,6 @@ public class Compiler {
         return code;
     }
 
-
     public static void writeToFile( String outputFileName ) throws IOException {
         System.out.println(outputFileName);
         FileWriter out = new FileWriter( outputFileName );
