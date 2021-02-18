@@ -1,14 +1,17 @@
+class A{
+    double x;
+}
+
+class B extends A{
+    public int f(){
+        int x;
+        x = 3 + 5 % 3;
+        return x;
+    }
+}
 
 int main(){
-int i;
-int j;
-for ( i = 0; i < 10; i = i + 1){
-for ( j = 0; j < 4; j = j + 1){
-if ( (i + j) % 2 == 0){
-break;
-} else {
-Print(i + j);
-}
-}
-}
+    B b;
+    b = new B;
+    Print(b.f());
 }
