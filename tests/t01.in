@@ -1,5 +1,9 @@
 int main(){
     string a;
-    a = "mishe khoob she?";
-    Print(a);
+    string b;
+    string c;
+    a = "call me";
+    b = "mamacita";
+    c = a + " " + b;
+    Print(a, b, c);
 }
