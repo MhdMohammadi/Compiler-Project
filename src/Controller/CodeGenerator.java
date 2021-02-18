@@ -155,8 +155,9 @@ public class CodeGenerator {
                 generateReturnCode(node);
                 break;
             case PrintStmt:
+                generatePrintCode(node, 0);
             case PrintCommaExpr:
-                generatePrintCode(node);
+                generatePrintCode(node, 1);
                 break;
             case LValue:
                 generateLValueCode(node);
@@ -276,7 +277,12 @@ public class CodeGenerator {
 
     private void generateStmtCode(Node node) {
         generateCode(node.getChildren().get(0));
+        if(node.getProductionRule() == ProductionRule.PrintStmt) {
+            System.out.println(node.getChildren().get(0).getCode().getText());
+            System.out.println(node.getChildren().get(0).getIndex());
+        }
         node.setCode(node.getChildren().get(0).getCode());
+        System.out.println("****************");
     }
 
     private void generateExprPrimeCode(Node node) {
@@ -411,8 +417,9 @@ public class CodeGenerator {
         //todo check kon
     }
 
-    public void generatePrintCode(Node node) {
+    public void generatePrintCode(Node node, int mode) {
         Code code = new Code();
+        System.out.println(node.getLeftHand() + " " + node.getProductionRule() + " " + mode);
         if (node.getChildren().size() > 0) {
             Node child = node.getChildren().get(0);
             generateCode(child);
@@ -443,13 +450,21 @@ public class CodeGenerator {
                 code.addCode("add $a0, $a0, 4");
                 code.addCode("syscall");
             }
-            code.addCode("la $a0, ENDL");
-            code.addCode("li $v0, 4");
-            code.addCode("syscall");
             generateCode(node.getChildren().get(1));
             code.addCode(node.getChildren().get(1).getCode());
+            if(mode == 0) {
+                code.addCode("la $a0, ENDL");
+                code.addCode("li $v0, 4");
+                code.addCode("syscall");
+            }
         }
         node.setCode(code);
+        if(mode == 0) {
+            System.out.println(node.getCode().getText());
+            System.out.println(node.getIndex());
+            System.out.println(node.getLeftHand() + " " + node.getProductionRule());
+            System.out.println();
+        }
         return;
     }
 
