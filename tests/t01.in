@@ -1,12 +1,10 @@
-bool f(bool a, bool b){
-    return a && b;
+double f(double a){
+    return a;
 }
 
 int main(){
-    bool a;
-    bool b;
-    a = true;
-    b = false;
-    a = f(a, b);
+    double a;
+    a = 3.2;
+    a = f(a);
     Print(a);
 }

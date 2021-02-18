@@ -677,10 +677,14 @@ public class CodeGenerator {
     public void generateActualsCode(Node node) {
         Code code = new Code();
         if (node.getProductionRule() != ProductionRule.EPSILON) {
-            generateCode(node.getChildren().get(0));
-            code.addCode(node.getChildren().get(0).getCode());
+            Node exprNode = node.getChildren().get(0);
+            generateCode(exprNode);
+            code.addCode(exprNode.getCode());
             code.addCode("sub $sp, $sp, 4");
-            code.addCode("sw $t0, 0($sp)");
+            if (exprNode.getType().equals(Type.getTypeByName("double", 0)))
+                code.addCode("s.s $f0, 0($sp)");
+            else
+                code.addCode("sw $t0, 0($sp)");
             generateCode(node.getChildren().get(1));
             code.addCode(node.getChildren().get(1).getCode());
         }
