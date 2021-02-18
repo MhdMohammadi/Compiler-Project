@@ -354,7 +354,7 @@ public class Compiler {
                             if (type.getArrayDegree() > 0)semanticError();
                             if (((String)idNode.getValue()).equals("length"))semanticError();
                             Clazz clazz = Clazz.getClazzByName(type.getName());
-                            System.out.println(type.getName());
+                            //System.out.println(type.getName());
                             if (clazz == null)semanticError();
                             boolean find = false;
                             for (Function classFunction: clazz.getFunctions()){
@@ -374,7 +374,7 @@ public class Compiler {
                                         }
                                         if (findNode.getLeftHand() == LeftHand.ClassDecl){
                                             Clazz coverClazz = getClazzNode(findNode);
-                                            System.out.println(coverClazz.getName());
+                                            //System.out.println(coverClazz.getName());
                                             if (classFunction.getAccessMode() == AccessMode.PRIVATE){
                                                 if (coverClazz.equals(clazz) && findNode.getDefinedFunctions().contains(classFunction)){
                                                     find = true;
@@ -403,9 +403,11 @@ public class Compiler {
                         v.setType(variable.getType());
                         break;
                     case Expr_DOT_IDENTIFIER:
+
                         Node exprNode = v.getChildren().get(0);
                         Node idNode = v.getChildren().get(1);
                         Type type = exprNode.getType();
+                        System.out.println(idNode.getValue());
                         if (type.getArrayDegree() > 0)semanticError();
                         Clazz clazz = Clazz.getClazzByName(type.getName());
                         if (clazz == null)semanticError();
@@ -428,7 +430,7 @@ public class Compiler {
                                     }
                                     if (findNode.getLeftHand() == LeftHand.ClassDecl){
                                         Clazz coverClazz = getClazzNode(findNode);
-                                        System.out.println(coverClazz.getName());
+                                        //System.out.println(coverClazz.getName());
                                         if (classVariable.getAccessMode() == AccessMode.PRIVATE){
                                             if (coverClazz.equals(clazz) && findNode.getDefinedVariables().contains(classVariable)){
                                                 find = true;
@@ -446,7 +448,7 @@ public class Compiler {
 
                             }
                         }
-
+                        System.out.println(idNode.getValue() + " : " + find);
                         if (!find)semanticError();
                         break;
                     case Expr_OPENBRACKET_Expr_CLOSEBRACKET:

@@ -1,17 +1,6 @@
-class A{
-    double x;
-}
-
-class B extends A{
-    public int f(){
-        int x;
-        x = 3 + 5 % 3;
-        return x;
-    }
-}
-
-int main(){
-    B b;
-    b = new B;
-    Print(b.f());
+int main() {
+    int[][] a;
+    a = NewArray(5, int[]);
+    a[0] = NewArray(3, int);
+    Print(a.length(), a[0].length(), a[1].length());
 }

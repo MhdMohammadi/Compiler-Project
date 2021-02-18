@@ -659,7 +659,7 @@ public class CodeGenerator {
                 Node actualsNode1 = node.getChildren().get(2);
 
                 if (functionName1.equals("length")) {
-                    //todo length
+                    code.addCode("lw $t0, 0($t0)");
                 } else {
                     Type type = exprNode1.getType();
                     Clazz clazz = Clazz.getClazzByName(type.getName());
@@ -727,7 +727,7 @@ public class CodeGenerator {
                 code.addCode("li $v0, 9");
                 code.addCode("li $a0, " + (4 + len + 1));
                 code.addCode("syscall");
-                code.addCode("li $t0, $v0");
+                code.addCode("move $t0, $v0");
                 code.addCode("li $t1, " + len);
                 code.addCode("sw $t1, 0($t0)");
                 for (int i = 0; i < len; i++) {
@@ -763,7 +763,7 @@ public class CodeGenerator {
         int offset = 4 + index * 4; //this + parameters
         if(findNode.getLeftHand() != LeftHand.FunctionDecl) offset += 8; //$fp and $ra
         while (tempNode.getLeftHand() != LeftHand.FunctionDecl) {
-            System.out.println(tempNode.getLeftHand());
+            //System.out.println(tempNode.getLeftHand());
             tempNode = tempNode.getParent();
             if (tempNode.getLeftHand() == LeftHand.StmtBlock || tempNode.getLeftHand() == LeftHand.FunctionDecl) {
                 offset += 4 * (tempNode.getDefinedVariables().size());
@@ -790,7 +790,7 @@ public class CodeGenerator {
                         node.setCode(code);
                         return;
                     } else if (findNode.getLeftHand() != LeftHand.InsideStmtBlock && findNode.getLeftHand() != LeftHand.FieldStar){
-                        System.out.println(variable.getName() + " " + findNode.getLeftHand());
+                        //System.out.println(variable.getName() + " " + findNode.getLeftHand());
                         code.addCode(generateLValueToIdentifierCodeForLocal(findNode, index));
                         node.setCode(code);
                         return;
