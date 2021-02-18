@@ -1,10 +1,14 @@
+
 int main(){
-    int[] a;
-    int[] b;
-    a = NewArray(10, int);
-    a[0] = 10;
-    b = NewArray(10, int);
-    b[0] = 20;
-    a = b + a;
-    Print(a[0], a[10]);
+int i;
+int j;
+for ( i = 0; i < 10; i = i + 1){
+for ( j = 0; j < 4; j = j + 1){
+if ( (i + j) % 2 == 0){
+continue;
+} else {
+Print(i + j);
+}
+}
+}
 }

@@ -95,7 +95,7 @@ public class CodeGenerator {
     }
 
     public void generateCode(Node node) {
-        System.out.println(node.getLeftHand());
+        //System.out.println(node.getLeftHand());
         switch (node.getLeftHand()) {
             case Program:
                 generateProgramCode(node);
@@ -305,7 +305,6 @@ public class CodeGenerator {
         code.addCode("j " + label.getName());
         code.addCode(label1.getName() + ":");
         if (node.getChildren().size() == 3) {
-            System.out.println(node.getChildren().get(2).getLeftHand());
             code.addCode(node.getChildren().get(2).getCode());
         }
         code.addCode(label.getName() + ":");
@@ -966,7 +965,6 @@ public class CodeGenerator {
         } else if (t1.getArrayDegree() > 0) {
             return arrayPlusArray(node1, node2, 4);
         }
-
         Compiler.semanticError();
         return null;
     }
