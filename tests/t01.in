@@ -1,5 +1,9 @@
-int main() {
-    int i;
-    i = ReadInteger();
-    Print(itob(i));
+int main(){
+    string a;
+    string b;
+    string c;
+    c = ReadLine();
+    a = "call me";
+    b = "mamacita";
+    Print(a, b, c);
 }
