@@ -216,8 +216,7 @@ public class CodeGenerator {
         generateCode(node.getChildren().get(index));
         code.addCode(node.getChildren().get(index).getCode());
         if (!node.getDefinedFunctions().get(0).getName().equals("main")) {
-            code.addCode("lw  $ra, " + -((1 + function.getParameter().size() + 1) * 4) + "($fp)");
-            code.addCode("lw  $fp, " + -((1 + function.getParameter().size()) * 4) + "($fp)");
+            code.addCode("sub $sp, $fp, " + (2 + function.getParameter().size()));
             code.addCode("jr $ra");
         } else{
             code.addCode("li $v0, 10");
@@ -372,7 +371,17 @@ public class CodeGenerator {
         Node exprNode = node.getChildren().get(0);
         generateCode(exprNode);
         code.addCode(exprNode.getCode());
-        code.addCode("add $sp, $fp, 4");
+        //
+        Node findNode = node;
+        while (findNode.getParent() != null){
+            findNode = findNode.getParent();
+            if (findNode.getLeftHand() == LeftHand.FunctionDecl){
+                Function function = findNode.getDefinedFunctions().get(0);
+                code.addCode("sub $sp, $fp, " + (2 + function.getParameter().size()) * 4);
+                break;
+            }
+        }
+
         if (exprNode.getProductionRule() != ProductionRule.EPSILON) {
             Type returnType = exprNode.getChildren().get(0).getType();
             if (!returnType.equals(Type.getTypeByName("double", 0)))
