@@ -311,13 +311,13 @@ public class CodeGenerator {
         return code;
     }
 
-    public Code generateElsePrime(Node node){
+    public void generateElsePrime(Node node){
         Code code = new Code();
         if (node.getChildren().size() == 1){
             generateCode(node.getChildren().get(0));
             code.addCode(node.getChildren().get(0).getCode());
         }
-        return code;
+        node.setCode(code);
     }
 
     public void generateWhileStmt(Node node){

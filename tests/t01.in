@@ -1,16 +1,14 @@
-class A{
-
-    public int f(int x){
-        return g(x);
-    }
-
-    private int g(int y){
-        return y * 2;
-    }
-}
 
 int main(){
-    A a;
-    a = new A;
-    Print(a.f(2));
+int i;
+int j;
+for ( i = 0; i < 10; i = i + 1){
+for ( j = 0; j < 4; j = j + 1){
+if ( (i + j) % 2 == 0){
+continue;
+} else {
+Print(i + j);
+}
+}
+}
 }
