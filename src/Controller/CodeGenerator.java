@@ -85,6 +85,8 @@ public class CodeGenerator {
         code.addCode(node.getChildren().get(0).getCode());
         Label label = new Label();
         Label label1 = new Label();
+        label.createNewName();
+        label1.createNewName();
         code.addCode("beq $t0, 0, " + label.getName());
         code.addCode("li $t0, 1");
         code.addCode("j " + label1.getName());
