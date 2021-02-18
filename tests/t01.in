@@ -2,8 +2,8 @@ int main(){
     string a;
     string b;
     string c;
+    c = ReadLine();
     a = "call me";
     b = "mamacita";
-    c = a + " " + b;
     Print(a, b, c);
 }

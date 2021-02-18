@@ -25,6 +25,7 @@ public class CodeGenerator {
         code.addCode("TRUE: .asciiz \"true\"");
         code.addCode("FALSE: .asciiz \"false\"");
         code.addCode("ENDL: .asciiz \"\\n\"");
+        code.addCode("buffer: .space 1000");
         return code;
     }
 
@@ -863,10 +864,42 @@ public class CodeGenerator {
     public Code readLine() {
         //todo ghalate in
         Code code = new Code();
+        Label label = new Label(); label.createNewName();
+        Label label1 = new Label(); label1.createNewName();
+        Label label2 = new Label(); label2.createNewName();
+        Label label3 = new Label(); label3.createNewName();
         code.addCode("li $v0, 8");
         code.addCode("la $a0, buffer");
         code.addCode("li $a1, 1000");
         code.addCode("syscall");
+        code.addCode("li $t0, 0");
+        code.addCode(label1.getName() + " :");
+        code.addCode("lb $t1, 0($a0)");
+        code.addCode("beq $t1, 10, " + label.getName());
+        code.addCode("add $t0, $t0, 1");
+        code.addCode("add $a0, $a0, 1");
+        code.addCode("j " + label1.getName());
+        code.addCode(label.getName() + " :");
+        code.addCode("sb $zero, 0($a0)");
+        code.addCode("add $a0, $t0, 5");
+        code.addCode("li $v0, 9");
+        code.addCode("syscall");
+        code.addCode("move $t1, $v0");
+        code.addCode("la $a0, buffer");
+        code.addCode("sw $t0, 0($t1)");
+        code.addCode("add $t1, $t1, 4");
+        code.addCode(label2.getName() + " :");
+        code.addCode("beq $t0, $zero, " + label3.getName());
+        code.addCode("lb $t2, 0($a0)");
+        code.addCode("sb $t2, 0($t1)");
+        code.addCode("sb $zero, 0($a0)");
+        code.addCode("add $a0, $a0, 1");
+        code.addCode("add $t1, $t1, 1");
+        code.addCode("sub $t0, $t0, 1");
+        code.addCode("j " + label2.getName());
+        code.addCode(label3.getName() + " :");
+        code.addCode("sb $zero, 0($t1)");
+        code.addCode("move $t0, $v0");
         return code;
     }
 
