@@ -1,25 +1,10 @@
-class A{
-    B b;
-    public int f(int x){
-        b = new B;
-        return b.h(x);
-    }
-
-    public int g(int y){
-        return y * 2;
-    }
-}
-
-class B extends A{
-    A a;
-    public int h(int x){
-        a = new A;
-        return a.g(x * 2);
-    }
-}
-
 int main(){
-    A a;
-    a = new A;
-    Print(a.f(2));
+    int[] a;
+    int[] b;
+    a = NewArray(10, int);
+    a[0] = 10;
+    b = NewArray(10, int);
+    b[0] = 20;
+    a = b + a;
+    Print(a[0], a[10]);
 }
