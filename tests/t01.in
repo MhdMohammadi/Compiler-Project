@@ -1,12 +1,6 @@
-bool f(bool a, bool b){
-    return a && b;
-}
+int a;
 
 int main(){
-    bool a;
-    bool b;
-    a = true;
-    b = false;
-    a = f(a, b);
+    a = 20;
     Print(a);
 }
