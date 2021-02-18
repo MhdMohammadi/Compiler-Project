@@ -434,8 +434,10 @@ public class CodeGenerator {
                 code.addCode("mov.s $f12, $f0");
                 code.addCode("syscall");
             } else if (Type.getTypeByName("string", 0).equals(node.getChildren().get(0).getType())) {
+                //todo string
                 code.addCode("li $v0, 4");
                 code.addCode("move $a0, $t0");
+                code.addCode("add $a0, $a0, 4");
                 code.addCode("syscall");
             }
             code.addCode("la $a0, ENDL");
@@ -641,7 +643,6 @@ public class CodeGenerator {
                                     node.setCode(generateFunctionCallCode(actualsNode, function));
                                     break;
                                 }
-
                             }
                         }
                     }
@@ -724,7 +725,7 @@ public class CodeGenerator {
             case STRINGLITERAL:
                 int len = str.length();
                 code.addCode("li $v0, 9");
-                code.addCode("li $a0, " + (4 + len));
+                code.addCode("li $a0, " + (4 + len + 1));
                 code.addCode("syscall");
                 code.addCode("move $t0, $v0");
                 code.addCode("li $t1, " + len);
@@ -733,6 +734,8 @@ public class CodeGenerator {
                     code.addCode("li $t2, " + (int) str.charAt(i));
                     code.addCode("sb $t2 " + (i + 4) + "($t0)");
                 }
+                code.addCode("li $t2, 0");
+                code.addCode("sb $t2, " + (4 + len) + "($t0)");
                 break;
             case NULL:
                 code.addCode("li $t0, 0");
@@ -1248,13 +1251,14 @@ public class CodeGenerator {
 
     public Code compareString(Node node1, Node node2) {
         Code code = new Code();
-        code.addCode(node1.getChildren().get(0).getCode());
+        generateCode(node1);
+        code.addCode(node1.getCode());
         code.addCode("sub $sp, $sp, 4");
         code.addCode("sw $t0, 0($sp)");
 
-        code.addCode(node2.getChildren().get(1).getCode());
+        generateCode(node2);
+        code.addCode(node2.getCode());
         code.addCode("lw $t1, 0($sp)");
-        code.addCode("sw $t0, 0($sp)");
         code.addCode("add $sp, $sp, 4");
 
         code.addCode("lw $t2, 0($t0)");
@@ -1268,17 +1272,17 @@ public class CodeGenerator {
         L3.createNewName();
         Label L4 = new Label();
         L4.createNewName();
-       /* code.addCode("bne $t2, $t3, " + L1.getName());
+
+        code.addCode("bne $t2, $t3, " + L1.getName());
         code.addCode("add $t0, $t0, 4");
-        code.addCode("add $t1, $t1, 4");*/
+        code.addCode("add $t1, $t1, 4");
+
         code.addCode(L2.getName() + " :");
-        //code.addCode("beq $t2, 0, " + L3.getName());
-        code.addCode("lb $t4, 0($t2)");
-        code.addCode("lb $t5, 0($t3)");
-        code.addCode("bne $t4, $t5, " + L1.getName());
         code.addCode("beq $t2, 0, " + L3.getName());
-        code.addCode("addi $t2, $t2, 1");
-        code.addCode("addi $t3, $t3, 1");
+        code.addCode("lb $t4, 0($t0)");
+        code.addCode("lb $t5, 0($t1)");
+        code.addCode("bne $t4, $t5, " + L1.getName());
+        code.addCode("sub $t2, $t2, 1");
         code.addCode("j " + L2.getName());
         code.addCode(L3.getName() + " :");
         code.addCode("li $t0, 1");
