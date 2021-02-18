@@ -1272,17 +1272,17 @@ public class CodeGenerator {
         L3.createNewName();
         Label L4 = new Label();
         L4.createNewName();
-       /* code.addCode("bne $t2, $t3, " + L1.getName());
+
+        code.addCode("bne $t2, $t3, " + L1.getName());
         code.addCode("add $t0, $t0, 4");
-        code.addCode("add $t1, $t1, 4");*/
+        code.addCode("add $t1, $t1, 4");
+
         code.addCode(L2.getName() + " :");
-        //code.addCode("beq $t2, 0, " + L3.getName());
-        code.addCode("lb $t4, 0($t2)");
-        code.addCode("lb $t5, 0($t3)");
-        code.addCode("bne $t4, $t5, " + L1.getName());
         code.addCode("beq $t2, 0, " + L3.getName());
-        code.addCode("addi $t2, $t2, 1");
-        code.addCode("addi $t3, $t3, 1");
+        code.addCode("lb $t4, 0($t0)");
+        code.addCode("lb $t5, 0($t1)");
+        code.addCode("bne $t4, $t5, " + L1.getName());
+        code.addCode("sub $t2, $t2, 1");
         code.addCode("j " + L2.getName());
         code.addCode(L3.getName() + " :");
         code.addCode("li $t0, 1");
