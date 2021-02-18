@@ -170,9 +170,9 @@ public class Compiler {
 
     public void areAllVariablesUnique(Node v) {
         ArrayList<Variable> variables = v.getDefinedVariables();
-        System.out.println(v.getLeftHand());
+        //System.out.println(v.getLeftHand());
         if (!areArrayListVariablesUnique(variables)) semanticError();
-        System.out.println("ok !");
+        //System.out.println("ok !");
         for (Node node : v.getChildren())
             areAllVariablesUnique(node);
     }
@@ -453,8 +453,8 @@ public class Compiler {
             case Expr:
                 switch (v.getProductionRule()) {
                     case LValue_ASSIGN_Expr:
-                        System.out.println(v.getChildren().get(0).getType().getName());
-                        System.out.println(v.getChildren().get(1).getType().getName());
+                        //System.out.println(v.getChildren().get(0).getType().getName());
+                        //System.out.println(v.getChildren().get(1).getType().getName());
                         if (!Type.possible(v.getChildren().get(0).getType(), v.getChildren().get(1).getType(), Operator.EQ))
                             semanticError();
                         v.setType(v.getChildren().get(0).getType());
