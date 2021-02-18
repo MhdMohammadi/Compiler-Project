@@ -1,9 +1,11 @@
+class A{
+}
+
 int main(){
-    string a;
-    string b;
-    string c;
-    c = ReadLine();
-    a = "call me";
-    b = "mamacita";
-    Print(a, b, c);
+    A s;
+    A t;
+    s = new A;
+    t = new A;
+    if(s == t)Print("hi");
+    else Print("bye");
 }

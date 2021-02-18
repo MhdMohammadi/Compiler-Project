@@ -1000,11 +1000,18 @@ public class CodeGenerator {
         return null;
     }
 
+    public Code calcObjectExpr(Node node1, Node node2, Operator operator){
+        return calcIntExpr(node1, node2, operator);
+    }
+
     public Code calcExpr(Node node1, Node node2, Operator operator) {
         Type t1 = node1.getType();
+        Type t2 = node2.getType();
+
         if (operator == Operator.EQ) {
             return assignExprs(node1, node2);
         }
+
         if (Type.getTypeByName("int", 0).equals(t1)) {
             return calcIntExpr(node1, node2, operator);
         } else if (Type.getTypeByName("bool", 0).equals(t1)) {
@@ -1018,7 +1025,10 @@ public class CodeGenerator {
                 return compareString(node1, node2);
         } else if (t1.getArrayDegree() > 0) {
             return arrayPlusArray(node1, node2, 4);
+        } else {
+            return calcObjectExpr(node1, node2, operator);
         }
+
         Compiler.semanticError();
         return null;
     }
@@ -1220,7 +1230,7 @@ public class CodeGenerator {
         Code code = new Code();
         String name = (String) node.getChildren().get(0).getValue();
         int numberOfVariables = Clazz.getClazzByName(name).getVariables().size();
-        code.addCode("li $a0, " + numberOfVariables * 4);
+        code.addCode("li $a0, " + (1 + numberOfVariables) * 4);
         code.addCode("li $v0, 9");
         code.addCode("syscall");
         code.addCode("move $t0, $v0");

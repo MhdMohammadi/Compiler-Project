@@ -328,8 +328,7 @@ public class Compiler {
                         v.setType(Type.getTypeByName("string", 0));
                         break;
                     case NULL:
-                        //todo
-                        //what's NULL's type?
+                        v.setType(Type.getTypeByName("null", 0));
                         break;
                 }
                 break;
