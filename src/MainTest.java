@@ -9,7 +9,7 @@ import java.io.Reader;
 public class MainTest {
 
     public static void main(String[] args) throws Exception {
-        String inputFileName = "t002-io2.d";
+        String inputFileName = "t007-class1.d";
         String outputFileName = "tests/code.s";
 //        String outputFileName = null;
 
