@@ -130,6 +130,9 @@ public class CodeGenerator {
                // node.setCode(ifCondition(node));
                 generateIfStmt(node);
                 break;
+            case ElsePrime:
+                generateElsePrime(node);
+                break;
             case WhileStmt:
                 //node.setCode(whileLoop(node));
                 generateWhileStmt(node);
@@ -302,6 +305,15 @@ public class CodeGenerator {
             code.addCode(node.getChildren().get(2).getCode());
         }
         code.addCode(label.getName() + ":");
+        return code;
+    }
+
+    public Code generateElsePrime(Node node){
+        Code code = new Code();
+        if (node.getChildren().size() == 1){
+            generateCode(node.getChildren().get(0));
+            code.addCode(node.getChildren().get(0).getCode());
+        }
         return code;
     }
 
