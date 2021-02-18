@@ -1,9 +1,12 @@
+bool f(bool a, bool b){
+    return a && b;
+}
+
 int main(){
     bool a;
-    int b;
-
+    bool b;
     a = true;
-    b = btoi(true && (!false || false));
-
-    Print(a, b);
+    b = false;
+    a = f(a, b);
+    Print(a);
 }
