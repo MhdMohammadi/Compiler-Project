@@ -1,6 +1,5 @@
 int main() {
-    int[][] a;
-    a = NewArray(5, int[]);
-    a[0] = NewArray(3, int);
-    Print(a.length(), a[0].length(), a[1].length());
+    int i;
+    i = ReadInteger();
+    Print(itob(i));
 }
