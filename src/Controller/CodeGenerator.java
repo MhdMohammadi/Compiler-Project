@@ -1210,7 +1210,10 @@ public class CodeGenerator {
         code.addCode("add $t2, $t2, $t3");
         code.addCode("add $t2, $t2, 1");
         code.addCode("move $a0, $t2");
-        code.addCode("mul $a0, $a0, " + size);
+        if(size == 1)
+            code.addCode("add $a0, 4");
+        else
+            code.addCode("mul $a0, $a0, " + size);
         code.addCode("li $v0, 9");
         code.addCode("syscall");
 
@@ -1245,6 +1248,8 @@ public class CodeGenerator {
         code.addCode("sub $t2, $t2, 1");
         code.addCode("j " + L2.getName());
         code.addCode(L3.getName() + ":");
+        if(size == 1)
+            code.addCode("sw $zero, 0($t4)");
         code.addCode("move $t0, $t5");
         return code;
     }
@@ -1307,7 +1312,6 @@ public class CodeGenerator {
 
     public Code simpleCall(Node node) {
         Code code = new Code();
-
         return code;
     }
 

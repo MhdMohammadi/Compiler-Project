@@ -1,17 +1,5 @@
-class A{
-    double x;
-}
-
-class B extends A{
-    public int f(){
-        int x;
-        x = 3 + 5 % 3;
-        return x;
-    }
-}
-
 int main(){
-    B b;
-    b = new B;
-    Print(b.f());
+    string a;
+    a = "mishe khoob she?";
+    Print(a);
 }
