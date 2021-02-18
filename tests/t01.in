@@ -1,5 +1,5 @@
 int main() {
-    int i;
-    i = ReadInteger();
-    Print(itob(i));
+    bool i;
+    i = false;
+    Print(btoi(i));
 }
