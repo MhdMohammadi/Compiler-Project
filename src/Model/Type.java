@@ -111,14 +111,17 @@ public class Type {
         Type BOOLEAN = getTypeByName("bool", 0);
         Type STRING = getTypeByName("string", 0);
 
+        if (t1.getArrayDegree() > 0 || t2.getArrayDegree() > 0) return false;
+
         if (operator != Operator.EQEQ && operator != Operator.NOTEQ && operator != Operator.EQ)
             return false;
 
         if (t1.equals(INT) || t1.equals(DOUBLE) || t1.equals(BOOLEAN) || t1.equals(STRING)) return false;
 
         if (t1.equals(NULL)){
+            if (operator == Operator.EQ) return false;
+            if (t2.equals(NULL)) return true;
             if(t2.equals(INT) || t2.equals(DOUBLE) || t2.equals(BOOLEAN) || t2.equals(STRING))return false;
-            if (t2.equals(NULL))return true;
             if (operator == Operator.EQEQ || operator == Operator.NOTEQ) return true;
             return false;
         }

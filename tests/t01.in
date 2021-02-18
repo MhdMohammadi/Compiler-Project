@@ -1,5 +1,9 @@
+class A{
+
+}
+
 int main(){
-    string s;
+    A s;
     s = null;
     if(s == null)Print("hi");
 }
