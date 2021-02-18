@@ -1,7 +1,12 @@
 class A{
-
 }
 
 int main(){
+    A s;
+    A t;
+    s = new A;
+    t = new A;
+    if(s == t)Print("hi");
+    else Print("bye");
 
 }
