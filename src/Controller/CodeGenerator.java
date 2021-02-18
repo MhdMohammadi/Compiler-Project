@@ -74,6 +74,7 @@ public class CodeGenerator {
         Code code = new Code();
         generateCode(node.getChildren().get(0));
         code.addCode(node.getChildren().get(0).getCode());
+        code.addCode("cvt.w.s $f0, $f0");
         code.addCode("mfc1 $t0, $f0");
         node.setCode(code);
     }
@@ -306,9 +307,6 @@ public class CodeGenerator {
     }
 
     public void generateWhileStmt(Node node){
-        for (Node node1: node.getChildren()){
-            generateCode(node1);
-        }
         node.setCode(whileLoop(node));
     }
 
@@ -318,11 +316,14 @@ public class CodeGenerator {
         Label label1 = new Label();
         label.createNewName();
         label1.createNewName();
+        node.getChildren().get(1).setBreakLabel(label1);
+        node.getChildren().get(1).setContinueLabel(label);
+        for (Node node1: node.getChildren()){
+            generateCode(node1);
+        }
         code.addCode(label.getName() + ":");
         code.addCode(node.getChildren().get(0).getCode());
         code.addCode("beq $t0, 0, " + label1.getName());
-        node.getChildren().get(1).setBreakLabel(label1);
-        node.getChildren().get(1).setContinueLabel(label);
         code.addCode(node.getChildren().get(1).getCode());
         code.addCode("j " + label.getName());
         code.addCode(label1.getName() + ":");
@@ -330,9 +331,6 @@ public class CodeGenerator {
     }
 
     public void generateForStmt(Node node){
-        for (Node node1: node.getChildren()){
-            generateCode(node1);
-        }
         node.setCode(forLoop(node));
     }
 
@@ -344,12 +342,15 @@ public class CodeGenerator {
         label1.createNewName();
         Label label2 = new Label();
         label2.createNewName();
+        node.getChildren().get(3).setBreakLabel(label1);
+        node.getChildren().get(3).setContinueLabel(label2);
+        for (Node node1: node.getChildren()){
+            generateCode(node1);
+        }
         code.addCode(node.getChildren().get(0).getCode());
         code.addCode(label.getName() + ":");
         code.addCode(node.getChildren().get(1).getCode());
         code.addCode("beq $t0, 0, " + label1.getName());
-        node.getChildren().get(3).setBreakLabel(label1);
-        node.getChildren().get(3).setContinueLabel(label2);
         code.addCode(node.getChildren().get(3).getCode());
         code.addCode(label2.getName() + ":");
         code.addCode(node.getChildren().get(2).getCode());
@@ -425,7 +426,9 @@ public class CodeGenerator {
     public void generateLValueCode(Node node) {
         switch (node.getProductionRule()) {
             case IDENTIFIER:
+                System.out.println("salam dawsh");
                 generateLvalueToIdentifierCode(node);
+                System.out.println(node.getCode().getText());
                 break;
             case Expr_DOT_IDENTIFIER:
                 Code code = new Code();
@@ -443,6 +446,7 @@ public class CodeGenerator {
             case Expr_OPENBRACKET_Expr_CLOSEBRACKET:
                 Node exprNode1 = node.getChildren().get(0);
                 Node exprNode2 = node.getChildren().get(1);
+                System.out.println(exprNode1.getLeftHand() + " " + exprNode1.getProductionRule());
                 generateCode(exprNode1);
                 node.getCode().addCode(exprNode1.getCode());
                 node.getCode().addCode("sub $sp, $sp, 4");
@@ -460,6 +464,7 @@ public class CodeGenerator {
 //        System.out.println(node.getProductionRule());
         switch (node.getProductionRule()) {
             case LValue:
+                System.out.println(node.getChildren().get(0).getLeftHand() + " " + node.getChildren().get(0).getProductionRule());
                 generateCode(node.getChildren().get(0));
                 code.addCode(node.getChildren().get(0).getCode());
                 if (node.getType().equals(Type.getTypeByName("double", 0))) {
@@ -1084,13 +1089,33 @@ public class CodeGenerator {
 
     public Code Break(Node node) {
         Code code = new Code();
-        code.addCode("j " + node.getBreakLabel().getName());
+        Node node1 = node;
+        while(node1 != null){
+            if (node1.getParent().getLeftHand().equals(LeftHand.ForStmt) || node1.getParent().getLeftHand().equals(LeftHand.WhileStmt)) {
+                code.addCode("j " + node1.getBreakLabel().getName());
+                break;
+            }
+            node1 = node1.getParent();
+        }
+        if (node1 == null){
+            Compiler.semanticError();
+        }
         return code;
     }
 
     public Code Continue(Node node) {
         Code code = new Code();
-        code.addCode("j " + node.getContinueLabel().getName());
+        Node node1 = node;
+        while(node1 != null){
+            if (node1.getParent().getLeftHand().equals(LeftHand.ForStmt) || node1.getParent().getLeftHand().equals(LeftHand.WhileStmt)) {
+                code.addCode("j " + node1.getContinueLabel().getName());
+                break;
+            }
+            node1 = node1.getParent();
+        }
+        if (node1 == null){
+            Compiler.semanticError();
+        }
         return code;
     }
 
