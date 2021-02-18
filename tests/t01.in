@@ -1,10 +1,15 @@
-double f(double a){
-    return a;
+class A{
+    public int f(int x){
+        return g(x);
+    }
+
+    private int g(int y){
+        return y * 2;
+    }
 }
 
 int main(){
-    double a;
-    a = 3.2;
-    a = f(a);
-    Print(a);
+    A a;
+    a = new A;
+    Print(a.f(2));
 }
