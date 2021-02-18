@@ -109,14 +109,15 @@ public class Type {
         Type INT = getTypeByName("int", 0);
         Type DOUBLE = getTypeByName("double", 0);
         Type BOOLEAN = getTypeByName("bool", 0);
+        Type STRING = getTypeByName("string", 0);
 
         if (operator != Operator.EQEQ && operator != Operator.NOTEQ && operator != Operator.EQ)
             return false;
 
-        if (t1.equals(INT) || t1.equals(DOUBLE) || t1.equals(BOOLEAN)) return false;
+        if (t1.equals(INT) || t1.equals(DOUBLE) || t1.equals(BOOLEAN) || t1.equals(STRING)) return false;
 
         if (t1.equals(NULL)){
-            if(t2.equals(INT) || t2.equals(DOUBLE) || t2.equals(BOOLEAN))return false;
+            if(t2.equals(INT) || t2.equals(DOUBLE) || t2.equals(BOOLEAN) || t2.equals(STRING))return false;
             if (t2.equals(NULL))return true;
             if (operator == Operator.EQEQ || operator == Operator.NOTEQ) return true;
             return false;

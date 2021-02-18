@@ -1,9 +1,5 @@
 int main(){
-    string a;
-    string b;
-    string c;
-    c = ReadLine();
-    a = "call me";
-    b = "mamacita";
-    Print(a, b, c);
+    string s;
+    s = null;
+    if(s == null)Print("hi");
 }
