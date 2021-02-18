@@ -1215,7 +1215,7 @@ public class CodeGenerator {
         Code code = new Code();
         String name = (String) node.getChildren().get(0).getValue();
         int numberOfVariables = Clazz.getClazzByName(name).getVariables().size();
-        code.addCode("li $a0, " + numberOfVariables * 4);
+        code.addCode("li $a0, " + (1 + numberOfVariables) * 4);
         code.addCode("li $v0, 9");
         code.addCode("syscall");
         code.addCode("move $t0, $v0");
