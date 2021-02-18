@@ -723,6 +723,7 @@ public class CodeGenerator {
                 } else code.addCode("li $t0, 1");
                 break;
             case STRINGLITERAL:
+                str = str.substring(1,str.length() - 1);
                 int len = str.length();
                 code.addCode("li $v0, 9");
                 code.addCode("li $a0, " + (4 + len + 1));
@@ -1210,7 +1211,10 @@ public class CodeGenerator {
         code.addCode("add $t2, $t2, $t3");
         code.addCode("add $t2, $t2, 1");
         code.addCode("move $a0, $t2");
-        code.addCode("mul $a0, $a0, " + size);
+        if(size == 1)
+            code.addCode("add $a0, $a0, 4");
+        else
+            code.addCode("mul $a0, $a0, " + size);
         code.addCode("li $v0, 9");
         code.addCode("syscall");
 
@@ -1230,21 +1234,26 @@ public class CodeGenerator {
         L3.createNewName();
         code.addCode(L1.getName() + ":");
         code.addCode("beq $t3, 0, " + L2.getName());
-        code.addCode("lw $t6, 0($t1)");
-        code.addCode("sw $t6, 0($t4)");
+        if (size == 1) code.addCode("lb $t6, 0($t1)");
+        else code.addCode("lw $t6, 0($t1)");
+        if (size == 1) code.addCode("sb $t6, 0($t4)");
+        else code.addCode("sw $t6, 0($t4)");
         code.addCode("add $t4, $t4, " + size);
         code.addCode("add $t1, $t1, " + size);
         code.addCode("sub $t3, $t3, 1");
         code.addCode("j " + L1.getName());
         code.addCode(L2.getName() + ":");
         code.addCode("beq $t2, 0, " + L3.getName());
-        code.addCode("lw $t6, 0($t0)");
-        code.addCode("sw $t6, 0($t4)");
+        if (size == 1) code.addCode("lb $t6, 0($t0)");
+        else code.addCode("lw $t6, 0($t1)");
+        if (size == 1) code.addCode("sb $t6, 0($t4)");
         code.addCode("add $t4, $t4, " + size);
         code.addCode("add $t0, $t0, " + size);
         code.addCode("sub $t2, $t2, 1");
         code.addCode("j " + L2.getName());
         code.addCode(L3.getName() + ":");
+        if(size == 1)
+            code.addCode("sb $zero, 0($t4)");
         code.addCode("move $t0, $t5");
         return code;
     }
@@ -1307,7 +1316,6 @@ public class CodeGenerator {
 
     public Code simpleCall(Node node) {
         Code code = new Code();
-
         return code;
     }
 
