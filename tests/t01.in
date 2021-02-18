@@ -8,4 +8,5 @@ int main(){
     t = new A;
     if(s == t)Print("hi");
     else Print("bye");
+
 }
