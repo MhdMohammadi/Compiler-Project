@@ -15,7 +15,7 @@ public class CodeGenerator {
         code.addCode(root.getCode());
         code.addCode(addFloatingPoints());
         code.addCode(gatherGlobalFunction(root));
-//        code.addCode(gatherClassCodes(root));
+        code.addCode(gatherClassCodes(root));
         System.out.println(code.getText());
         return code;
     }
@@ -95,6 +95,7 @@ public class CodeGenerator {
     }
 
     public void generateCode(Node node) {
+        //System.out.println(node.getLeftHand());
         switch (node.getLeftHand()) {
             case Program:
                 generateProgramCode(node);
@@ -170,13 +171,15 @@ public class CodeGenerator {
             default:
                 Code code = new Code();
                 node.setCode(code);
+                for(Node child : node.getChildren())
+                    generateCode(child);
         }
     }
 
     private void generateDeclCode(Node node) {
         Code code = new Code();
+        generateCode(node.getChildren().get(0));
         if (node.getProductionRule() == ProductionRule.FunctionDecl) {
-            generateCode(node.getChildren().get(0));
             code.addCode(node.getChildren().get(0).getCode());
         }
         node.setCode(code);
