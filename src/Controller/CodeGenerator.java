@@ -435,9 +435,7 @@ public class CodeGenerator {
     public void generateLValueCode(Node node) {
         switch (node.getProductionRule()) {
             case IDENTIFIER:
-                System.out.println("salam dawsh");
                 generateLvalueToIdentifierCode(node);
-                System.out.println(node.getCode().getText());
                 break;
             case Expr_DOT_IDENTIFIER:
                 Code code = new Code();
@@ -455,8 +453,8 @@ public class CodeGenerator {
             case Expr_OPENBRACKET_Expr_CLOSEBRACKET:
                 Node exprNode1 = node.getChildren().get(0);
                 Node exprNode2 = node.getChildren().get(1);
-                System.out.println(exprNode1.getLeftHand() + " " + exprNode1.getProductionRule());
                 generateCode(exprNode1);
+                node.setCode(new Code());
                 node.getCode().addCode(exprNode1.getCode());
                 node.getCode().addCode("sub $sp, $sp, 4");
                 node.getCode().addCode("sw $t0, 0($sp)");
@@ -464,6 +462,7 @@ public class CodeGenerator {
                 node.getCode().addCode(exprNode2.getCode());
                 node.getCode().addCode("lw $t1, 0($sp)");
                 node.getCode().addCode("add $sp, $sp, 4");
+                node.getCode().addCode("mul $t0, $t0, 4");
                 node.getCode().addCode("add $t0, $t0, $t1");
         }
     }
@@ -473,7 +472,6 @@ public class CodeGenerator {
 //        System.out.println(node.getProductionRule());
         switch (node.getProductionRule()) {
             case LValue:
-                System.out.println(node.getChildren().get(0).getLeftHand() + " " + node.getChildren().get(0).getProductionRule());
                 generateCode(node.getChildren().get(0));
                 code.addCode(node.getChildren().get(0).getCode());
                 if (node.getType().equals(Type.getTypeByName("double", 0))) {
@@ -546,7 +544,6 @@ public class CodeGenerator {
                 break;
             case NOT_Expr:
                 node.setCode(calcExpr(node.getChildren().get(0), Operator.SINGLE_NOT));
-                System.out.println(node.getCode().getText());
                 break;
             case READINTEGER_OPENPARENTHESIS_CLOSEPARENTHESIS:
                 node.setCode(readInteger());
@@ -960,9 +957,7 @@ public class CodeGenerator {
         code.addCode(node1.getCode());
         code.addCode("sub $sp, $sp, 4");
         code.addCode("sw $t0, 0($sp)");
-        System.out.println(node2.getLeftHand() + " " + node2.getProductionRule());
         generateCode(node2);
-        System.out.println(node2.getChildren().get(0).getLeftHand() + " " + node2.getChildren().get(0).getProductionRule() );
         code.addCode(node2.getCode());
         code.addCode("lw $t1, 0($sp)");
         code.addCode("add $sp, $sp, 4");
