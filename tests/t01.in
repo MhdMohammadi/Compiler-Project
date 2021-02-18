@@ -1,6 +1,10 @@
-int a;
+double f(double a){
+    return a;
+}
 
 int main(){
-    a = 20;
+    double a;
+    a = 3.2;
+    a = f(a);
     Print(a);
 }
