@@ -3,5 +3,6 @@ int main(){
 
     a = NewArray(10, int);
     a[2] = 10;
-    a[3] = 11;
+    a[3] = 12;
+    Print(a[2] - a[3]);
 }
