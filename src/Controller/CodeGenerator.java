@@ -770,8 +770,10 @@ public class CodeGenerator {
         Node tempNode = findNode;
         int offset = 4 + index * 4; //this + parameters
         if(findNode.getLeftHand() != LeftHand.FunctionDecl) offset += 8; //$fp and $ra
+        System.out.println();
         while (tempNode.getLeftHand() != LeftHand.FunctionDecl) {
-            //System.out.println(tempNode.getLeftHand());
+            System.out.println(tempNode.getLeftHand());
+
             tempNode = tempNode.getParent();
             if (tempNode.getLeftHand() == LeftHand.StmtBlock || tempNode.getLeftHand() == LeftHand.FunctionDecl) {
                 offset += 4 * (tempNode.getDefinedVariables().size());
@@ -797,7 +799,8 @@ public class CodeGenerator {
                         code.addCode(generateLValueToIdentifierCodeForClass(findNode, idName));
                         node.setCode(code);
                         return;
-                    } else if (findNode.getLeftHand() != LeftHand.InsideStmtBlock && findNode.getLeftHand() != LeftHand.FieldStar){
+                    } else if (findNode.getLeftHand() != LeftHand.InsideStmtBlock && findNode.getLeftHand() != LeftHand.FieldStar
+                        && findNode.getLeftHand() != LeftHand.DeclStar){
                         //System.out.println(variable.getName() + " " + findNode.getLeftHand());
                         code.addCode(generateLValueToIdentifierCodeForLocal(findNode, index));
                         node.setCode(code);
