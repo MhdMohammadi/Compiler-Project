@@ -3,4 +3,5 @@ Copyright 1990-2010, James R. Larus.
 All Rights Reserved.
 See the file README for a full copyright notice.
 Loaded: /usr/lib/spim/exceptions.s
-Please enter the #1 number:Please enter the #2 number:Please enter the #3 number:Please enter the #4 number:Sum of 4 items is: 150
+  Exception 4  [Address error in inst/data fetch]  occurred and ignored
+  Exception 4  [Address error in inst/data fetch]  occurred and ignored
