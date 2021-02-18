@@ -53,6 +53,7 @@ public class Type {
         allPreTypes.add(new PreType("double", null));
         allPreTypes.add(new PreType("bool", null));
         allPreTypes.add(new PreType("string", null));
+        allPreTypes.add(new PreType("null", null));
         for (int i = 0; i < allPreTypes.size(); i++) {
             for (int j = 0; j < allPreTypes.size(); j++) {
                 if (i != j) {
@@ -103,15 +104,46 @@ public class Type {
         return null;
     }
 
-    public static boolean possible(Type t1, Type t2, Operator operator){
-        if (operator != Operator.EQEQ && operator != Operator.NOTEQ && operator != Operator.EQ){
-            if(t1 != t2) return false;
+    public static boolean possibleNull(Type t1, Type t2, Operator operator){
+        Type NULL = getTypeByName("null", 0);
+        Type INT = getTypeByName("int", 0);
+        Type DOUBLE = getTypeByName("double", 0);
+        Type BOOLEAN = getTypeByName("bool", 0);
+
+        if (operator != Operator.EQEQ && operator != Operator.NOTEQ && operator != Operator.EQ)
+            return false;
+
+        if (t1.equals(INT) || t1.equals(DOUBLE) || t1.equals(BOOLEAN)) return false;
+
+        if (t1.equals(NULL)){
+            if(t2.equals(INT) || t2.equals(DOUBLE) || t2.equals(BOOLEAN))return false;
+            if (t2.equals(NULL))return true;
+            if (operator == Operator.EQEQ || operator == Operator.NOTEQ) return true;
+            return false;
         }
 
+        return true;
+    }
+
+    public static boolean possible(Type t1, Type t2, Operator operator){
+
+        Type NULL = getTypeByName("null", 0);
         Type INT = getTypeByName("int", 0);
         Type DOUBLE = getTypeByName("double", 0);
         Type BOOLEAN = getTypeByName("bool", 0);
         Type STRING = getTypeByName("string", 0);
+        Type VOID = getTypeByName("void", 0);
+
+        if (operator != Operator.EQEQ && operator != Operator.NOTEQ && operator != Operator.EQ){
+            if(t1 != t2) return false;
+        }
+
+        if (t1.equals(VOID) || t2.equals(VOID))return false;
+
+        if (t1.equals(NULL) || t2.equals(NULL))return possibleNull(t1, t2, operator);
+
+
+
 
         if(operator == Operator.MOD && t1 != INT) return false;
         if((operator == Operator.MINUS || operator == Operator.DIV || operator == Operator.MULT)
