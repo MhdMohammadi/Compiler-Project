@@ -1,12 +1,16 @@
-bool f(bool a, bool b){
-    return a && b;
+class A{
+
+    public int f(int x){
+        return g(x);
+    }
+
+    private int g(int y){
+        return y * 2;
+    }
 }
 
 int main(){
-    bool a;
-    bool b;
-    a = true;
-    b = false;
-    a = f(a, b);
-    Print(a);
+    A a;
+    a = new A;
+    Print(a.f(2));
 }
