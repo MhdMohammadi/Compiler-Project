@@ -2,8 +2,6 @@
   <library name="JFlex">
     <CLASSES />
     <JAVADOC />
-    <LIBRARY_FILE />
-    <LIBRARY_FILE />
     <SOURCES>
       <root url="file://$PROJECT_DIR$/../jflex-1.8.2/examples/cup-interpreter/src/main/java" />
       <root url="file://$PROJECT_DIR$/../jflex-1.8.2/examples/cup-interpreter/src/test/java" />

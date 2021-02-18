@@ -227,7 +227,7 @@ public class CodeGenerator {
         generateCode(node.getChildren().get(index));
         code.addCode(node.getChildren().get(index).getCode());
         if (!node.getDefinedFunctions().get(0).getName().equals("main")) {
-            code.addCode("sub $sp, $fp, " + (2 + function.getParameter().size()));
+            code.addCode("sub $sp, $fp, " + (4 * (2 + function.getParameter().size())));
             code.addCode("jr $ra");
         } else{
             code.addCode("li $v0, 10");
