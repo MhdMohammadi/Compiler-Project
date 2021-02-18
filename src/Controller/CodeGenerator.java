@@ -589,7 +589,7 @@ public class CodeGenerator {
         }
     }
 
-    public Code generateFunctionCode(Node actualsNode, Function function){
+    public Code generateFunctionCallCode(Node actualsNode, Function function){
         Code code = new Code();
         code.addCode("lw $t0, 0($fp)");
         code.addCode("sub $sp, $sp, 4");
@@ -625,7 +625,7 @@ public class CodeGenerator {
                     for (Function function : findNode.getDefinedFunctions()) {
                         if (function.getName().equals(functionName)) {
                             find = true;
-                            node.setCode(generateFunctionCode(actualsNode, function));
+                            node.setCode(generateFunctionCallCode(actualsNode, function));
                             break;
                         }
                     }
@@ -638,7 +638,7 @@ public class CodeGenerator {
                             if (function.getName().equals(functionName)){
                                 if (function.getAccessMode() == AccessMode.PUBLIC || function.getAccessMode() == AccessMode.PROTECTED){
                                     find = true;
-                                    node.setCode(generateFunctionCode(actualsNode, function));
+                                    node.setCode(generateFunctionCallCode(actualsNode, function));
                                     break;
                                 }
 
