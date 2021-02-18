@@ -3,7 +3,5 @@ class A{
 }
 
 int main(){
-    A s;
-    s = null;
-    if(s == null)Print("hi");
+
 }
