@@ -5,7 +5,7 @@ class A{
         return b.h(x);
     }
 
-    public int g(int y){
+    private int g(int y){
         return y * 2;
     }
 }

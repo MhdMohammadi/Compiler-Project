@@ -355,6 +355,7 @@ public class Compiler {
                             if (type.getArrayDegree() > 0)semanticError();
                             if (((String)idNode.getValue()).equals("length"))semanticError();
                             Clazz clazz = Clazz.getClazzByName(type.getName());
+                            System.out.println(type.getName());
                             if (clazz == null)semanticError();
                             boolean find = false;
                             for (Function classFunction: clazz.getFunctions()){
@@ -374,16 +375,17 @@ public class Compiler {
                                         }
                                         if (findNode.getLeftHand() == LeftHand.ClassDecl){
                                             Clazz coverClazz = getClazzNode(findNode);
-                                            if (coverClazz.equals(clazz)){
-                                                if (classFunction.getAccessMode() == AccessMode.PROTECTED){
+                                            System.out.println(coverClazz.getName());
+                                            if (classFunction.getAccessMode() == AccessMode.PRIVATE){
+                                                if (coverClazz.equals(clazz) && findNode.getDefinedFunctions().contains(classFunction)){
                                                     find = true;
                                                     v.setType(classFunction.getType());
                                                 }
-                                                else {
-                                                    if (findNode.getDefinedFunctions().contains(classFunction)){
-                                                        find = true;
-                                                        v.setType(classFunction.getType());
-                                                    }
+                                            }
+                                            if (classFunction.getAccessMode() == AccessMode.PROTECTED){
+                                                if (isConvertibleTo(coverClazz.getType(), clazz.getType()) || isConvertibleTo(clazz.getType(), coverClazz.getType())){
+                                                    find = true;
+                                                    v.setType(classFunction.getType());
                                                 }
                                             }
                                         }
@@ -411,9 +413,11 @@ public class Compiler {
                         boolean find = false;
                         for (Variable classVariable : clazz.getVariables()){
                             if (classVariable.getName().equals((String)idNode.getValue())){
+
                                 if (classVariable.getAccessMode() == AccessMode.PUBLIC){
                                     find = true;
                                     v.setType(classVariable.getType());
+                                    break;
                                 }
                                 else{
                                     Node findNode = v;
@@ -425,20 +429,22 @@ public class Compiler {
                                     }
                                     if (findNode.getLeftHand() == LeftHand.ClassDecl){
                                         Clazz coverClazz = getClazzNode(findNode);
-                                        if (coverClazz.equals(clazz)){
-                                            if (classVariable.getAccessMode() == AccessMode.PROTECTED){
+                                        System.out.println(coverClazz.getName());
+                                        if (classVariable.getAccessMode() == AccessMode.PRIVATE){
+                                            if (coverClazz.equals(clazz) && findNode.getDefinedVariables().contains(classVariable)){
                                                 find = true;
                                                 v.setType(classVariable.getType());
                                             }
-                                            else {
-                                                if (findNode.getDefinedVariables().contains(classVariable)){
-                                                    find = true;
-                                                    v.setType(classVariable.getType());
-                                                }
+                                        }
+                                        if (classVariable.getAccessMode() == AccessMode.PROTECTED){
+                                            if (isConvertibleTo(coverClazz.getType(), clazz.getType()) || isConvertibleTo(clazz.getType(), coverClazz.getType())){
+                                                find = true;
+                                                v.setType(classVariable.getType());
                                             }
                                         }
                                     }
                                 }
+
                             }
                         }
 
