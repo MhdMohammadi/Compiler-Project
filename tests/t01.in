@@ -1,5 +1,9 @@
-int main() {
-    bool i;
-    i = false;
-    Print(btoi(i));
+int main(){
+    string a;
+    string b;
+    string c;
+    c = ReadLine();
+    a = "call me";
+    b = "mamacita";
+    Print(a, b, c);
 }
